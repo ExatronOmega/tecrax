@@ -1,10 +1,7 @@
 from __future__ import annotations
 
-from typing import Any
-
 from rexecop.connectors.base import ConnectorRequest, ConnectorResponse
 from rexecop.connectors.mock_runtime import MockConnectorRuntime
-from rexecop.execution.backend import StepExecutionContext
 
 
 class TecraxFixtureConnectorRuntime(MockConnectorRuntime):
