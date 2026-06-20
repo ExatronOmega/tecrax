@@ -47,5 +47,5 @@ def test_version_and_public_truth_validator_agree() -> None:
         'public_truth_ok:tecrax==0.3.2a0:'
         'govengine>=0.12.2a0,<0.15:'
         'sclite-core>=1.0.1,<1.1:'
-        'rexecop>=0.2.1a0,<0.3'
+        'rexecop>=0.2.2a0,<0.3'
     )
