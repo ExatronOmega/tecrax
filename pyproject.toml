@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tecrax"
-version = "0.3.2a0"
+version = "0.3.3a0"
 description = "Governed infrastructure-operations profile and RExecOp domain package over GovEngine and SCLite."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -22,9 +22,9 @@ classifiers = [
   "Topic :: System :: Systems Administration",
 ]
 dependencies = [
-  "govengine>=0.12.2a0,<0.15",
+  "govengine>=0.15.0,<0.16",
   "sclite-core>=1.0.1,<1.1",
-  "rexecop>=0.2.2a0,<0.3",
+  "rexecop>=0.2.4a0,<0.3",
 ]
 
 [project.entry-points."rexecop.profiles"]

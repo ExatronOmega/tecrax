@@ -2,8 +2,8 @@
 
 Tecrax is a governed infrastructure-operations runtime/profile built on GovEngine and SCLite.
 
-Current published baseline: `tecrax==0.3.2a0` ([PyPI](https://pypi.org/project/tecrax/0.3.2a0/)), depending on
-`govengine>=0.12.2a0,<0.15`, `sclite-core>=1.0.1,<1.1`, and `rexecop>=0.2.2a0,<0.3`.
+Current published baseline: `tecrax==0.3.3a0` ([PyPI](https://pypi.org/project/tecrax/0.3.3a0/)), depending on
+`govengine>=0.15.0,<0.16`, `sclite-core>=1.0.1,<1.1`, and `rexecop>=0.2.4a0,<0.3`.
 
 This package provides:
 
@@ -47,9 +47,10 @@ profile/planning/supervision/runtime-review contracts and binds its fixture
 receipt through an SCLite artifact descriptor. It has no live runner, host
 inventory, credential path, or infrastructure adapter.
 
-The `0.3.1-alpha` release consolidates the RExecOp domain profile into this
-package and aligns dependencies with RExecOp `0.1.x`. It does not add an
-infrastructure runtime or a new contract surface beyond the bundled profile.
+The `0.3.2-alpha` line aligns dependency pins with GovEngine `0.15.0` (PolicyEngine MVP)
+and RExecOp `0.2.4a0`. The `0.3.1-alpha` release consolidated the RExecOp domain profile
+into this package. Neither line adds a live infrastructure runtime or a new contract
+surface beyond the bundled profile.
 
 ## Validation
 
