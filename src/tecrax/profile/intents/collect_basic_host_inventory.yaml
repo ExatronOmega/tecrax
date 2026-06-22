@@ -1,0 +1,8 @@
+intent:
+  id: collect_basic_host_inventory
+  workflow: workflows/collect_basic_host_inventory.yaml
+  risk: low
+  enforce_declared_modes: true
+  modes:
+    - read_only
+    - dry_run

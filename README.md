@@ -10,9 +10,11 @@ This package provides:
 - **RExecOp domain profile** — bundled YAML profile with intents, workflows, connectors,
   and validation rules (entry point `rexecop.profiles:tecrax`).
 - **Local fixture review** — dry-run proof slice without live infrastructure.
+- **Read-only host inventory profile** — fixed SSH command shapes and bounded
+  normalization for operator-configured Ubuntu inventory.
 
-It does not execute infrastructure changes, connect to hosts, manage credentials,
-or provide production operational capability without explicit operator configuration.
+It does not execute infrastructure changes or manage credentials. Live SSH execution
+is performed by RExecOp only from explicit operator configuration outside this package.
 
 Planned foundation:
 

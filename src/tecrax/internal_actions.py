@@ -12,6 +12,7 @@ def register_handlers() -> Mapping[str, Any]:
         "correlate_vm_backup_coverage": correlate_vm_backup_coverage,
         "capture_agent_state": capture_agent_state,
         "verify_agent_state": verify_agent_state,
+        "normalize_basic_host_inventory": normalize_basic_host_inventory,
     }
 
 
@@ -73,3 +74,96 @@ def verify_agent_state(context: StepExecutionContext) -> dict[str, Any]:
         "after_state": after_state,
         "before_state": context.shared_state.get("agent_before_state"),
     }
+
+
+def normalize_basic_host_inventory(context: StepExecutionContext) -> dict[str, Any]:
+    results = context.shared_state.get("connector_results", {})
+    if not isinstance(results, dict):
+        results = {}
+
+    os_release = _parse_os_release(_stdout(results, "read_os_release"))
+    filesystem = _parse_df(_stdout(results, "read_filesystem_usage"))
+    memory = _parse_free(_stdout(results, "read_memory_summary"))
+    inventory = {
+        "target": context.target,
+        "os": os_release,
+        "kernel": _single_line(_stdout(results, "read_kernel_identity")),
+        "hostname": _single_line(_stdout(results, "read_hostname")),
+        "uptime": _single_line(_stdout(results, "read_uptime")),
+        "root_filesystem": filesystem,
+        "memory_mib": memory,
+    }
+    inventory["complete"] = all(
+        (
+            os_release.get("id"),
+            inventory["kernel"],
+            inventory["hostname"],
+            inventory["uptime"],
+            filesystem.get("mounted_on") == "/",
+            memory.get("total") is not None,
+        )
+    )
+    context.shared_state["basic_host_inventory"] = inventory
+    return inventory
+
+
+def _stdout(results: dict[str, Any], step_id: str) -> str:
+    payload = results.get(step_id)
+    if not isinstance(payload, dict):
+        return ""
+    value = payload.get("stdout")
+    return str(value) if value is not None else ""
+
+
+def _single_line(value: str, *, limit: int = 512) -> str:
+    return " ".join(value.split())[:limit]
+
+
+def _parse_os_release(value: str) -> dict[str, str]:
+    allowed = {"ID", "VERSION_ID", "PRETTY_NAME"}
+    parsed: dict[str, str] = {}
+    for line in value.splitlines():
+        key, separator, raw = line.partition("=")
+        if not separator or key not in allowed:
+            continue
+        parsed[key.lower()] = raw.strip().strip('"')[:256]
+    return parsed
+
+
+def _parse_df(value: str) -> dict[str, Any]:
+    lines = [line.split() for line in value.splitlines() if line.strip()]
+    if len(lines) < 2 or len(lines[-1]) < 6:
+        return {}
+    row = lines[-1]
+    return {
+        "filesystem": row[0][:256],
+        "blocks_1024": _integer(row[1]),
+        "used": _integer(row[2]),
+        "available": _integer(row[3]),
+        "capacity": row[4][:16],
+        "mounted_on": row[5][:256],
+    }
+
+
+def _parse_free(value: str) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for line in value.splitlines():
+        parts = line.split()
+        if len(parts) < 4 or parts[0] != "Mem:":
+            continue
+        result = {
+            "total": _integer(parts[1]),
+            "used": _integer(parts[2]),
+            "free": _integer(parts[3]),
+        }
+        if len(parts) >= 7:
+            result["available"] = _integer(parts[6])
+        break
+    return result
+
+
+def _integer(value: str) -> int | None:
+    try:
+        return int(value)
+    except ValueError:
+        return None

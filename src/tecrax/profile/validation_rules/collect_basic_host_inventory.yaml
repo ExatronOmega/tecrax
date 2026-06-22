@@ -1,0 +1,15 @@
+validation_rule:
+  intent: collect_basic_host_inventory
+  steps:
+    - type: require_mapping
+      key: basic_host_inventory
+      fail:
+        rule: collect_basic_host_inventory.inventory_required
+        details:
+          reason: missing normalized host inventory
+    - type: require_equals
+      path: basic_host_inventory.complete
+      value: true
+      pass_rule: collect_basic_host_inventory.complete
+      fail_rule: collect_basic_host_inventory.incomplete
+      details_from: basic_host_inventory

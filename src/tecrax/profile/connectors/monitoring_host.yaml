@@ -1,0 +1,33 @@
+connector:
+  name: monitoring_host
+  backend: ssh_readonly
+  capabilities:
+    - read_os_release
+    - read_kernel_identity
+    - read_hostname
+    - read_uptime
+    - read_filesystem_usage
+    - read_memory_summary
+  modes:
+    - read_only
+    - dry_run
+  timeout_default: 10s
+  command_shapes:
+    read_os_release:
+      command: cat
+      args: ["/etc/os-release"]
+    read_kernel_identity:
+      command: uname
+      args: ["-srm"]
+    read_hostname:
+      command: hostname
+      args: []
+    read_uptime:
+      command: uptime
+      args: []
+    read_filesystem_usage:
+      command: df
+      args: ["-P", "/"]
+    read_memory_summary:
+      command: free
+      args: ["-m"]

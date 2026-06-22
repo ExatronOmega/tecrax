@@ -1,0 +1,88 @@
+environment:
+  id: ubuntu-host-readonly-example
+  description: Sanitized operator template for bounded Ubuntu host inventory over SSH.
+  profile: tecrax
+
+  targets:
+    monitoring-host-01:
+      type: host
+      criticality: low
+
+  connectors:
+    monitoring_host:
+      enabled: true
+      backend: ssh_readonly
+      host: monitoring-host.example.invalid
+      user: rexecop-ro
+      known_hosts_policy: strict
+      known_hosts_file: /path/outside/repo/known_hosts
+      identity_file_secret_ref: monitoring_host_ssh_identity
+      timeout_seconds: 10
+      max_output_bytes: 8192
+      allowlist:
+        - action: read_os_release
+          command: cat
+          args: ["/etc/os-release"]
+        - action: read_kernel_identity
+          command: uname
+          args: ["-srm"]
+        - action: read_hostname
+          command: hostname
+          args: []
+        - action: read_uptime
+          command: uptime
+          args: []
+        - action: read_filesystem_usage
+          command: df
+          args: ["-P", "/"]
+        - action: read_memory_summary
+          command: free
+          args: ["-m"]
+
+  safety:
+    default_mode: dry_run
+    apply_requires_govengine: true
+    secrets_source: external
+    max_concurrent_operations: 1
+    target_lock_enabled: true
+
+  policy_pack:
+    policy_id: tecrax-ubuntu-host-readonly
+    version: "2026-06-22"
+    rules:
+      - rule_id: allow-basic-host-inventory-operation
+        effect: allow
+        conditions:
+          action.category: operation
+          action.mode: read
+          action.intent: collect_basic_host_inventory
+        reason_code: basic_host_inventory_allowed
+      - rule_id: allow-read-os-release
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: ssh_readonly, action.connector: monitoring_host, action.name: read_os_release}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-kernel-identity
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: ssh_readonly, action.connector: monitoring_host, action.name: read_kernel_identity}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-hostname
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: ssh_readonly, action.connector: monitoring_host, action.name: read_hostname}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-uptime
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: ssh_readonly, action.connector: monitoring_host, action.name: read_uptime}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-filesystem-usage
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: ssh_readonly, action.connector: monitoring_host, action.name: read_filesystem_usage}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-memory-summary
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: ssh_readonly, action.connector: monitoring_host, action.name: read_memory_summary}
+        reason_code: fixed_read_allowed
+      - rule_id: deny-mutating-actions
+        effect: deny
+        conditions:
+          action.mode: mutating
+        reason_code: mutations_denied
