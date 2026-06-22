@@ -15,6 +15,7 @@ def register_handlers() -> Mapping[str, Any]:
         "normalize_basic_host_inventory": normalize_basic_host_inventory,
         "normalize_ntp_health": normalize_ntp_health,
         "normalize_zabbix_health": normalize_zabbix_health,
+        "aggregate_monitoring_host_diagnosis": aggregate_monitoring_host_diagnosis,
     }
 
 
@@ -140,6 +141,52 @@ def normalize_zabbix_health(context: StepExecutionContext) -> dict[str, Any]:
     result["healthy"] = result["application_reachable"]
     context.shared_state["zabbix_health"] = result
     return result
+
+
+def aggregate_monitoring_host_diagnosis(
+    context: StepExecutionContext,
+) -> dict[str, Any]:
+    inventory = context.shared_state.get("basic_host_inventory")
+    ntp = context.shared_state.get("ntp_health")
+    zabbix = context.shared_state.get("zabbix_health")
+    continued = context.shared_state.get("continued_failures")
+    failures = []
+    if isinstance(continued, dict):
+        for step_id, payload in sorted(continued.items()):
+            error_class = payload.get("error_class") if isinstance(payload, dict) else ""
+            failures.append(
+                {"step_id": str(step_id)[:128], "error_class": str(error_class)[:64]}
+            )
+
+    components = {
+        "host_inventory": _component_status(inventory, "complete"),
+        "ntp": _component_status(ntp, "healthy"),
+        "zabbix": _component_status(zabbix, "healthy"),
+        "docker": {
+            "status": "blocked",
+            "reason": "safe_readonly_adapter_not_configured",
+        },
+        "adguard": {
+            "status": "blocked",
+            "reason": "verified_health_endpoint_not_configured",
+        },
+    }
+    observed = [components[name]["status"] for name in ("host_inventory", "ntp", "zabbix")]
+    result = {
+        "diagnostic_complete": True,
+        "coverage_status": "partial",
+        "observed_health": "healthy" if all(item == "healthy" for item in observed) else "degraded",
+        "components": components,
+        "continued_failures": failures,
+    }
+    context.shared_state["monitoring_host_diagnosis"] = result
+    return result
+
+
+def _component_status(value: Any, health_key: str) -> dict[str, str]:
+    if not isinstance(value, dict):
+        return {"status": "unavailable"}
+    return {"status": "healthy" if value.get(health_key) is True else "unhealthy"}
 
 
 def _stdout(results: dict[str, Any], step_id: str) -> str:

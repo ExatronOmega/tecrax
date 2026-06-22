@@ -8,6 +8,8 @@
   command shapes, bounded normalization, validation and a sanitized environment template
 - **R2 verified slices:** `check_ntp_health` and application-level
   `check_zabbix_container_health`; Docker inventory and AdGuard remain explicit blockers
+- **R2 aggregate:** `diagnose_monitoring_host` preserves bounded partial failures and
+  separates diagnostic completion from observed component health
 - **Execution boundary:** RExecOp owns operator-configured SSH execution; Tecrax does not
   manage credentials or embed target infrastructure data
 - **Not claimed:** infrastructure mutation, credential management, carrier adapters,

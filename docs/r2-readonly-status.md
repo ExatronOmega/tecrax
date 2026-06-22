@@ -13,16 +13,21 @@ scheduling, or a second monitoring system.
 Both workflows use plain PolicyEngine `allow`, bounded evidence, deterministic validation,
 receipt generation and an SCLite bundle.
 
+`diagnose_monitoring_host` aggregates host inventory, NTP and Zabbix. Connector failures
+are retained as bounded step IDs plus error classes while later diagnostics continue. Its
+validation means the diagnostic completed; component health remains a separate field.
+
 ## Explicit blockers
 
 - `check_docker_services_health`: the dedicated SSH account cannot access the Docker socket.
   This is intentional. Membership in the `docker` group would grant mutation capability and
   must not be used as a read-only solution. A separate bounded adapter must be designed and
   reviewed before this intent exists.
+- Portainer API discovery confirmed that authenticated API access uses a user token with
+  that user's permissions. No token is accepted as a read-only boundary until the
+  installation can provide a genuinely non-mutating role or a separately constrained API.
 - `check_adguard_health`: no operator-confirmed management or health endpoint is available.
   Do not infer one from common ports or product defaults.
-- `diagnose_monitoring_host`: deferred until component intents exist and the runner has an
-  explicit, tested partial-failure aggregation contract.
 
 No Docker inspect, logs, exec, lifecycle command, configuration change, service restart, or
 NTP modification is part of R2.

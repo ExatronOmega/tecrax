@@ -1,7 +1,7 @@
 # Ubuntu host read-only inventory
 
 This runbook covers `collect_basic_host_inventory`, discovered-host `check_ntp_health`,
-and bounded `check_zabbix_container_health`. NTP uses `ssh_readonly`; Zabbix uses its
+bounded `check_zabbix_container_health`, and `diagnose_monitoring_host`. NTP uses `ssh_readonly`; Zabbix uses its
 unauthenticated `apiinfo.version` endpoint through `http_api`.
 
 ## Operator prerequisites

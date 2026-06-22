@@ -1,0 +1,14 @@
+validation_rule:
+  intent: diagnose_monitoring_host
+  steps:
+    - type: require_mapping
+      key: monitoring_host_diagnosis
+      fail:
+        rule: diagnose_monitoring_host.result_required
+        details: {reason: missing aggregated diagnosis}
+    - type: require_equals
+      path: monitoring_host_diagnosis.diagnostic_complete
+      value: true
+      pass_rule: diagnose_monitoring_host.completed
+      fail_rule: diagnose_monitoring_host.incomplete
+      details_from: monitoring_host_diagnosis

@@ -1,0 +1,26 @@
+workflow:
+  id: tecrax.diagnose_monitoring_host
+  intent: diagnose_monitoring_host
+  mode: read_only
+  risk: low
+  description: Aggregate bounded host, NTP and Zabbix diagnostics with explicit blockers.
+
+  steps:
+    - {id: read_os_release, type: connector, connector: monitoring_host, action: read_os_release, timeout: 10s, pause_safe: true, metadata: {continue_on_error: true}}
+    - {id: read_kernel_identity, type: connector, connector: monitoring_host, action: read_kernel_identity, timeout: 10s, pause_safe: true, metadata: {continue_on_error: true}}
+    - {id: read_hostname, type: connector, connector: monitoring_host, action: read_hostname, timeout: 10s, pause_safe: true, metadata: {continue_on_error: true}}
+    - {id: read_uptime, type: connector, connector: monitoring_host, action: read_uptime, timeout: 10s, pause_safe: true, metadata: {continue_on_error: true}}
+    - {id: read_filesystem_usage, type: connector, connector: monitoring_host, action: read_filesystem_usage, timeout: 10s, pause_safe: true, metadata: {continue_on_error: true}}
+    - {id: read_memory_summary, type: connector, connector: monitoring_host, action: read_memory_summary, timeout: 10s, pause_safe: true, metadata: {continue_on_error: true}}
+    - {id: read_ntp_sync_state, type: connector, connector: monitoring_host, action: read_ntp_sync_state, timeout: 10s, pause_safe: true, metadata: {continue_on_error: true}}
+    - {id: read_ntp_service_state, type: connector, connector: monitoring_host, action: read_ntp_service_state, timeout: 10s, pause_safe: true, metadata: {continue_on_error: true}}
+    - {id: read_zabbix_api_version, type: connector, connector: zabbix_api, action: read_zabbix_api_version, timeout: 10s, pause_safe: true, metadata: {continue_on_error: true}}
+    - {id: normalize_inventory, type: internal, action: normalize_basic_host_inventory, pause_safe: true}
+    - {id: normalize_ntp_health, type: internal, action: normalize_ntp_health, pause_safe: true}
+    - {id: normalize_zabbix_health, type: internal, action: normalize_zabbix_health, pause_safe: true}
+    - {id: aggregate_diagnosis, type: internal, action: aggregate_monitoring_host_diagnosis, pause_safe: true}
+    - {id: produce_receipt, type: evidence, action: produce_receipt, pause_safe: true}
+
+  retry:
+    max_attempts: 0
+    blocked_on: [policy_denied]

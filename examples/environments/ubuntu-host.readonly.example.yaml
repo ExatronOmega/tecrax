@@ -92,6 +92,13 @@ environment:
           action.mode: read
           action.intent: check_zabbix_container_health
         reason_code: zabbix_health_allowed
+      - rule_id: allow-monitoring-host-diagnosis
+        effect: allow
+        conditions:
+          action.category: operation
+          action.mode: read
+          action.intent: diagnose_monitoring_host
+        reason_code: monitoring_host_diagnosis_allowed
       - rule_id: allow-read-os-release
         effect: allow
         conditions: {action.category: connector, action.mode: read, action.backend: ssh_readonly, action.connector: monitoring_host, action.name: read_os_release}

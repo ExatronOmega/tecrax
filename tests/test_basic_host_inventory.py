@@ -3,6 +3,7 @@ from __future__ import annotations
 from rexecop.execution.backend import StepExecutionContext
 
 from tecrax.internal_actions import (
+    aggregate_monitoring_host_diagnosis,
     normalize_basic_host_inventory,
     normalize_ntp_health,
     normalize_zabbix_health,
@@ -112,3 +113,38 @@ def test_normalize_zabbix_health_does_not_claim_container_runtime_state() -> Non
         "container_runtime_state": "not_observed",
         "healthy": True,
     }
+
+
+def test_aggregate_diagnosis_preserves_failures_and_blockers() -> None:
+    context = StepExecutionContext(
+        operation_id="op-test",
+        target="monitoring-host-01",
+        mode="dry_run",
+        step={"id": "aggregate_diagnosis"},
+        shared_state={
+            "basic_host_inventory": {"complete": True},
+            "ntp_health": {"healthy": True},
+            "zabbix_health": {"healthy": False},
+            "continued_failures": {
+                "read_zabbix_api_version": {
+                    "error": "sensitive upstream detail",
+                    "error_class": "transient_connector_error",
+                }
+            },
+        },
+    )
+
+    result = aggregate_monitoring_host_diagnosis(context)
+
+    assert result["diagnostic_complete"] is True
+    assert result["coverage_status"] == "partial"
+    assert result["observed_health"] == "degraded"
+    assert result["components"]["docker"]["status"] == "blocked"
+    assert result["components"]["adguard"]["status"] == "blocked"
+    assert result["continued_failures"] == [
+        {
+            "step_id": "read_zabbix_api_version",
+            "error_class": "transient_connector_error",
+        }
+    ]
+    assert "sensitive upstream detail" not in str(result)
