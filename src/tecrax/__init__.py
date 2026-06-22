@@ -5,10 +5,16 @@ from __future__ import annotations
 from pathlib import Path
 
 from .local_fixture import build_local_fixture_review
+from .reactions import build_monitoring_host_observation
 
-__version__ = "0.3.3a0"
+__version__ = "0.3.4a0"
 
-__all__ = ["__version__", "build_local_fixture_review", "profile_root"]
+__all__ = [
+    "__version__",
+    "build_local_fixture_review",
+    "build_monitoring_host_observation",
+    "profile_root",
+]
 
 
 def profile_root() -> str:

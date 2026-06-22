@@ -1,0 +1,70 @@
+from __future__ import annotations
+
+from pathlib import Path
+
+from rexecop.profile.loader import load_profile
+from rexecop.reaction.compiler import compile_reaction_pack
+from rexecop.reaction.evaluator import evaluate_reaction
+from rexecop.reaction.model import ReactionContext
+
+from tecrax import build_monitoring_host_observation, profile_root
+
+
+def _diagnosis(
+    *, host: str = "healthy", ntp: str = "healthy", zabbix: str = "healthy"
+) -> dict:
+    return {
+        "diagnostic_complete": True,
+        "coverage_status": "partial",
+        "observed_health": "healthy"
+        if {host, ntp, zabbix} == {"healthy"}
+        else "degraded",
+        "components": {
+            "host_inventory": {"status": host},
+            "ntp": {"status": ntp},
+            "zabbix": {"status": zabbix},
+            "docker": {"status": "blocked", "reason": "not_configured"},
+            "adguard": {"status": "blocked", "reason": "not_configured"},
+        },
+        "continued_failures": [],
+    }
+
+
+def _evaluate(diagnosis: dict):
+    profile = load_profile(Path(profile_root()))
+    pack = compile_reaction_pack(profile)
+    observation = build_monitoring_host_observation(
+        operation_id="op-source",
+        target_id="monitoring-host-01",
+        diagnosis=diagnosis,
+        observed_at="2026-06-22T20:00:00+00:00",
+    )
+    return observation, evaluate_reaction(pack, observation, ReactionContext())
+
+
+def test_ntp_finding_selects_existing_readonly_intent() -> None:
+    observation, result = _evaluate(_diagnosis(ntp="unhealthy"))
+    assert observation["profile_ref"]["id"] == "tecrax"
+    assert result.rule.finding_kind == "monitoring.ntp_unhealthy"
+    assert result.outcome == "run_intent"
+    assert result.intent_ref == "check_ntp_health"
+
+
+def test_rule_priority_is_stable_when_multiple_components_are_unhealthy() -> None:
+    _, result = _evaluate(
+        _diagnosis(host="unhealthy", ntp="unhealthy", zabbix="unhealthy")
+    )
+    assert result.rule.rule_id == "monitoring.host-inventory-unhealthy"
+    assert result.intent_ref == "collect_basic_host_inventory"
+
+
+def test_healthy_implemented_coverage_is_an_explicit_no_op() -> None:
+    _, result = _evaluate(_diagnosis())
+    assert result.outcome == "no_op"
+    assert result.intent_ref is None
+
+
+def test_unknown_state_escalates_without_free_form_action() -> None:
+    _, result = _evaluate(_diagnosis(ntp="unavailable"))
+    assert result.outcome == "escalate"
+    assert result.intent_ref is None

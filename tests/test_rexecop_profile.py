@@ -11,6 +11,7 @@ def test_profile_root_points_to_bundled_directory() -> None:
     root = Path(profile_root())
     assert root.is_dir()
     assert (root / "profile.yaml").is_file()
+    assert (root / "reactions" / "reaction_pack.yaml").is_file()
     assert (root / "intents").is_dir()
     assert (root / "workflows").is_dir()
     assert (root / "intents" / "collect_basic_host_inventory.yaml").is_file()
@@ -25,7 +26,7 @@ def test_profile_yaml_loads_with_expected_contract() -> None:
     profile_path = Path(profile_root()) / "profile.yaml"
     text = profile_path.read_text(encoding="utf-8")
     assert "name: tecrax" in text
-    assert 'version: "0.3.1"' in text
+    assert 'version: "0.3.3"' in text
 
 
 def test_rexecop_profiles_entry_point_registered() -> None:
@@ -38,7 +39,7 @@ def test_rexecop_profiles_entry_point_registered() -> None:
 
 
 def test_package_version_matches_profile_bundle() -> None:
-    assert tecrax.__version__ == "0.3.3a0"
+    assert tecrax.__version__ == "0.3.4a0"
 
 
 def test_unverified_r2_intents_are_not_claimed_by_profile() -> None:

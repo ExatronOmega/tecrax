@@ -1,6 +1,6 @@
 profile_contract:
   name: tecrax
-  version: "0.3.1"
+  version: "0.3.3"
 
   intents:
     required: true

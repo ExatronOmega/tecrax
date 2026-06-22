@@ -1,0 +1,55 @@
+reaction_pack:
+  id: tecrax.monitoring-host-readonly
+  version: "0.1"
+  budgets:
+    max_depth: 3
+    max_reactions: 5
+  rules:
+    - id: monitoring.host-inventory-unhealthy
+      priority: 10
+      when:
+        - {path: facts.components.host_inventory.status, operator: equals, value: unhealthy}
+      finding:
+        kind: monitoring.host_inventory_unhealthy
+        severity: medium
+        summary: Basic host inventory is incomplete or unhealthy.
+      outcome: run_intent
+      intent_ref: collect_basic_host_inventory
+    - id: monitoring.ntp-unhealthy
+      priority: 20
+      when:
+        - {path: facts.components.ntp.status, operator: equals, value: unhealthy}
+      finding:
+        kind: monitoring.ntp_unhealthy
+        severity: medium
+        summary: The bounded NTP health observation is unhealthy.
+      outcome: run_intent
+      intent_ref: check_ntp_health
+    - id: monitoring.zabbix-unhealthy
+      priority: 30
+      when:
+        - {path: facts.components.zabbix.status, operator: equals, value: unhealthy}
+      finding:
+        kind: monitoring.zabbix_unhealthy
+        severity: medium
+        summary: The bounded Zabbix API health observation is unhealthy.
+      outcome: run_intent
+      intent_ref: check_zabbix_container_health
+    - id: monitoring.observed-healthy
+      priority: 100
+      when:
+        - {path: facts.observed_health, operator: equals, value: healthy}
+      finding:
+        kind: monitoring.observed_healthy
+        severity: info
+        summary: All currently implemented monitoring-host observations are healthy.
+      outcome: no_op
+  fallback:
+    id: monitoring.unclassified
+    priority: 1000
+    when: []
+    finding:
+      kind: monitoring.unclassified_state
+      severity: low
+      summary: No deterministic Tecrax reaction matches the bounded observation.
+    outcome: escalate

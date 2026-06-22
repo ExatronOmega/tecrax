@@ -2,8 +2,8 @@
 
 Tecrax is a governed infrastructure-operations runtime/profile built on GovEngine and SCLite.
 
-Current published baseline: `tecrax==0.3.3a0` ([PyPI](https://pypi.org/project/tecrax/0.3.3a0/)), depending on
-`govengine>=0.15.0,<0.16`, `sclite-core>=1.0.1,<1.1`, and `rexecop>=0.2.4a0,<0.3`.
+Current published baseline: `tecrax==0.3.4a0` ([PyPI](https://pypi.org/project/tecrax/0.3.4a0/)), depending on
+`govengine>=0.15.0,<0.16`, `sclite-core>=1.0.4,<1.1`, and `rexecop>=0.2.5a0,<0.3`.
 
 This package provides:
 
@@ -14,6 +14,8 @@ This package provides:
   normalization for operator-configured Ubuntu inventory.
 - **Verified read-only service slices** — NTP synchronization over fixed SSH commands
   and bounded Zabbix API version health through RExecOp `http_api`.
+- **Monitoring-host reaction pack** — deterministic domain findings map only to
+  existing read-only intents; unknown states escalate without a free-form action.
 
 It does not execute infrastructure changes or manage credentials. Live SSH execution
 is performed by RExecOp only from explicit operator configuration outside this package.
@@ -40,6 +42,30 @@ rexecop profile list
 
 The profile root is exposed via `tecrax:profile_root` (directory `src/tecrax/profile/`).
 
+## Deterministic reactions
+
+Tecrax owns the monitoring vocabulary and rules in
+`src/tecrax/profile/reactions/reaction_pack.yaml`. Build a canonical observation
+from a bounded `diagnose_monitoring_host` result, then pass it to RExecOp:
+
+```bash
+tecrax reaction-observation \
+  --input diagnosis.json \
+  --operation op-source \
+  --target monitoring-host-01 > observation.json
+
+rexecop reaction-plan \
+  --profile tecrax \
+  --env /path/outside/repo/environment.yaml \
+  --observation observation.json \
+  --target monitoring-host-01
+```
+
+The first release is deliberately read-only. It can re-run bounded host
+inventory, NTP, or Zabbix checks; a healthy observation is `no_op`, and an
+unclassified state is `escalate`. RExecOp owns deterministic mechanics and
+lifecycle, GovEngine owns admission, and SCLite owns the evidence chain.
+
 ## Local fixture proof
 
 ```bash
@@ -51,10 +77,9 @@ profile/planning/supervision/runtime-review contracts and binds its fixture
 receipt through an SCLite artifact descriptor. It has no live runner, host
 inventory, credential path, or infrastructure adapter.
 
-The `0.3.2-alpha` line aligns dependency pins with GovEngine `0.15.0` (PolicyEngine MVP)
-and RExecOp `0.2.4a0`. The `0.3.1-alpha` release consolidated the RExecOp domain profile
-into this package. Neither line adds a live infrastructure runtime or a new contract
-surface beyond the bundled profile.
+The `0.3.3-alpha` line adds the profile-owned read-only reaction pack over
+RExecOp `0.2.5a0` and SCLite `1.0.4`. It does not add a second policy engine,
+lifecycle runner, or truth layer.
 
 ## Validation
 

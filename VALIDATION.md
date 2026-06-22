@@ -9,11 +9,11 @@ python -m pytest -q
 tecrax fixture-review --service demo-web
 ```
 
-Expected result for `0.3.3a0`:
+Expected result for `0.3.4a0`:
 
-- `pyproject.toml`, `tecrax.__version__`, README, public status, and validators agree on `0.3.3a0` / `0.3.2-alpha`;
+- `pyproject.toml`, `tecrax.__version__`, README, public status, and validators agree on `0.3.4a0` / `0.3.3-alpha`;
 - PyPI publication remains a fixture-only alpha package claim, not an infrastructure runtime claim;
-- dependency truth is `govengine>=0.15.0,<0.16`, `sclite-core>=1.0.1,<1.1`, and `rexecop>=0.2.4a0,<0.3`;
+- dependency truth is `govengine>=0.15.0,<0.16`, `sclite-core>=1.0.4,<1.1`, and `rexecop>=0.2.5a0,<0.3`;
 - RExecOp profile entry point `tecrax:profile_root` resolves to a valid profile bundle;
 - `collect_basic_host_inventory` declares exact `ssh_readonly` command shapes and its
   parser tests use bounded fixture outputs without network access;
