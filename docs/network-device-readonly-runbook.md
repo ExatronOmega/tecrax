@@ -33,9 +33,96 @@ The normalizer keeps only bounded device identity and management SSH status. It
 does not preserve operator contact/location fields or user-account listings in
 the normalized result.
 
+## Current operator targets
+
+The private operator environment may map real devices to sanitized target
+aliases. These aliases are safe to reference in receipts and operator notes; real
+addresses, SSH key paths, known-hosts files and local wrapper paths are not.
+
+- `tplink-switch-01` - TP-Link TL-SG2452 read-only inventory through a private
+  key-backed wrapper.
+- `hp1910-switch-01` - HPE V1910-48G read-only inventory through key-backed SSH
+  and the device's legacy full-CLI unlock flow.
+
+Do not add real IP addresses, hostnames, usernames, passwords, key paths or
+operator workstation paths to this repository. Real target mapping belongs in
+the private environment YAML and local wrapper configuration outside Git.
+
+## Wrapper contract
+
+The local `tecrax-network-cli-readonly` command is an operator adapter, not a
+Tecrax package API and not RExecOp core. It must keep this external behavior:
+
+- accept exactly `system-info` or `ssh-status`;
+- select the real device from private operator context, such as a private
+  environment target and local environment variables;
+- establish device access with strict host-key checking;
+- use key-based SSH where the device supports it;
+- perform any vendor-specific session preparation internally;
+- emit only normalized read-only text fields expected by the Tecrax normalizer;
+- return non-zero on unsupported targets, login failures or unexpected prompts;
+- never provide a generic passthrough for arbitrary CLI commands.
+
+The wrapper may contain local, device-specific compatibility logic for legacy
+hardware. That logic stays outside the repository because it can include private
+paths, target addresses, legacy SSH options and vendor quirks that should not
+become reusable domain assumptions in RExecOp core.
+
+## Device-specific notes
+
+### TP-Link TL-SG2452
+
+The current TP-Link path is a bounded read-only CLI adapter. It collects:
+
+- system description;
+- system name;
+- hardware version;
+- software version;
+- SSH management status and legacy crypto observations.
+
+It must not collect user lists, running configuration, VLAN tables, port security
+configuration, SNMP configuration or interface inventory in this slice.
+
+### HPE V1910-48G
+
+The current HPE path uses key-backed SSH for login, then enters the legacy
+full-CLI mode required by this device family before running read-only `display`
+commands. This is a compatibility requirement of the device, not a general
+Tecrax or RExecOp behavior.
+
+It collects:
+
+- `display version` normalized to system description, system name, hardware
+  version and software version;
+- `display ssh server status` normalized to SSH server status and legacy crypto
+  observations.
+
+The full-CLI unlock material must not be committed, emitted to stdout, written
+to evidence, copied into receipts or stored in the private environment YAML. If
+the wrapper needs this value, it must keep it in local operator state outside
+Git and suppress command echo from all normalized output.
+
+Do not run or add HPE actions that read full configuration, local users, startup
+configuration, VLAN configuration, port security, SNMP communities or interface
+details until a separate read-only intent explicitly defines bounded output,
+redaction and validation.
+
 ## Safety notes
 
 This slice observes legacy management access. It may report weak or old SSH
 settings as `hardening_observations`, but it does not remediate them. Hardening
 actions must be separate future intents with explicit policy, validation and
 operator approval.
+
+## Baseline evidence expectations
+
+A successful real run should produce:
+
+- a completed RExecOp operation;
+- a passing `collect_network_device_inventory_readonly.complete` validation;
+- a receipt and SCLite bundle;
+- no real IP addresses, private key paths, known-hosts paths, unlock material,
+  passwords, user-account listings or configuration dumps in evidence.
+
+Before treating a new device wrapper as accepted, scan the generated operation,
+evidence, receipt and SCLite bundle for these forbidden values.
