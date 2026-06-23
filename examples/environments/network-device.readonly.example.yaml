@@ -1,0 +1,65 @@
+environment:
+  id: network-device-readonly-example
+  description: Sanitized operator template for bounded network device inventory.
+  profile: tecrax
+
+  targets:
+    network-device-01:
+      type: network_device
+      criticality: low
+
+  connectors:
+    network_device_cli:
+      enabled: true
+      backend: local_shell_readonly
+      timeout_seconds: 15
+      max_output_bytes: 4096
+      allowlist:
+        - action: read_network_device_system_info
+          command: tecrax-network-cli-readonly
+          args: ["system-info"]
+        - action: read_network_device_ssh_status
+          command: tecrax-network-cli-readonly
+          args: ["ssh-status"]
+
+  safety:
+    default_mode: dry_run
+    apply_requires_govengine: true
+    secrets_source: external
+    max_concurrent_operations: 1
+    target_lock_enabled: true
+
+  policy_pack:
+    policy_id: tecrax-network-device-readonly
+    version: "2026-06-23"
+    rules:
+      - rule_id: allow-network-device-inventory-operation
+        effect: allow
+        conditions:
+          action.category: operation
+          action.mode: read
+          action.intent: collect_network_device_inventory_readonly
+        reason_code: network_device_inventory_allowed
+      - rule_id: allow-read-network-device-system-info
+        effect: allow
+        conditions:
+          action.category: connector
+          action.mode: read
+          action.backend: local_shell_readonly
+          action.connector: network_device_cli
+          action.name: read_network_device_system_info
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-network-device-ssh-status
+        effect: allow
+        conditions:
+          action.category: connector
+          action.mode: read
+          action.backend: local_shell_readonly
+          action.connector: network_device_cli
+          action.name: read_network_device_ssh_status
+        reason_code: fixed_read_allowed
+      - rule_id: deny-mutating-actions
+        effect: deny
+        conditions:
+          action.mode: mutating
+        reason_code: mutations_denied

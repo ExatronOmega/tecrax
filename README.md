@@ -16,6 +16,9 @@ This package provides:
   health over fixed SSH commands, plus bounded Zabbix API version health through RExecOp
   `http_api`, AdGuard DNS/login reachability, and unauthenticated Portainer status through
   verified TLS.
+- **Read-only network device inventory slice** — bounded legacy CLI inventory through an
+  operator-managed local wrapper; target addresses, keys and wrapper implementation stay
+  outside the repository.
 - **Monitoring-host reaction pack** — deterministic domain findings map only to
   existing read-only intents; unknown states escalate without a free-form action.
 
@@ -43,6 +46,8 @@ rexecop profile list
 ```
 
 The profile root is exposed via `tecrax:profile_root` (directory `src/tecrax/profile/`).
+For network devices, see `docs/network-device-readonly-runbook.md`; real target
+configuration and legacy SSH compatibility wrappers stay outside this repository.
 
 ## Deterministic reactions
 
@@ -64,9 +69,9 @@ rexecop reaction-plan \
 ```
 
 The first release is deliberately read-only. It can re-run bounded host inventory, NTP,
-Docker service, Zabbix, AdGuard, or Portainer checks; a healthy observation is `no_op`,
-and an unclassified state is `escalate`. RExecOp owns deterministic mechanics and lifecycle,
-GovEngine owns admission, and SCLite owns the evidence chain.
+Docker service, Zabbix, AdGuard, Portainer, or network device inventory checks; a healthy
+observation is `no_op`, and an unclassified state is `escalate`. RExecOp owns deterministic
+mechanics and lifecycle, GovEngine owns admission, and SCLite owns the evidence chain.
 
 ## Local fixture proof
 

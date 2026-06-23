@@ -18,6 +18,7 @@ def register_handlers() -> Mapping[str, Any]:
         "normalize_zabbix_health": normalize_zabbix_health,
         "normalize_adguard_health": normalize_adguard_health,
         "normalize_portainer_health": normalize_portainer_health,
+        "normalize_network_device_inventory": normalize_network_device_inventory,
         "aggregate_monitoring_host_diagnosis": aggregate_monitoring_host_diagnosis,
     }
 
@@ -221,6 +222,63 @@ def normalize_portainer_health(context: StepExecutionContext) -> dict[str, Any]:
     return result
 
 
+def normalize_network_device_inventory(context: StepExecutionContext) -> dict[str, Any]:
+    results = context.shared_state.get("connector_results", {})
+    if not isinstance(results, dict):
+        results = {}
+    system_info = _parse_colon_fields(_stdout(results, "read_network_device_system_info"))
+    ssh_status = _parse_colon_fields(_stdout(results, "read_network_device_ssh_status"))
+    protocol_v1 = _enabled_value(
+        ssh_status.get("SSH Server Protocol V1") or ssh_status.get("Protocol V1")
+    )
+    protocol_v2 = _enabled_value(
+        ssh_status.get("SSH Server Protocol V2") or ssh_status.get("Protocol V2")
+    )
+    result = {
+        "target": context.target,
+        "scope": "network_cli_readonly",
+        "device": {
+            "system_name": _bounded_field(system_info.get("System Name"), 128),
+            "system_description": _bounded_field(
+                system_info.get("System Description"), 256
+            ),
+            "hardware_version": _bounded_field(system_info.get("Hardware Version"), 128),
+            "software_version": _bounded_field(system_info.get("Software Version"), 128),
+        },
+        "management_access": {
+            "ssh_server_enabled": _enabled_value(ssh_status.get("SSH Server")),
+            "ssh_protocol_v1_enabled": protocol_v1,
+            "ssh_protocol_v2_enabled": protocol_v2,
+            "idle_timeout_seconds": _integer(
+                str(ssh_status.get("SSH Idle Timeout") or ssh_status.get("Idle Timeout") or "")
+            ),
+            "max_clients": _integer(
+                str(ssh_status.get("SSH MAX Client") or ssh_status.get("MAX Clients") or "")
+            ),
+        },
+        "hardening_observations": {
+            "legacy_ssh_v1_enabled": protocol_v1 is True,
+            "legacy_crypto_observed": "CBC" in _stdout(
+                results, "read_network_device_ssh_status"
+            ).upper(),
+            "mutations_observed": False,
+        },
+    }
+    device = result["device"]
+    management = result["management_access"]
+    result["complete"] = all(
+        (
+            device["system_name"],
+            device["hardware_version"],
+            device["software_version"],
+            management["ssh_server_enabled"] is not None,
+            management["ssh_protocol_v2_enabled"] is not None,
+        )
+    )
+    context.shared_state["network_device_inventory"] = result
+    return result
+
+
 def aggregate_monitoring_host_diagnosis(
     context: StepExecutionContext,
 ) -> dict[str, Any]:
@@ -318,6 +376,33 @@ def _parse_properties(value: str) -> dict[str, str]:
         if separator and key in {"NTP", "NTPSynchronized"}:
             parsed[key] = raw.strip()[:32]
     return parsed
+
+
+def _parse_colon_fields(value: str) -> dict[str, str]:
+    parsed: dict[str, str] = {}
+    for line in value.splitlines():
+        key, separator, raw = line.partition(":")
+        if not separator:
+            key, separator, raw = line.partition("-")
+        if not separator:
+            continue
+        normalized_key = " ".join(key.split())
+        if normalized_key:
+            parsed[normalized_key] = " ".join(raw.split())[:512]
+    return parsed
+
+
+def _bounded_field(value: Any, limit: int) -> str:
+    return _single_line(str(value or ""), limit=limit)
+
+
+def _enabled_value(value: Any) -> bool | None:
+    text = str(value or "").strip().lower()
+    if text == "enabled":
+        return True
+    if text == "disabled":
+        return False
+    return None
 
 
 def _parse_systemctl_show(value: str) -> dict[str, str]:

@@ -1,0 +1,17 @@
+connector:
+  name: network_device_cli
+  backend: local_shell_readonly
+  capabilities:
+    - read_network_device_system_info
+    - read_network_device_ssh_status
+  modes:
+    - read_only
+    - dry_run
+  timeout_default: 15s
+  command_shapes:
+    read_network_device_system_info:
+      command: tecrax-network-cli-readonly
+      args: ["system-info"]
+    read_network_device_ssh_status:
+      command: tecrax-network-cli-readonly
+      args: ["ssh-status"]

@@ -1,0 +1,14 @@
+validation_rule:
+  intent: collect_network_device_inventory_readonly
+  steps:
+    - type: require_mapping
+      key: network_device_inventory
+      fail:
+        rule: collect_network_device_inventory_readonly.inventory_required
+        details: {reason: missing normalized network device inventory}
+    - type: require_equals
+      path: network_device_inventory.complete
+      value: true
+      pass_rule: collect_network_device_inventory_readonly.complete
+      fail_rule: collect_network_device_inventory_readonly.incomplete
+      details_from: network_device_inventory

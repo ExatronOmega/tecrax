@@ -1,0 +1,8 @@
+intent:
+  id: collect_network_device_inventory_readonly
+  workflow: workflows/collect_network_device_inventory_readonly.yaml
+  risk: low
+  enforce_declared_modes: true
+  modes:
+    - read_only
+    - dry_run

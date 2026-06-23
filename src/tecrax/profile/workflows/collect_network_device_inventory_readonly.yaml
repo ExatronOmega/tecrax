@@ -1,0 +1,36 @@
+workflow:
+  id: tecrax.collect_network_device_inventory_readonly
+  intent: collect_network_device_inventory_readonly
+  mode: read_only
+  risk: low
+  description: Collect bounded, read-only inventory from one managed network device.
+
+  steps:
+    - id: read_network_device_system_info
+      type: connector
+      connector: network_device_cli
+      action: read_network_device_system_info
+      timeout: 15s
+      pause_safe: true
+    - id: read_network_device_ssh_status
+      type: connector
+      connector: network_device_cli
+      action: read_network_device_ssh_status
+      timeout: 15s
+      pause_safe: true
+    - id: normalize_network_device_inventory
+      type: internal
+      action: normalize_network_device_inventory
+      pause_safe: true
+    - id: produce_receipt
+      type: evidence
+      action: produce_receipt
+      pause_safe: true
+
+  retry:
+    max_attempts: 1
+    allowed_on:
+      - timeout
+      - transient_connector_error
+    blocked_on:
+      - policy_denied

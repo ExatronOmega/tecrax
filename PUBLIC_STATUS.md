@@ -12,6 +12,9 @@
   authenticated AdGuard/Portainer management APIs remain explicit blockers
 - **R2 aggregate:** `diagnose_monitoring_host` preserves bounded partial failures and
   separates diagnostic completion from observed component health
+- **R5-lite network inventory:** `collect_network_device_inventory_readonly` defines
+  bounded legacy CLI inventory via `local_shell_readonly`; operator wrapper, target
+  address and credentials remain outside the repository
 - **Deterministic reactions:** profile-owned host/NTP/Zabbix/Docker/AdGuard/Portainer
   findings select only existing read-only intents; healthy state is no-op and unknown
   state escalates
