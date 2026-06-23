@@ -6,3 +6,11 @@ intent:
   modes:
     - read_only
     - dry_run
+  catalog:
+    title: Check NTP health
+    summary: Observe bounded synchronization and discovered NTP service state without changing time configuration.
+    target_kinds: [host]
+    required_capabilities: [ssh_readonly]
+    side_effect_class: none
+    validation_ref: validation_rules/check_ntp_health.yaml
+    runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/ubuntu-host-readonly-runbook.md

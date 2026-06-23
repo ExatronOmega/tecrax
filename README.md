@@ -21,20 +21,23 @@ This package provides:
   outside the repository.
 - **Monitoring-host reaction pack** — deterministic domain findings map only to
   existing read-only intents; unknown states escalate without a free-form action.
+- **Operator catalog metadata** — target kinds, required capabilities, side-effect
+  classes, validation references and runbook references projected by RExecOp from
+  the profile; sanitized target-catalog example included.
 
 It does not execute infrastructure changes or manage credentials. Live SSH execution
 is performed by RExecOp only from explicit operator configuration outside this package.
 
-Planned foundation:
+Stack ownership:
 
 ```text
-Tecrax -> GovEngine -> SCLite
+Tecrax profile -> RExecOp plan -> GovEngine admission -> RExecOp execution -> SCLite evidence
 ```
 
-- SCLite owns lifecycle/proof/review artifacts.
-- GovEngine owns deterministic governed-runtime kernel mechanics.
-- Tecrax owns the infrastructure-operations profile semantics, fixture review
-  payloads, UX, and future host integrations when those boundaries are mature.
+- SCLite owns canonical evidence, receipts and review artifacts.
+- GovEngine owns governance, PolicyEngine and admission decisions.
+- RExecOp owns domain-neutral lifecycle, execution and deterministic reaction mechanics.
+- Tecrax owns infrastructure intent, connector, normalization, validation and runbook semantics.
 
 ## RExecOp profile
 
@@ -48,6 +51,25 @@ rexecop profile list
 The profile root is exposed via `tecrax:profile_root` (directory `src/tecrax/profile/`).
 For network devices, see `docs/network-device-readonly-runbook.md`; real target
 configuration and legacy SSH compatibility wrappers stay outside this repository.
+
+## Target and operation catalog
+
+Tecrax intent files contain profile-owned operator catalog metadata. RExecOp derives
+the operation list from those same intent and workflow files; there is no second
+manually maintained operation registry.
+
+Use the sanitized template in `examples/catalogs/targets.readonly.example.yaml` as
+the shape for an operator-owned catalog outside Git:
+
+```bash
+rexecop targets list --catalog /path/outside/repo/targets.yaml
+rexecop operations list --catalog /path/outside/repo/targets.yaml \
+  --target monitoring-host-01
+```
+
+An `admission_required` result means only that target kind, capabilities and
+connectors match. GovEngine still decides whether a concrete plan may execute.
+See `docs/operation-catalog.md`.
 
 ## Deterministic reactions
 

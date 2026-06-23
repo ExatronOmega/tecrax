@@ -22,6 +22,8 @@ Expected result for `0.3.4a0`:
   `docs/r2-readonly-status.md`;
 - network device inventory fixtures validate bounded legacy CLI parsing without exposing
   target addresses, usernames, private keys, or operator-specific configuration;
+- every profile intent has bounded catalog metadata, and the sanitized target catalog
+  projects host and network-device applicability without environment paths or secrets;
 - fixture review output validates GovEngine profile, planning, supervision, runtime snapshot, review result, and runtime contract proof objects;
 - SCLite is used only for local artifact descriptors;
 - non-claims remain explicit for mutation, credential management, carrier adapters,

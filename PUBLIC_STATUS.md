@@ -18,7 +18,11 @@
 - **Deterministic reactions:** profile-owned host/NTP/Zabbix/Docker/AdGuard/Portainer
   findings select only existing read-only intents; healthy state is no-op and unknown
   state escalates
+- **Operator catalog metadata:** every bundled intent declares target kinds,
+  capabilities, side-effect class, validation and runbook references; RExecOp projects
+  applicability from a private target catalog without claiming authorization
 - **Execution boundary:** RExecOp owns operator-configured SSH execution; Tecrax does not
   manage credentials or embed target infrastructure data
-- **Not claimed:** infrastructure mutation, credential management, carrier adapters,
-  scheduler/storage, or production readiness
+- **Not claimed:** infrastructure mutation, credential management, automatic discovery,
+  CMDB synchronization, catalog-based authorization, carrier adapters, scheduler/storage,
+  or production readiness

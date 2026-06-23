@@ -5,3 +5,11 @@ intent:
   modes:
     - read_only
     - dry_run
+  catalog:
+    title: Check backup status
+    summary: Correlate virtualization inventory with backup snapshots after real Proxmox and PBS endpoints are available.
+    target_kinds: [virtualization_group]
+    required_capabilities: [http_api]
+    side_effect_class: none
+    validation_ref: validation_rules/check_backup_status.yaml
+    runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/operation-catalog.md#check-backup-status

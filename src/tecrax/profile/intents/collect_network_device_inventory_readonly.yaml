@@ -6,3 +6,11 @@ intent:
   modes:
     - read_only
     - dry_run
+  catalog:
+    title: Collect network device inventory
+    summary: Collect bounded device identity and management SSH posture through an operator-owned read-only adapter.
+    target_kinds: [network_device]
+    required_capabilities: [local_shell_readonly]
+    side_effect_class: none
+    validation_ref: validation_rules/collect_network_device_inventory_readonly.yaml
+    runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/network-device-readonly-runbook.md

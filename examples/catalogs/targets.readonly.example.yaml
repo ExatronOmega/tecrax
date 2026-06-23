@@ -1,0 +1,23 @@
+target_catalog:
+  version: "0.1"
+  targets:
+    - id: monitoring-host-01
+      target_kind: host
+      profile_ref: tecrax
+      environment_ref: ../environments/ubuntu-host.readonly.example.yaml
+      environment_target: monitoring-host-01
+      capabilities: [http_api, local_shell_readonly, ssh_readonly]
+      connector_refs: [adguard_health, monitoring_host, portainer_api, zabbix_api]
+      classification:
+        criticality: low
+        lifecycle: operator_managed
+    - id: network-device-01
+      target_kind: network_device
+      profile_ref: tecrax
+      environment_ref: ../environments/network-device.readonly.example.yaml
+      environment_target: network-device-01
+      capabilities: [local_shell_readonly]
+      connector_refs: [network_device_cli]
+      classification:
+        criticality: low
+        lifecycle: operator_managed

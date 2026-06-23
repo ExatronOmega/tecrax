@@ -6,3 +6,11 @@ intent:
   modes:
     - read_only
     - dry_run
+  catalog:
+    title: Check AdGuard health
+    summary: Verify bounded DNS resolution and web reachability without management credentials.
+    target_kinds: [host]
+    required_capabilities: [local_shell_readonly]
+    side_effect_class: none
+    validation_ref: validation_rules/check_adguard_health.yaml
+    runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/ubuntu-host-readonly-runbook.md
