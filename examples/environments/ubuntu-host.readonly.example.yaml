@@ -13,7 +13,7 @@ environment:
       enabled: true
       backend: ssh_readonly
       host: monitoring-host.example.invalid
-      user: rexecop-ro
+      user: readonly-ssh-user
       known_hosts_policy: strict
       known_hosts_file: /path/outside/repo/known_hosts
       identity_file_secret_ref: monitoring_host_ssh_identity
