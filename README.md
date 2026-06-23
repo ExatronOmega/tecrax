@@ -1,9 +1,12 @@
 # Tecrax
 
-Tecrax is a governed infrastructure-operations runtime/profile built on GovEngine and SCLite.
+Tecrax is a governed infrastructure-operations profile for RExecOp, using
+GovEngine governance and SCLite artifact truth.
 
-Current published baseline: `tecrax==0.3.4a0` ([PyPI](https://pypi.org/project/tecrax/0.3.4a0/)), depending on
-`govengine>=0.15.0,<0.16`, `sclite-core>=1.0.4,<1.1`, and `rexecop>=0.2.5a0,<0.3`.
+Current source line: `tecrax==0.3.5a0` (not published), depending on
+`govengine>=0.16.0,<0.17`, `sclite-core>=1.0.4,<1.1`, and `rexecop>=0.2.6a0,<0.3`.
+Latest published PyPI baseline: `tecrax==0.3.4a0`; it predates the coordinated
+B2 dependency floor and policy vector on `main`.
 
 This package provides:
 
@@ -42,12 +45,15 @@ Tecrax profile -> RExecOp plan -> GovEngine admission -> RExecOp execution -> SC
 
 ## RExecOp profile
 
-Install `tecrax` alongside `rexecop` to register the domain profile:
+Install the coordinated source lines to register the current domain profile:
 
 ```bash
-pip install rexecop tecrax
+pip install -e /path/to/govengine -e /path/to/rexecop -e /path/to/tecrax
 rexecop profile list
 ```
+
+Plain `pip install rexecop tecrax` currently resolves the older published
+pre-B2 lines and must not be used as evidence for the source candidate.
 
 The profile root is exposed via `tecrax:profile_root` (directory `src/tecrax/profile/`).
 For network devices, see `docs/network-device-readonly-runbook.md`; real target
@@ -107,9 +113,9 @@ profile/planning/supervision/runtime-review contracts and binds its fixture
 receipt through an SCLite artifact descriptor. It has no live runner, host
 inventory, credential path, or infrastructure adapter.
 
-The `0.3.3-alpha` line adds the profile-owned read-only reaction pack over
-RExecOp `0.2.5a0` and SCLite `1.0.4`. It does not add a second policy engine,
-lifecycle runner, or truth layer.
+The `0.3.5-alpha` source line combines the profile-owned read-only reaction pack
+and B2 policy vector over RExecOp `0.2.6a0`, GovEngine `0.16.0`, and SCLite
+`1.0.4`. It does not add a second policy engine, lifecycle runner, or truth layer.
 
 The Ubuntu environment example uses profile-owned policy semantics, but GovEngine
 compiles and admits the controls and RExecOp enforces them. Tecrax does not claim
@@ -122,6 +128,7 @@ python scripts/validate_public_truth.py
 python -m pytest -q
 ```
 
-The validator keeps this package as a second-host proof surface only. Any future
-infrastructure runner, inventory, credential, scheduler, or carrier-adapter
-claim must be backed by code and tests before it becomes public truth.
+The validator keeps domain semantics in Tecrax and lifecycle/execution in
+RExecOp. Any future mutation, credential, scheduler, discovery, or
+carrier-adapter claim must be backed by code and tests before it becomes public
+truth.

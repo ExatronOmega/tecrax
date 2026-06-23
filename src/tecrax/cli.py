@@ -60,8 +60,8 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     print(
-        "Tecrax 0.3.3-alpha local-fixture profile: no mutating infrastructure "
-        "connections, credentials, or operational changes are enabled."
+        "Tecrax 0.3.5-alpha read-only profile: operator-configured live access "
+        "runs through RExecOp; infrastructure mutation remains unavailable."
     )
     return 0
 

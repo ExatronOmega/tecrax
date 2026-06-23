@@ -14,11 +14,12 @@ import tecrax  # noqa: E402
 from tecrax.local_fixture import build_local_fixture_review  # noqa: E402
 
 
-EXPECTED_VERSION = '0.3.4a0'
-EXPECTED_RELEASE_LABEL = '0.3.3-alpha'
-EXPECTED_GOVENGINE = 'govengine>=0.15.0,<0.16'
+EXPECTED_VERSION = '0.3.5a0'
+EXPECTED_RELEASE_LABEL = '0.3.5-alpha'
+PUBLISHED_VERSION = '0.3.4a0'
+EXPECTED_GOVENGINE = 'govengine>=0.16.0,<0.17'
 EXPECTED_SCLITE = 'sclite-core>=1.0.4,<1.1'
-EXPECTED_REXECOP = 'rexecop>=0.2.5a0,<0.3'
+EXPECTED_REXECOP = 'rexecop>=0.2.6a0,<0.3'
 PUBLIC_DOCS = (
     'README.md',
     'PUBLIC_STATUS.md',
@@ -87,6 +88,8 @@ def collect_errors() -> list[str]:
         _require(errors, path, EXPECTED_SCLITE)
         _require(errors, path, EXPECTED_REXECOP)
     _require(errors, 'PUBLIC_STATUS.md', EXPECTED_RELEASE_LABEL)
+    _require(errors, 'README.md', f'Latest published PyPI baseline: `tecrax=={PUBLISHED_VERSION}`')
+    _require(errors, 'PUBLIC_STATUS.md', f'`tecrax=={PUBLISHED_VERSION}`')
     _require(errors, 'README.md', 'tecrax fixture-review --service demo-web')
     _require(errors, 'README.md', 'rexecop.profiles:tecrax')
     _require(errors, 'pyproject.toml', 'rexecop.profiles')
@@ -106,7 +109,7 @@ def collect_errors() -> list[str]:
     _require(errors, '.github/workflows/ci.yml', 'sclite-core @ git+https://github.com/rozmiarD/SCLite.git@main')
     _require(errors, '.github/workflows/ci.yml', 'govengine @ git+https://github.com/rozmiarD/GovEngine.git@main')
     _require(errors, '.github/workflows/ci.yml', 'repository: rozmiarD/RExecOP')
-    _require(errors, '.github/workflows/ci.yml', 'pip install -e ./rexecop')
+    _require(errors, '.github/workflows/ci.yml', 'pip install -e ./ci-deps/rexecop')
 
     review = build_local_fixture_review('truth-fixture')
     if review.get('artifact_type') != 'tecrax_local_fixture_review':

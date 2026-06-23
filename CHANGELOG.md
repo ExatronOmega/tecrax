@@ -4,6 +4,12 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Advanced the source package to `0.3.5a0` and raised its GovEngine/RExecOp
+  floors to the coordinated B2 source lines. Publication remains a separate
+  operator-approved action.
+- Removed the obsolete `fixture` extra that required RExecOp `<0.2` while the
+  package itself required RExecOp `>=0.2.5a0`.
+
 ### B2 policy enforcement vector
 
 - The sanitized Ubuntu `collect_basic_host_inventory` example now declares
