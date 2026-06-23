@@ -7,6 +7,8 @@ uptime, load average, root filesystem usage and memory summary. NTP and Docker s
 checks use `ssh_readonly`; Zabbix uses its unauthenticated `apiinfo.version` endpoint
 through `http_api`; AdGuard uses fixed `dig` and `curl` probes through
 `local_shell_readonly`.
+`check_portainer_health` uses only the unauthenticated status endpoint through a verified
+TLS tunnel; it does not list Portainer-managed objects.
 
 ## Operator prerequisites
 
@@ -17,6 +19,9 @@ through `http_api`; AdGuard uses fixed `dig` and `curl` probes through
 - `REXECOP_SECRETS_FILE` outside the repository and mode `0600`;
 - environment copy outside the repository with the real host address;
 - explicit operator approval before the real SSH run.
+- a local SSH tunnel to the Portainer HTTPS listener, with `ExitOnForwardFailure=yes`;
+- the Portainer self-signed certificate stored outside git and referenced through
+  `portainer_ca_file` in `REXECOP_SECRETS_FILE`.
 
 Do not use `accept-new`. Do not add sudo, Docker CLI commands,
 configuration changes, arbitrary `cat`, arbitrary command arguments, process listings,
@@ -28,6 +33,21 @@ socket access. `check_docker_services_health` proves only Docker systemd service
 state and returns `container_runtime_state: not_observed`. `check_adguard_health` proves
 DNS resolution and web-login reachability only; it does not use or claim management API
 state.
+
+The Portainer certificate is valid for `localhost`, not the target host address. Establish
+the operator-owned tunnel before running the Portainer intent. Keep the real target, local
+port, key path and CA path outside git:
+
+```bash
+ssh -N -o BatchMode=yes -o StrictHostKeyChecking=yes \
+  -o UserKnownHostsFile=/path/outside/repo/known_hosts \
+  -o ExitOnForwardFailure=yes -i /path/outside/repo/identity \
+  -L 127.0.0.1:LOCAL_PORT:127.0.0.1:9443 \
+  readonly-user@monitoring-host.example.invalid
+```
+
+Configure `portainer_base_url` as `https://localhost:LOCAL_PORT`. Do not use `-k`,
+`verify=false`, direct HTTP, a Portainer token, or an authenticated management endpoint.
 
 ## Run
 

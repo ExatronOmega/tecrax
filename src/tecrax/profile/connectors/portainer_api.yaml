@@ -1,0 +1,9 @@
+connector:
+  name: portainer_api
+  backend: http_api
+  capabilities:
+    - read_portainer_status
+  modes:
+    - read_only
+    - dry_run
+  timeout_default: 10s

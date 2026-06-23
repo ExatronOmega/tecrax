@@ -80,6 +80,21 @@ environment:
         - action: read_adguard_login_status
           command: curl
           args: ["-sS", "-m", "3", "--connect-timeout", "2", "--max-redirs", "0", "-o", "/dev/null", "-w", "%{http_code}", "http://adguard.example.invalid/login.html"]
+    portainer_api:
+      enabled: true
+      backend: http_api
+      base_url_secret_ref: portainer_base_url
+      tls:
+        ca_file_secret_ref: portainer_ca_file
+      timeout_seconds: 5
+      max_response_bytes: 1024
+      retry:
+        max_attempts: 1
+      actions:
+        read_portainer_status:
+          method: GET
+          path: /api/status
+          unwrap: Version
 
   safety:
     default_mode: dry_run
@@ -120,6 +135,13 @@ environment:
           action.mode: read
           action.intent: check_adguard_health
         reason_code: adguard_health_allowed
+      - rule_id: allow-portainer-health-operation
+        effect: allow
+        conditions:
+          action.category: operation
+          action.mode: read
+          action.intent: check_portainer_health
+        reason_code: portainer_health_allowed
       - rule_id: allow-docker-services-health-operation
         effect: allow
         conditions:
@@ -189,6 +211,10 @@ environment:
       - rule_id: allow-read-adguard-login-status
         effect: allow
         conditions: {action.category: connector, action.mode: read, action.backend: local_shell_readonly, action.connector: adguard_health, action.name: read_adguard_login_status}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-portainer-status
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: http_api, action.connector: portainer_api, action.name: read_portainer_status}
         reason_code: fixed_read_allowed
       - rule_id: deny-mutating-actions
         effect: deny

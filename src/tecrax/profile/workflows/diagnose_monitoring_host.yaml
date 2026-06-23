@@ -20,11 +20,13 @@ workflow:
     - {id: read_zabbix_api_version, type: connector, connector: zabbix_api, action: read_zabbix_api_version, timeout: 10s, pause_safe: true, metadata: {continue_on_error: true}}
     - {id: read_adguard_dns_resolution, type: connector, connector: adguard_health, action: read_adguard_dns_resolution, timeout: 10s, pause_safe: true, metadata: {continue_on_error: true}}
     - {id: read_adguard_login_status, type: connector, connector: adguard_health, action: read_adguard_login_status, timeout: 10s, pause_safe: true, metadata: {continue_on_error: true}}
+    - {id: read_portainer_status, type: connector, connector: portainer_api, action: read_portainer_status, timeout: 10s, pause_safe: true, metadata: {continue_on_error: true}}
     - {id: normalize_inventory, type: internal, action: normalize_basic_host_inventory, pause_safe: true}
     - {id: normalize_ntp_health, type: internal, action: normalize_ntp_health, pause_safe: true}
     - {id: normalize_docker_services_health, type: internal, action: normalize_docker_services_health, pause_safe: true}
     - {id: normalize_zabbix_health, type: internal, action: normalize_zabbix_health, pause_safe: true}
     - {id: normalize_adguard_health, type: internal, action: normalize_adguard_health, pause_safe: true}
+    - {id: normalize_portainer_health, type: internal, action: normalize_portainer_health, pause_safe: true}
     - {id: aggregate_diagnosis, type: internal, action: aggregate_monitoring_host_diagnosis, pause_safe: true}
     - {id: produce_receipt, type: evidence, action: produce_receipt, pause_safe: true}
 

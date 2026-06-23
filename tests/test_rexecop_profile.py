@@ -20,9 +20,11 @@ def test_profile_root_points_to_bundled_directory() -> None:
     assert (root / "intents" / "check_docker_services_health.yaml").is_file()
     assert (root / "intents" / "check_zabbix_container_health.yaml").is_file()
     assert (root / "intents" / "check_adguard_health.yaml").is_file()
+    assert (root / "intents" / "check_portainer_health.yaml").is_file()
     assert (root / "intents" / "diagnose_monitoring_host.yaml").is_file()
     assert (root / "connectors" / "zabbix_api.yaml").is_file()
     assert (root / "connectors" / "adguard_health.yaml").is_file()
+    assert (root / "connectors" / "portainer_api.yaml").is_file()
 
 
 def test_profile_yaml_loads_with_expected_contract() -> None:

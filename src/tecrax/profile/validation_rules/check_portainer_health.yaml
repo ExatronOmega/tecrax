@@ -1,0 +1,14 @@
+validation_rule:
+  intent: check_portainer_health
+  steps:
+    - type: require_mapping
+      key: portainer_health
+      fail:
+        rule: check_portainer_health.result_required
+        details: {reason: missing normalized Portainer health}
+    - type: require_equals
+      path: portainer_health.healthy
+      value: true
+      pass_rule: check_portainer_health.healthy
+      fail_rule: check_portainer_health.unhealthy
+      details_from: portainer_health

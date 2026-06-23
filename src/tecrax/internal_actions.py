@@ -17,6 +17,7 @@ def register_handlers() -> Mapping[str, Any]:
         "normalize_docker_services_health": normalize_docker_services_health,
         "normalize_zabbix_health": normalize_zabbix_health,
         "normalize_adguard_health": normalize_adguard_health,
+        "normalize_portainer_health": normalize_portainer_health,
         "aggregate_monitoring_host_diagnosis": aggregate_monitoring_host_diagnosis,
     }
 
@@ -201,6 +202,25 @@ def normalize_adguard_health(context: StepExecutionContext) -> dict[str, Any]:
     return result
 
 
+def normalize_portainer_health(context: StepExecutionContext) -> dict[str, Any]:
+    results = context.shared_state.get("connector_results", {})
+    payload = results.get("read_portainer_status") if isinstance(results, dict) else None
+    if not isinstance(payload, dict):
+        payload = {}
+    version = str(payload.get("Version") or "").strip()[:64]
+    result = {
+        "scope": "unauthenticated_status_only",
+        "api_reachable": bool(version),
+        "api_version": version,
+        "instance_identity_state": "deliberately_not_collected",
+        "management_objects_state": "not_observed",
+        "container_runtime_state": "not_observed",
+    }
+    result["healthy"] = result["api_reachable"]
+    context.shared_state["portainer_health"] = result
+    return result
+
+
 def aggregate_monitoring_host_diagnosis(
     context: StepExecutionContext,
 ) -> dict[str, Any]:
@@ -209,6 +229,7 @@ def aggregate_monitoring_host_diagnosis(
     docker = context.shared_state.get("docker_services_health")
     zabbix = context.shared_state.get("zabbix_health")
     adguard = context.shared_state.get("adguard_health")
+    portainer = context.shared_state.get("portainer_health")
     continued = context.shared_state.get("continued_failures")
     failures = []
     if isinstance(continued, dict):
@@ -228,10 +249,22 @@ def aggregate_monitoring_host_diagnosis(
             "healthy",
             unavailable_reason="not_observed",
         ),
+        "portainer": _component_status(
+            portainer,
+            "healthy",
+            unavailable_reason="not_observed",
+        ),
     }
     observed = [
         components[name]["status"]
-        for name in ("host_inventory", "ntp", "docker", "zabbix", "adguard")
+        for name in (
+            "host_inventory",
+            "ntp",
+            "docker",
+            "zabbix",
+            "adguard",
+            "portainer",
+        )
     ]
     result = {
         "diagnostic_complete": True,

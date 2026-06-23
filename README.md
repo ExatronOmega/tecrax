@@ -14,7 +14,8 @@ This package provides:
   normalization for operator-configured Ubuntu inventory.
 - **Verified read-only service slices** — NTP synchronization and Docker systemd service
   health over fixed SSH commands, plus bounded Zabbix API version health through RExecOp
-  `http_api`.
+  `http_api`, AdGuard DNS/login reachability, and unauthenticated Portainer status through
+  verified TLS.
 - **Monitoring-host reaction pack** — deterministic domain findings map only to
   existing read-only intents; unknown states escalate without a free-form action.
 
@@ -62,10 +63,10 @@ rexecop reaction-plan \
   --target monitoring-host-01
 ```
 
-The first release is deliberately read-only. It can re-run bounded host
-inventory, NTP, Docker service, or Zabbix checks; a healthy observation is `no_op`, and an
-unclassified state is `escalate`. RExecOp owns deterministic mechanics and
-lifecycle, GovEngine owns admission, and SCLite owns the evidence chain.
+The first release is deliberately read-only. It can re-run bounded host inventory, NTP,
+Docker service, Zabbix, AdGuard, or Portainer checks; a healthy observation is `no_op`,
+and an unclassified state is `escalate`. RExecOp owns deterministic mechanics and lifecycle,
+GovEngine owns admission, and SCLite owns the evidence chain.
 
 ## Local fixture proof
 

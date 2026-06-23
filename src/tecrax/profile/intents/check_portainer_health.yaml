@@ -1,0 +1,8 @@
+intent:
+  id: check_portainer_health
+  workflow: workflows/check_portainer_health.yaml
+  risk: low
+  enforce_declared_modes: true
+  modes:
+    - read_only
+    - dry_run

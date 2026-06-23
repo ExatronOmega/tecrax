@@ -4,11 +4,12 @@ from rexecop.execution.backend import StepExecutionContext
 
 from tecrax.internal_actions import (
     aggregate_monitoring_host_diagnosis,
+    normalize_adguard_health,
     normalize_basic_host_inventory,
     normalize_docker_services_health,
     normalize_ntp_health,
+    normalize_portainer_health,
     normalize_zabbix_health,
-    normalize_adguard_health,
 )
 
 
@@ -205,6 +206,35 @@ def test_normalize_adguard_health_uses_dns_and_login_only() -> None:
     }
 
 
+def test_normalize_portainer_health_discards_instance_identity() -> None:
+    context = StepExecutionContext(
+        operation_id="op-test",
+        target="monitoring-host-01",
+        mode="dry_run",
+        step={"id": "normalize_portainer_health"},
+        shared_state={
+            "connector_results": {
+                "read_portainer_status": {
+                    "Version": "2.33.5",
+                }
+            }
+        },
+    )
+
+    result = normalize_portainer_health(context)
+
+    assert result == {
+        "scope": "unauthenticated_status_only",
+        "api_reachable": True,
+        "api_version": "2.33.5",
+        "instance_identity_state": "deliberately_not_collected",
+        "management_objects_state": "not_observed",
+        "container_runtime_state": "not_observed",
+        "healthy": True,
+    }
+    assert "InstanceID" not in str(result)
+
+
 def test_aggregate_diagnosis_preserves_failures_and_blockers() -> None:
     context = StepExecutionContext(
         operation_id="op-test",
@@ -217,6 +247,7 @@ def test_aggregate_diagnosis_preserves_failures_and_blockers() -> None:
             "docker_services_health": {"healthy": True},
             "zabbix_health": {"healthy": False},
             "adguard_health": {"healthy": True},
+            "portainer_health": {"healthy": True},
             "continued_failures": {
                 "read_zabbix_api_version": {
                     "error": "sensitive upstream detail",
@@ -233,6 +264,7 @@ def test_aggregate_diagnosis_preserves_failures_and_blockers() -> None:
     assert result["observed_health"] == "degraded"
     assert result["components"]["docker"]["status"] == "healthy"
     assert result["components"]["adguard"]["status"] == "healthy"
+    assert result["components"]["portainer"]["status"] == "healthy"
     assert result["continued_failures"] == [
         {
             "step_id": "read_zabbix_api_version",

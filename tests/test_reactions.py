@@ -17,12 +17,13 @@ def _diagnosis(
     docker: str = "healthy",
     zabbix: str = "healthy",
     adguard: str = "healthy",
+    portainer: str = "healthy",
 ) -> dict:
     return {
         "diagnostic_complete": True,
         "coverage_status": "partial",
         "observed_health": "healthy"
-        if {host, ntp, docker, zabbix, adguard} == {"healthy"}
+        if {host, ntp, docker, zabbix, adguard, portainer} == {"healthy"}
         else "degraded",
         "components": {
             "host_inventory": {"status": host},
@@ -30,6 +31,7 @@ def _diagnosis(
             "docker": {"status": docker},
             "zabbix": {"status": zabbix},
             "adguard": {"status": adguard},
+            "portainer": {"status": portainer},
         },
         "continued_failures": [],
     }
@@ -77,6 +79,14 @@ def test_adguard_finding_selects_existing_readonly_intent() -> None:
     assert result.rule.finding_kind == "monitoring.adguard_unhealthy"
     assert result.outcome == "run_intent"
     assert result.intent_ref == "check_adguard_health"
+
+
+def test_portainer_finding_selects_existing_readonly_intent() -> None:
+    _, result = _evaluate(_diagnosis(portainer="unhealthy"))
+
+    assert result.rule.finding_kind == "monitoring.portainer_unhealthy"
+    assert result.outcome == "run_intent"
+    assert result.intent_ref == "check_portainer_health"
 
 
 def test_healthy_implemented_coverage_is_an_explicit_no_op() -> None:

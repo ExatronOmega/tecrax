@@ -1,0 +1,27 @@
+workflow:
+  id: tecrax.check_portainer_health
+  intent: check_portainer_health
+  mode: read_only
+  risk: low
+  description: Check the bounded, unauthenticated Portainer status endpoint.
+
+  steps:
+    - id: read_portainer_status
+      type: connector
+      connector: portainer_api
+      action: read_portainer_status
+      timeout: 10s
+      pause_safe: true
+    - id: normalize_portainer_health
+      type: internal
+      action: normalize_portainer_health
+      pause_safe: true
+    - id: produce_receipt
+      type: evidence
+      action: produce_receipt
+      pause_safe: true
+
+  retry:
+    max_attempts: 1
+    allowed_on: [timeout, transient_connector_error]
+    blocked_on: [policy_denied]

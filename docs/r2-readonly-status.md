@@ -15,23 +15,26 @@ scheduling, or a second monitoring system.
 - `check_adguard_health`: bounded DNS resolution and web-login reachability through
   `local_shell_readonly`; validates observable service health without management API
   credentials and reports `management_api_state: not_observed`.
+- `check_portainer_health`: bounded, unauthenticated `GET /api/status` through `http_api`;
+  stores only the version field, deliberately excludes `InstanceID`, and uses verified TLS
+  through an operator-managed SSH tunnel and CA file.
 
-Both workflows use plain PolicyEngine `allow`, bounded evidence, deterministic validation,
+These workflows use plain PolicyEngine `allow`, bounded evidence, deterministic validation,
 receipt generation and an SCLite bundle.
 
-`diagnose_monitoring_host` aggregates host inventory, NTP, Docker service state, Zabbix
-and AdGuard. Connector failures are retained as bounded step IDs plus error classes while
-later diagnostics continue. Its validation means the diagnostic completed; component
-health remains a separate field.
+`diagnose_monitoring_host` aggregates host inventory, NTP, Docker service state, Zabbix,
+AdGuard and Portainer. Connector failures are retained as bounded step IDs plus error
+classes while later diagnostics continue. Its validation means the diagnostic completed;
+component health remains a separate field.
 
 ## Explicit blockers
 
 - Container-level Docker inventory remains blocked. The dedicated SSH account must not
   access the Docker socket. Membership in the `docker` group would grant mutation capability
   and must not be used as a read-only solution.
-- Portainer API discovery confirmed that authenticated API access uses a user token with
-  that user's permissions. No token is accepted as a read-only boundary until the
-  installation can provide a genuinely non-mutating role or a separately constrained API.
+- Authenticated Portainer API discovery remains blocked. No token is accepted as a read-only
+  boundary until the installation can provide a genuinely non-mutating role or a separately
+  constrained API. Container, endpoint, stack and user inventory are not collected.
 - AdGuard management API remains blocked without a read-only credential/role. The current
   health check intentionally uses only DNS resolution and web-login reachability.
 
