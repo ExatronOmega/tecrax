@@ -1,0 +1,14 @@
+validation_rule:
+  intent: check_adguard_health
+  steps:
+    - type: require_mapping
+      key: adguard_health
+      fail:
+        rule: check_adguard_health.result_required
+        details: {reason: missing normalized AdGuard health}
+    - type: require_equals
+      path: adguard_health.healthy
+      value: true
+      pass_rule: check_adguard_health.healthy
+      fail_rule: check_adguard_health.unhealthy
+      details_from: adguard_health

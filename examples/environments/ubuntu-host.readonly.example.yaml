@@ -68,6 +68,18 @@ environment:
             method: apiinfo.version
             params: {}
             id: 1
+    adguard_health:
+      enabled: true
+      backend: local_shell_readonly
+      timeout_seconds: 10
+      max_output_bytes: 2048
+      allowlist:
+        - action: read_adguard_dns_resolution
+          command: dig
+          args: ["@adguard.example.invalid", "example.com", "A", "+time=2", "+tries=1", "+noall", "+answer"]
+        - action: read_adguard_login_status
+          command: curl
+          args: ["-sS", "-m", "3", "--connect-timeout", "2", "--max-redirs", "0", "-o", "/dev/null", "-w", "%{http_code}", "http://adguard.example.invalid/login.html"]
 
   safety:
     default_mode: dry_run
@@ -101,6 +113,13 @@ environment:
           action.mode: read
           action.intent: check_zabbix_container_health
         reason_code: zabbix_health_allowed
+      - rule_id: allow-adguard-health-operation
+        effect: allow
+        conditions:
+          action.category: operation
+          action.mode: read
+          action.intent: check_adguard_health
+        reason_code: adguard_health_allowed
       - rule_id: allow-docker-services-health-operation
         effect: allow
         conditions:
@@ -162,6 +181,14 @@ environment:
       - rule_id: allow-read-zabbix-api-version
         effect: allow
         conditions: {action.category: connector, action.mode: read, action.backend: http_api, action.connector: zabbix_api, action.name: read_zabbix_api_version}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-adguard-dns-resolution
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: local_shell_readonly, action.connector: adguard_health, action.name: read_adguard_dns_resolution}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-adguard-login-status
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: local_shell_readonly, action.connector: adguard_health, action.name: read_adguard_login_status}
         reason_code: fixed_read_allowed
       - rule_id: deny-mutating-actions
         effect: deny

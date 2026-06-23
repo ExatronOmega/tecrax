@@ -1,0 +1,32 @@
+workflow:
+  id: tecrax.check_adguard_health
+  intent: check_adguard_health
+  mode: read_only
+  risk: low
+  description: Check bounded AdGuard DNS resolution and web login reachability.
+
+  steps:
+    - id: read_adguard_dns_resolution
+      type: connector
+      connector: adguard_health
+      action: read_adguard_dns_resolution
+      timeout: 10s
+      pause_safe: true
+    - id: read_adguard_login_status
+      type: connector
+      connector: adguard_health
+      action: read_adguard_login_status
+      timeout: 10s
+      pause_safe: true
+    - id: normalize_adguard_health
+      type: internal
+      action: normalize_adguard_health
+      pause_safe: true
+    - id: produce_receipt
+      type: evidence
+      action: produce_receipt
+      pause_safe: true
+
+  retry:
+    max_attempts: 1
+    allowed_on: [timeout, transient_connector_error]

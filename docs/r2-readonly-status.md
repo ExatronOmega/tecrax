@@ -12,14 +12,17 @@ scheduling, or a second monitoring system.
   Docker socket access or container inspection.
 - `check_zabbix_container_health`: bounded JSON-RPC `apiinfo.version` through `http_api`;
   validates application reachability and reports `container_runtime_state: not_observed`.
+- `check_adguard_health`: bounded DNS resolution and web-login reachability through
+  `local_shell_readonly`; validates observable service health without management API
+  credentials and reports `management_api_state: not_observed`.
 
 Both workflows use plain PolicyEngine `allow`, bounded evidence, deterministic validation,
 receipt generation and an SCLite bundle.
 
-`diagnose_monitoring_host` aggregates host inventory, NTP, Docker service state and Zabbix.
-Connector failures are retained as bounded step IDs plus error classes while later diagnostics
-continue. Its validation means the diagnostic completed; component health remains a separate
-field.
+`diagnose_monitoring_host` aggregates host inventory, NTP, Docker service state, Zabbix
+and AdGuard. Connector failures are retained as bounded step IDs plus error classes while
+later diagnostics continue. Its validation means the diagnostic completed; component
+health remains a separate field.
 
 ## Explicit blockers
 
@@ -29,8 +32,8 @@ field.
 - Portainer API discovery confirmed that authenticated API access uses a user token with
   that user's permissions. No token is accepted as a read-only boundary until the
   installation can provide a genuinely non-mutating role or a separately constrained API.
-- `check_adguard_health`: no operator-confirmed management or health endpoint is available.
-  Do not infer one from common ports or product defaults.
+- AdGuard management API remains blocked without a read-only credential/role. The current
+  health check intentionally uses only DNS resolution and web-login reachability.
 
 No Docker inspect, `ps`, logs, exec, lifecycle command, configuration change, service restart,
 or NTP modification is part of R2.

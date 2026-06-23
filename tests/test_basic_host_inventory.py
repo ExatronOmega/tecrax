@@ -8,6 +8,7 @@ from tecrax.internal_actions import (
     normalize_docker_services_health,
     normalize_ntp_health,
     normalize_zabbix_health,
+    normalize_adguard_health,
 )
 
 
@@ -171,6 +172,39 @@ def test_normalize_docker_services_health_is_systemd_only() -> None:
     }
 
 
+def test_normalize_adguard_health_uses_dns_and_login_only() -> None:
+    context = StepExecutionContext(
+        operation_id="op-test",
+        target="monitoring-host-01",
+        mode="dry_run",
+        step={"id": "normalize_adguard_health"},
+        shared_state={
+            "connector_results": {
+                "read_adguard_dns_resolution": {
+                    "stdout": (
+                        "example.com. 300 IN A 104.20.23.154\n"
+                        "example.com. 300 IN A 172.66.147.243\n"
+                    )
+                },
+                "read_adguard_login_status": {"stdout": "200"},
+            }
+        },
+    )
+
+    result = normalize_adguard_health(context)
+
+    assert result == {
+        "scope": "dns_and_web_login_only",
+        "dns_resolves": True,
+        "dns_answer_count": 2,
+        "web_login_http_status": "200",
+        "management_api_state": "not_observed",
+        "container_runtime_state": "not_observed",
+        "web_login_reachable": True,
+        "healthy": True,
+    }
+
+
 def test_aggregate_diagnosis_preserves_failures_and_blockers() -> None:
     context = StepExecutionContext(
         operation_id="op-test",
@@ -182,6 +216,7 @@ def test_aggregate_diagnosis_preserves_failures_and_blockers() -> None:
             "ntp_health": {"healthy": True},
             "docker_services_health": {"healthy": True},
             "zabbix_health": {"healthy": False},
+            "adguard_health": {"healthy": True},
             "continued_failures": {
                 "read_zabbix_api_version": {
                     "error": "sensitive upstream detail",
@@ -197,7 +232,7 @@ def test_aggregate_diagnosis_preserves_failures_and_blockers() -> None:
     assert result["coverage_status"] == "partial"
     assert result["observed_health"] == "degraded"
     assert result["components"]["docker"]["status"] == "healthy"
-    assert result["components"]["adguard"]["status"] == "blocked"
+    assert result["components"]["adguard"]["status"] == "healthy"
     assert result["continued_failures"] == [
         {
             "step_id": "read_zabbix_api_version",

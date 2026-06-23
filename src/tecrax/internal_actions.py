@@ -16,6 +16,7 @@ def register_handlers() -> Mapping[str, Any]:
         "normalize_ntp_health": normalize_ntp_health,
         "normalize_docker_services_health": normalize_docker_services_health,
         "normalize_zabbix_health": normalize_zabbix_health,
+        "normalize_adguard_health": normalize_adguard_health,
         "aggregate_monitoring_host_diagnosis": aggregate_monitoring_host_diagnosis,
     }
 
@@ -175,6 +176,31 @@ def normalize_zabbix_health(context: StepExecutionContext) -> dict[str, Any]:
     return result
 
 
+def normalize_adguard_health(context: StepExecutionContext) -> dict[str, Any]:
+    results = context.shared_state.get("connector_results", {})
+    if not isinstance(results, dict):
+        results = {}
+    dns_stdout = _stdout(results, "read_adguard_dns_resolution")
+    login_status = _single_line(_stdout(results, "read_adguard_login_status"), limit=16)
+    dns_answer_count = sum(
+        1
+        for line in dns_stdout.splitlines()
+        if line.strip() and not line.lstrip().startswith(";")
+    )
+    result = {
+        "scope": "dns_and_web_login_only",
+        "dns_resolves": dns_answer_count > 0,
+        "dns_answer_count": min(dns_answer_count, 32),
+        "web_login_http_status": login_status,
+        "management_api_state": "not_observed",
+        "container_runtime_state": "not_observed",
+    }
+    result["web_login_reachable"] = login_status in {"200", "302"}
+    result["healthy"] = result["dns_resolves"] and result["web_login_reachable"]
+    context.shared_state["adguard_health"] = result
+    return result
+
+
 def aggregate_monitoring_host_diagnosis(
     context: StepExecutionContext,
 ) -> dict[str, Any]:
@@ -182,6 +208,7 @@ def aggregate_monitoring_host_diagnosis(
     ntp = context.shared_state.get("ntp_health")
     docker = context.shared_state.get("docker_services_health")
     zabbix = context.shared_state.get("zabbix_health")
+    adguard = context.shared_state.get("adguard_health")
     continued = context.shared_state.get("continued_failures")
     failures = []
     if isinstance(continued, dict):
@@ -196,14 +223,15 @@ def aggregate_monitoring_host_diagnosis(
         "ntp": _component_status(ntp, "healthy"),
         "zabbix": _component_status(zabbix, "healthy"),
         "docker": _component_status(docker, "healthy", unavailable_reason="not_observed"),
-        "adguard": {
-            "status": "blocked",
-            "reason": "verified_health_endpoint_not_configured",
-        },
+        "adguard": _component_status(
+            adguard,
+            "healthy",
+            unavailable_reason="not_observed",
+        ),
     }
     observed = [
         components[name]["status"]
-        for name in ("host_inventory", "ntp", "docker", "zabbix")
+        for name in ("host_inventory", "ntp", "docker", "zabbix", "adguard")
     ]
     result = {
         "diagnostic_complete": True,

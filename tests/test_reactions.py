@@ -16,19 +16,20 @@ def _diagnosis(
     ntp: str = "healthy",
     docker: str = "healthy",
     zabbix: str = "healthy",
+    adguard: str = "healthy",
 ) -> dict:
     return {
         "diagnostic_complete": True,
         "coverage_status": "partial",
         "observed_health": "healthy"
-        if {host, ntp, docker, zabbix} == {"healthy"}
+        if {host, ntp, docker, zabbix, adguard} == {"healthy"}
         else "degraded",
         "components": {
             "host_inventory": {"status": host},
             "ntp": {"status": ntp},
             "docker": {"status": docker},
             "zabbix": {"status": zabbix},
-            "adguard": {"status": "blocked", "reason": "not_configured"},
+            "adguard": {"status": adguard},
         },
         "continued_failures": [],
     }
@@ -68,6 +69,14 @@ def test_docker_finding_selects_existing_readonly_intent() -> None:
     assert result.rule.finding_kind == "monitoring.docker_services_unhealthy"
     assert result.outcome == "run_intent"
     assert result.intent_ref == "check_docker_services_health"
+
+
+def test_adguard_finding_selects_existing_readonly_intent() -> None:
+    _, result = _evaluate(_diagnosis(adguard="unhealthy"))
+
+    assert result.rule.finding_kind == "monitoring.adguard_unhealthy"
+    assert result.outcome == "run_intent"
+    assert result.intent_ref == "check_adguard_health"
 
 
 def test_healthy_implemented_coverage_is_an_explicit_no_op() -> None:

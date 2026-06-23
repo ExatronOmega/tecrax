@@ -17,8 +17,9 @@ Expected result for `0.3.4a0`:
 - RExecOp profile entry point `tecrax:profile_root` resolves to a valid profile bundle;
 - `collect_basic_host_inventory` declares exact `ssh_readonly` command shapes and its
   parser tests use bounded fixture outputs without network access;
-- NTP and Zabbix health fixtures validate deterministic normalization while preserving
-  the Docker/AdGuard blockers documented in `docs/r2-readonly-status.md`;
+- NTP, Docker, Zabbix and AdGuard health fixtures validate deterministic normalization
+  while preserving Docker inventory and AdGuard management API blockers documented in
+  `docs/r2-readonly-status.md`;
 - fixture review output validates GovEngine profile, planning, supervision, runtime snapshot, review result, and runtime contract proof objects;
 - SCLite is used only for local artifact descriptors;
 - non-claims remain explicit for mutation, credential management, carrier adapters,

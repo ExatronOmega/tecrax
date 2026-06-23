@@ -1,0 +1,10 @@
+connector:
+  name: adguard_health
+  backend: local_shell_readonly
+  capabilities:
+    - read_adguard_dns_resolution
+    - read_adguard_login_status
+  modes:
+    - read_only
+    - dry_run
+  timeout_default: 10s
