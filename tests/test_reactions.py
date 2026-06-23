@@ -11,19 +11,23 @@ from tecrax import build_monitoring_host_observation, profile_root
 
 
 def _diagnosis(
-    *, host: str = "healthy", ntp: str = "healthy", zabbix: str = "healthy"
+    *,
+    host: str = "healthy",
+    ntp: str = "healthy",
+    docker: str = "healthy",
+    zabbix: str = "healthy",
 ) -> dict:
     return {
         "diagnostic_complete": True,
         "coverage_status": "partial",
         "observed_health": "healthy"
-        if {host, ntp, zabbix} == {"healthy"}
+        if {host, ntp, docker, zabbix} == {"healthy"}
         else "degraded",
         "components": {
             "host_inventory": {"status": host},
             "ntp": {"status": ntp},
+            "docker": {"status": docker},
             "zabbix": {"status": zabbix},
-            "docker": {"status": "blocked", "reason": "not_configured"},
             "adguard": {"status": "blocked", "reason": "not_configured"},
         },
         "continued_failures": [],
@@ -56,6 +60,14 @@ def test_rule_priority_is_stable_when_multiple_components_are_unhealthy() -> Non
     )
     assert result.rule.rule_id == "monitoring.host-inventory-unhealthy"
     assert result.intent_ref == "collect_basic_host_inventory"
+
+
+def test_docker_finding_selects_existing_readonly_intent() -> None:
+    _, result = _evaluate(_diagnosis(docker="unhealthy"))
+
+    assert result.rule.finding_kind == "monitoring.docker_services_unhealthy"
+    assert result.outcome == "run_intent"
+    assert result.intent_ref == "check_docker_services_health"
 
 
 def test_healthy_implemented_coverage_is_an_explicit_no_op() -> None:

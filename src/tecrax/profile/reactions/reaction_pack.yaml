@@ -35,6 +35,16 @@ reaction_pack:
         summary: The bounded Zabbix API health observation is unhealthy.
       outcome: run_intent
       intent_ref: check_zabbix_container_health
+    - id: monitoring.docker-unhealthy
+      priority: 40
+      when:
+        - {path: facts.components.docker.status, operator: equals, value: unhealthy}
+      finding:
+        kind: monitoring.docker_services_unhealthy
+        severity: medium
+        summary: The bounded Docker systemd service observation is unhealthy.
+      outcome: run_intent
+      intent_ref: check_docker_services_health
     - id: monitoring.observed-healthy
       priority: 100
       when:

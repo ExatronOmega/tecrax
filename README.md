@@ -12,8 +12,9 @@ This package provides:
 - **Local fixture review** — dry-run proof slice without live infrastructure.
 - **Read-only host inventory profile** — fixed SSH command shapes and bounded
   normalization for operator-configured Ubuntu inventory.
-- **Verified read-only service slices** — NTP synchronization over fixed SSH commands
-  and bounded Zabbix API version health through RExecOp `http_api`.
+- **Verified read-only service slices** — NTP synchronization and Docker systemd service
+  health over fixed SSH commands, plus bounded Zabbix API version health through RExecOp
+  `http_api`.
 - **Monitoring-host reaction pack** — deterministic domain findings map only to
   existing read-only intents; unknown states escalate without a free-form action.
 
@@ -62,7 +63,7 @@ rexecop reaction-plan \
 ```
 
 The first release is deliberately read-only. It can re-run bounded host
-inventory, NTP, or Zabbix checks; a healthy observation is `no_op`, and an
+inventory, NTP, Docker service, or Zabbix checks; a healthy observation is `no_op`, and an
 unclassified state is `escalate`. RExecOp owns deterministic mechanics and
 lifecycle, GovEngine owns admission, and SCLite owns the evidence chain.
 

@@ -14,6 +14,7 @@ def register_handlers() -> Mapping[str, Any]:
         "verify_agent_state": verify_agent_state,
         "normalize_basic_host_inventory": normalize_basic_host_inventory,
         "normalize_ntp_health": normalize_ntp_health,
+        "normalize_docker_services_health": normalize_docker_services_health,
         "normalize_zabbix_health": normalize_zabbix_health,
         "aggregate_monitoring_host_diagnosis": aggregate_monitoring_host_diagnosis,
     }
@@ -130,6 +131,34 @@ def normalize_ntp_health(context: StepExecutionContext) -> dict[str, Any]:
     return result
 
 
+def normalize_docker_services_health(context: StepExecutionContext) -> dict[str, Any]:
+    results = context.shared_state.get("connector_results", {})
+    if not isinstance(results, dict):
+        results = {}
+    service = _parse_systemctl_show(_stdout(results, "read_docker_service_state"))
+    socket = _parse_systemctl_show(_stdout(results, "read_docker_socket_state"))
+    result = {
+        "scope": "systemd_service_only",
+        "service": "docker",
+        "service_load_state": service.get("LoadState", ""),
+        "service_active_state": service.get("ActiveState", ""),
+        "service_sub_state": service.get("SubState", ""),
+        "service_unit_file_state": service.get("UnitFileState", ""),
+        "socket": "docker.socket",
+        "socket_load_state": socket.get("LoadState", ""),
+        "socket_active_state": socket.get("ActiveState", ""),
+        "socket_sub_state": socket.get("SubState", ""),
+        "socket_unit_file_state": socket.get("UnitFileState", ""),
+        "container_runtime_state": "not_observed",
+    }
+    result["healthy"] = (
+        result["service_load_state"] == "loaded"
+        and result["service_active_state"] == "active"
+    )
+    context.shared_state["docker_services_health"] = result
+    return result
+
+
 def normalize_zabbix_health(context: StepExecutionContext) -> dict[str, Any]:
     results = context.shared_state.get("connector_results", {})
     payload = results.get("read_zabbix_api_version") if isinstance(results, dict) else None
@@ -151,6 +180,7 @@ def aggregate_monitoring_host_diagnosis(
 ) -> dict[str, Any]:
     inventory = context.shared_state.get("basic_host_inventory")
     ntp = context.shared_state.get("ntp_health")
+    docker = context.shared_state.get("docker_services_health")
     zabbix = context.shared_state.get("zabbix_health")
     continued = context.shared_state.get("continued_failures")
     failures = []
@@ -165,16 +195,16 @@ def aggregate_monitoring_host_diagnosis(
         "host_inventory": _component_status(inventory, "complete"),
         "ntp": _component_status(ntp, "healthy"),
         "zabbix": _component_status(zabbix, "healthy"),
-        "docker": {
-            "status": "blocked",
-            "reason": "safe_readonly_adapter_not_configured",
-        },
+        "docker": _component_status(docker, "healthy", unavailable_reason="not_observed"),
         "adguard": {
             "status": "blocked",
             "reason": "verified_health_endpoint_not_configured",
         },
     }
-    observed = [components[name]["status"] for name in ("host_inventory", "ntp", "zabbix")]
+    observed = [
+        components[name]["status"]
+        for name in ("host_inventory", "ntp", "docker", "zabbix")
+    ]
     result = {
         "diagnostic_complete": True,
         "coverage_status": "partial",
@@ -186,9 +216,14 @@ def aggregate_monitoring_host_diagnosis(
     return result
 
 
-def _component_status(value: Any, health_key: str) -> dict[str, str]:
+def _component_status(
+    value: Any, health_key: str, *, unavailable_reason: str = ""
+) -> dict[str, str]:
     if not isinstance(value, dict):
-        return {"status": "unavailable"}
+        result = {"status": "unavailable"}
+        if unavailable_reason:
+            result["reason"] = unavailable_reason
+        return result
     return {"status": "healthy" if value.get(health_key) is True else "unhealthy"}
 
 
@@ -221,6 +256,16 @@ def _parse_properties(value: str) -> dict[str, str]:
         key, separator, raw = line.partition("=")
         if separator and key in {"NTP", "NTPSynchronized"}:
             parsed[key] = raw.strip()[:32]
+    return parsed
+
+
+def _parse_systemctl_show(value: str) -> dict[str, str]:
+    allowed = {"LoadState", "ActiveState", "SubState", "UnitFileState"}
+    parsed: dict[str, str] = {}
+    for line in value.splitlines():
+        key, separator, raw = line.partition("=")
+        if separator and key in allowed:
+            parsed[key] = raw.strip()[:64]
     return parsed
 
 

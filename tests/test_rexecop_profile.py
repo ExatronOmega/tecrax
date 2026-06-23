@@ -17,6 +17,7 @@ def test_profile_root_points_to_bundled_directory() -> None:
     assert (root / "intents" / "collect_basic_host_inventory.yaml").is_file()
     assert (root / "connectors" / "monitoring_host.yaml").is_file()
     assert (root / "intents" / "check_ntp_health.yaml").is_file()
+    assert (root / "intents" / "check_docker_services_health.yaml").is_file()
     assert (root / "intents" / "check_zabbix_container_health.yaml").is_file()
     assert (root / "intents" / "diagnose_monitoring_host.yaml").is_file()
     assert (root / "connectors" / "zabbix_api.yaml").is_file()
@@ -44,5 +45,4 @@ def test_package_version_matches_profile_bundle() -> None:
 
 def test_unverified_r2_intents_are_not_claimed_by_profile() -> None:
     intents = Path(profile_root()) / "intents"
-    assert not (intents / "check_docker_services_health.yaml").exists()
     assert not (intents / "check_adguard_health.yaml").exists()

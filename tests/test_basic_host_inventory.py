@@ -5,6 +5,7 @@ from rexecop.execution.backend import StepExecutionContext
 from tecrax.internal_actions import (
     aggregate_monitoring_host_diagnosis,
     normalize_basic_host_inventory,
+    normalize_docker_services_health,
     normalize_ntp_health,
     normalize_zabbix_health,
 )
@@ -123,6 +124,53 @@ def test_normalize_zabbix_health_does_not_claim_container_runtime_state() -> Non
     }
 
 
+def test_normalize_docker_services_health_is_systemd_only() -> None:
+    context = StepExecutionContext(
+        operation_id="op-test",
+        target="monitoring-host-01",
+        mode="dry_run",
+        step={"id": "normalize_docker_services_health"},
+        shared_state={
+            "connector_results": {
+                "read_docker_service_state": {
+                    "stdout": (
+                        "LoadState=loaded\n"
+                        "ActiveState=active\n"
+                        "SubState=running\n"
+                        "UnitFileState=enabled\n"
+                    )
+                },
+                "read_docker_socket_state": {
+                    "stdout": (
+                        "LoadState=loaded\n"
+                        "ActiveState=active\n"
+                        "SubState=listening\n"
+                        "UnitFileState=enabled\n"
+                    )
+                },
+            }
+        },
+    )
+
+    result = normalize_docker_services_health(context)
+
+    assert result == {
+        "scope": "systemd_service_only",
+        "service": "docker",
+        "service_load_state": "loaded",
+        "service_active_state": "active",
+        "service_sub_state": "running",
+        "service_unit_file_state": "enabled",
+        "socket": "docker.socket",
+        "socket_load_state": "loaded",
+        "socket_active_state": "active",
+        "socket_sub_state": "listening",
+        "socket_unit_file_state": "enabled",
+        "container_runtime_state": "not_observed",
+        "healthy": True,
+    }
+
+
 def test_aggregate_diagnosis_preserves_failures_and_blockers() -> None:
     context = StepExecutionContext(
         operation_id="op-test",
@@ -132,6 +180,7 @@ def test_aggregate_diagnosis_preserves_failures_and_blockers() -> None:
         shared_state={
             "basic_host_inventory": {"complete": True},
             "ntp_health": {"healthy": True},
+            "docker_services_health": {"healthy": True},
             "zabbix_health": {"healthy": False},
             "continued_failures": {
                 "read_zabbix_api_version": {
@@ -147,7 +196,7 @@ def test_aggregate_diagnosis_preserves_failures_and_blockers() -> None:
     assert result["diagnostic_complete"] is True
     assert result["coverage_status"] == "partial"
     assert result["observed_health"] == "degraded"
-    assert result["components"]["docker"]["status"] == "blocked"
+    assert result["components"]["docker"]["status"] == "healthy"
     assert result["components"]["adguard"]["status"] == "blocked"
     assert result["continued_failures"] == [
         {

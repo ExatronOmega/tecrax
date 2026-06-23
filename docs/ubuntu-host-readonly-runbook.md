@@ -1,9 +1,10 @@
 # Ubuntu host read-only inventory
 
 This runbook covers `collect_basic_host_inventory`, discovered-host `check_ntp_health`,
-bounded `check_zabbix_container_health`, and `diagnose_monitoring_host`. Host inventory
-includes bounded uptime, load average, root filesystem usage and memory summary. NTP uses
-`ssh_readonly`; Zabbix uses its unauthenticated `apiinfo.version` endpoint through `http_api`.
+bounded `check_docker_services_health`, bounded `check_zabbix_container_health`, and
+`diagnose_monitoring_host`. Host inventory includes bounded uptime, load average, root
+filesystem usage and memory summary. NTP and Docker service checks use `ssh_readonly`;
+Zabbix uses its unauthenticated `apiinfo.version` endpoint through `http_api`.
 
 ## Operator prerequisites
 
@@ -15,14 +16,15 @@ includes bounded uptime, load average, root filesystem usage and memory summary.
 - environment copy outside the repository with the real host address;
 - explicit operator approval before the real SSH run.
 
-Do not use `accept-new`. Do not add sudo, service management, Docker commands,
+Do not use `accept-new`. Do not add sudo, Docker CLI commands,
 configuration changes, arbitrary `cat`, arbitrary command arguments, process listings,
-or log collection.
+logs, service restart/reload/start/stop, or log collection.
 
 `check_zabbix_container_health` proves application endpoint reachability. It does not
 claim Docker container state because the read-only SSH account must not receive Docker
-socket access. `check_docker_services_health`, AdGuard health and the aggregate diagnosis
-remain blocked until a bounded read-only adapter or verified endpoint exists.
+socket access. `check_docker_services_health` proves only Docker systemd service/socket
+state and returns `container_runtime_state: not_observed`. AdGuard health remains blocked
+until a verified endpoint exists.
 
 ## Run
 

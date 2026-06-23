@@ -1,0 +1,14 @@
+validation_rule:
+  intent: check_docker_services_health
+  steps:
+    - type: require_mapping
+      key: docker_services_health
+      fail:
+        rule: check_docker_services_health.result_required
+        details: {reason: missing normalized Docker service health}
+    - type: require_equals
+      path: docker_services_health.healthy
+      value: true
+      pass_rule: check_docker_services_health.healthy
+      fail_rule: check_docker_services_health.unhealthy
+      details_from: docker_services_health
