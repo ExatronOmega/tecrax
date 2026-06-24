@@ -4,9 +4,13 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
-- Advanced the source package to `0.3.5a0` and raised its GovEngine/RExecOp
-  floors to the coordinated B2 source lines. Publication remains a separate
-  operator-approved action.
+- No changes after the `0.3.5a0` release.
+
+## 0.3.5a0 - 2026-06-24
+
+- Published the profile after GovEngine `0.16.0` and RExecOp `0.2.6a0` passed
+  their public-index install gates.
+- Raised the GovEngine/RExecOp floors to the coordinated B2 release lines.
 - Removed the obsolete `fixture` extra that required RExecOp `<0.2` while the
   package itself required RExecOp `>=0.2.5a0`.
 

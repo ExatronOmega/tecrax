@@ -16,7 +16,7 @@ from tecrax.local_fixture import build_local_fixture_review  # noqa: E402
 
 EXPECTED_VERSION = '0.3.5a0'
 EXPECTED_RELEASE_LABEL = '0.3.5-alpha'
-PUBLISHED_VERSION = '0.3.4a0'
+PUBLISHED_VERSION = '0.3.5a0'
 EXPECTED_GOVENGINE = 'govengine>=0.16.0,<0.17'
 EXPECTED_SCLITE = 'sclite-core>=1.0.4,<1.1'
 EXPECTED_REXECOP = 'rexecop>=0.2.6a0,<0.3'
@@ -90,6 +90,7 @@ def collect_errors() -> list[str]:
     _require(errors, 'PUBLIC_STATUS.md', EXPECTED_RELEASE_LABEL)
     _require(errors, 'README.md', f'Latest published PyPI baseline: `tecrax=={PUBLISHED_VERSION}`')
     _require(errors, 'PUBLIC_STATUS.md', f'`tecrax=={PUBLISHED_VERSION}`')
+    _require(errors, 'VALIDATION.md', f'latest PyPI publication is `{PUBLISHED_VERSION}`')
     _require(errors, 'README.md', 'tecrax fixture-review --service demo-web')
     _require(errors, 'README.md', 'rexecop.profiles:tecrax')
     _require(errors, 'pyproject.toml', 'rexecop.profiles')
