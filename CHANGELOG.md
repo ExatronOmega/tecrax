@@ -4,7 +4,14 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
-- No changes after the `0.3.5a0` release.
+- Added active-profile gates that keep fixture-only operations out of the active
+  Tecrax profile and validate declared facts contract references.
+- Added the versioned `tecrax.basic_host_inventory@1.0` facts contract with a
+  packaged schema artifact, bounded model builder, and pure validator.
+- Refactored fact normalizer storage so active normalizers share the same
+  `finalize_facts` and `shared_state` write path.
+- Split active normalizers into host, services, network, diagnostics, and common
+  modules while preserving the `tecrax.internal_actions` RExecOp entrypoint.
 
 ## 0.3.5a0 - 2026-06-24
 
