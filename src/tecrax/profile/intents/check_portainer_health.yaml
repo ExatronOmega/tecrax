@@ -6,11 +6,12 @@ intent:
   modes:
     - read_only
     - dry_run
+  facts_contract: tecrax.portainer_reachability@1.0
   catalog:
     title: Check Portainer health
     summary: Read the bounded unauthenticated status endpoint through verified TLS.
     target_kinds: [host]
-    required_capabilities: [http_api]
+    required_capabilities: [http_api, tecrax.host.portainer_reachability.v1]
     side_effect_class: none
     validation_ref: validation_rules/check_portainer_health.yaml
     runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/ubuntu-host-readonly-runbook.md

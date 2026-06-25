@@ -7,7 +7,7 @@ validation_rule:
         rule: diagnose_monitoring_host.result_required
         details: {reason: missing aggregated diagnosis}
     - type: require_equals
-      path: monitoring_host_diagnosis.diagnostic_complete
+      path: monitoring_host_diagnosis.aggregation_completed
       value: true
       pass_rule: diagnose_monitoring_host.completed
       fail_rule: diagnose_monitoring_host.incomplete

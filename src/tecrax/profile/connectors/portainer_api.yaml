@@ -3,6 +3,13 @@ connector:
   backend: http_api
   capabilities:
     - read_portainer_status
+  action_shapes:
+    read_portainer_status:
+      method: GET
+      path: /api/status
+      unwrap: Version
+      mutating: false
+      max_response_bytes: 1024
   modes:
     - read_only
     - dry_run

@@ -74,6 +74,26 @@ reaction_pack:
         severity: info
         summary: All currently implemented monitoring-host observations are healthy.
       outcome: no_op
+    - id: monitoring.host-security-degraded
+      priority: 70
+      when:
+        - {path: facts.components.host_security.status, operator: equals, value: unhealthy}
+      finding:
+        kind: monitoring.host_security_degraded
+        severity: medium
+        summary: One or more bounded host security posture signals are degraded.
+      outcome: run_intent
+      intent_ref: collect_host_security_posture_readonly
+    - id: monitoring.ntp-server-unhealthy
+      priority: 80
+      when:
+        - {path: facts.components.ntp_server.status, operator: equals, value: unhealthy}
+      finding:
+        kind: monitoring.ntp_server_unhealthy
+        severity: medium
+        summary: The bounded NTP server observation is unhealthy.
+      outcome: run_intent
+      intent_ref: check_ntp_server_health
   fallback:
     id: monitoring.unclassified
     priority: 1000

@@ -8,6 +8,7 @@ from rexecop.reaction.evaluator import evaluate_reaction
 from rexecop.reaction.model import ReactionContext
 
 from tecrax import build_monitoring_host_observation, profile_root
+from tecrax.contracts import finalize_facts
 
 
 def _diagnosis(
@@ -19,8 +20,8 @@ def _diagnosis(
     adguard: str = "healthy",
     portainer: str = "healthy",
 ) -> dict:
-    return {
-        "diagnostic_complete": True,
+    payload = {
+        "aggregation_completed": True,
         "coverage_status": "partial",
         "observed_health": "healthy"
         if {host, ntp, docker, zabbix, adguard, portainer} == {"healthy"}
@@ -35,6 +36,13 @@ def _diagnosis(
         },
         "continued_failures": [],
     }
+    return finalize_facts(
+        payload,
+        contract_id="tecrax.monitoring_host_diagnosis",
+        requested=list(payload["components"]),
+        observed=list(payload["components"]),
+        assessment=payload["observed_health"],
+    )
 
 
 def _evaluate(diagnosis: dict):

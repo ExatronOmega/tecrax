@@ -1,0 +1,16 @@
+taxonomy:
+  version: "1.0"
+  target_kinds: [host, network_device]
+  roles: [monitoring_host, ntp_server, network_switch]
+  domain_capabilities:
+    - tecrax.host.basic_inventory.v1
+    - tecrax.host.ntp_local_health.v1
+    - tecrax.host.docker_service_health.v1
+    - tecrax.host.zabbix_api_reachability.v1
+    - tecrax.host.adguard_reachability.v1
+    - tecrax.host.portainer_reachability.v1
+    - tecrax.host.monitoring_diagnosis.v1
+    - tecrax.network_device.inventory.v1
+    - tecrax.host.security_posture.v1
+    - tecrax.ntp.server_observation.v1
+    - tecrax.network_device.management_posture.v1

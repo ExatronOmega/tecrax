@@ -1,0 +1,12 @@
+workflow:
+  id: tecrax.assess_network_device_management_posture_readonly
+  intent: assess_network_device_management_posture_readonly
+  mode: read_only
+  risk: low
+  steps:
+    - {id: read_network_device_system_info, type: connector, connector: network_device_cli, action: read_network_device_system_info, pause_safe: true}
+    - {id: read_network_device_ssh_status, type: connector, connector: network_device_cli, action: read_network_device_ssh_status, pause_safe: true}
+    - {id: normalize_network_device_inventory, type: internal, action: normalize_network_device_inventory, pause_safe: true}
+    - {id: assess_network_device_management_posture, type: internal, action: assess_network_device_management_posture, pause_safe: true}
+    - {id: produce_receipt, type: evidence, action: produce_receipt, pause_safe: true}
+  retry: {max_attempts: 0, blocked_on: [policy_denied]}

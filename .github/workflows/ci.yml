@@ -35,7 +35,9 @@ jobs:
           python -m pip install -e ./ci-deps/rexecop
           python -m pip install -e '.[dev]'
       - name: Validate public truth
-        run: python scripts/validate_public_truth.py
+        run: |
+          python scripts/validate_public_truth.py
+          python scripts/validate_active_profile.py
       - name: Run tests
         run: python -m pytest -q
 

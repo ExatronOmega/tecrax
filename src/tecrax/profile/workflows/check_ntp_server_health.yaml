@@ -1,0 +1,11 @@
+workflow:
+  id: tecrax.check_ntp_server_health
+  intent: check_ntp_server_health
+  mode: read_only
+  risk: low
+  steps:
+    - {id: read_ntp_service_state, type: connector, connector: monitoring_host, action: read_ntp_service_state, pause_safe: true}
+    - {id: read_ntp_server_variables, type: connector, connector: monitoring_host, action: read_ntp_server_variables, pause_safe: true}
+    - {id: normalize_ntp_server_observation, type: internal, action: normalize_ntp_server_observation, pause_safe: true}
+    - {id: produce_receipt, type: evidence, action: produce_receipt, pause_safe: true}
+  retry: {max_attempts: 1, allowed_on: [transient_connector_error]}

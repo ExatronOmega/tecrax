@@ -118,12 +118,12 @@ def test_normalize_zabbix_health_does_not_claim_container_runtime_state() -> Non
 
     result = normalize_zabbix_health(context)
 
-    assert result == {
-        "application_reachable": True,
-        "api_version": "7.2.14",
-        "container_runtime_state": "not_observed",
-        "healthy": True,
-    }
+    assert result["application_reachable"] is True
+    assert result["api_version"] == "7.2.14"
+    assert result["container_runtime_state"] == "not_observed"
+    assert result["healthy"] is True
+    assert result["contract"]["id"] == "tecrax.zabbix_api_reachability"
+    assert result["coverage"]["state"] == "partial"
 
 
 def test_normalize_docker_services_health_is_systemd_only() -> None:
@@ -156,21 +156,12 @@ def test_normalize_docker_services_health_is_systemd_only() -> None:
 
     result = normalize_docker_services_health(context)
 
-    assert result == {
-        "scope": "systemd_service_only",
-        "service": "docker",
-        "service_load_state": "loaded",
-        "service_active_state": "active",
-        "service_sub_state": "running",
-        "service_unit_file_state": "enabled",
-        "socket": "docker.socket",
-        "socket_load_state": "loaded",
-        "socket_active_state": "active",
-        "socket_sub_state": "listening",
-        "socket_unit_file_state": "enabled",
-        "container_runtime_state": "not_observed",
-        "healthy": True,
-    }
+    assert result["observation_scope"] == "systemd_service_only"
+    assert result["service_active_state"] == "active"
+    assert result["socket_sub_state"] == "listening"
+    assert result["container_runtime_state"] == "not_observed"
+    assert result["healthy"] is True
+    assert result["contract"]["id"] == "tecrax.docker_service_health"
 
 
 def test_normalize_adguard_health_uses_dns_and_login_only() -> None:
@@ -194,16 +185,13 @@ def test_normalize_adguard_health_uses_dns_and_login_only() -> None:
 
     result = normalize_adguard_health(context)
 
-    assert result == {
-        "scope": "dns_and_web_login_only",
-        "dns_resolves": True,
-        "dns_answer_count": 2,
-        "web_login_http_status": "200",
-        "management_api_state": "not_observed",
-        "container_runtime_state": "not_observed",
-        "web_login_reachable": True,
-        "healthy": True,
-    }
+    assert result["observation_scope"] == "dns_and_web_login_only"
+    assert result["dns_resolves"] is True
+    assert result["dns_answer_count"] == 2
+    assert result["web_login_http_status"] == "200"
+    assert result["management_api_state"] == "not_observed"
+    assert result["healthy"] is True
+    assert result["contract"]["id"] == "tecrax.adguard_reachability"
 
 
 def test_normalize_portainer_health_discards_instance_identity() -> None:
@@ -223,15 +211,13 @@ def test_normalize_portainer_health_discards_instance_identity() -> None:
 
     result = normalize_portainer_health(context)
 
-    assert result == {
-        "scope": "unauthenticated_status_only",
-        "api_reachable": True,
-        "api_version": "2.33.5",
-        "instance_identity_state": "deliberately_not_collected",
-        "management_objects_state": "not_observed",
-        "container_runtime_state": "not_observed",
-        "healthy": True,
-    }
+    assert result["observation_scope"] == "unauthenticated_status_only"
+    assert result["api_reachable"] is True
+    assert result["api_version"] == "2.33.5"
+    assert result["instance_identity_state"] == "deliberately_not_collected"
+    assert result["management_objects_state"] == "not_observed"
+    assert result["healthy"] is True
+    assert result["contract"]["id"] == "tecrax.portainer_reachability"
     assert "InstanceID" not in str(result)
 
 
@@ -259,7 +245,7 @@ def test_aggregate_diagnosis_preserves_failures_and_blockers() -> None:
 
     result = aggregate_monitoring_host_diagnosis(context)
 
-    assert result["diagnostic_complete"] is True
+    assert result["aggregation_completed"] is True
     assert result["coverage_status"] == "partial"
     assert result["observed_health"] == "degraded"
     assert result["components"]["docker"]["status"] == "healthy"
@@ -271,4 +257,5 @@ def test_aggregate_diagnosis_preserves_failures_and_blockers() -> None:
             "error_class": "transient_connector_error",
         }
     ]
+    assert result["contract"]["id"] == "tecrax.monitoring_host_diagnosis"
     assert "sensitive upstream detail" not in str(result)

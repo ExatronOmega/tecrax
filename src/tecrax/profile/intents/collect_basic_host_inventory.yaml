@@ -6,11 +6,12 @@ intent:
   modes:
     - read_only
     - dry_run
+  facts_contract: tecrax.basic_host_inventory@1.0
   catalog:
     title: Collect basic host inventory
     summary: Collect bounded operating-system, kernel, uptime, load, root filesystem and memory facts.
     target_kinds: [host]
-    required_capabilities: [ssh_readonly]
+    required_capabilities: [ssh_readonly, tecrax.host.basic_inventory.v1]
     side_effect_class: none
     validation_ref: validation_rules/collect_basic_host_inventory.yaml
     runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/ubuntu-host-readonly-runbook.md

@@ -33,10 +33,6 @@ tecrax = "tecrax:profile_root"
 [project.entry-points."rexecop.internal_actions"]
 tecrax = "tecrax.internal_actions:register_handlers"
 
-[project.entry-points."rexecop.connector_backends"]
-tecrax_fixture = "tecrax.fixture.mock_runtime:build_runtime"
-tecrax_proxmox = "tecrax.connectors.proxmox_runtime:build_connector_runtime"
-
 [project.urls]
 Homepage = "https://github.com/rozmiarD/tecrax"
 Repository = "https://github.com/rozmiarD/tecrax"

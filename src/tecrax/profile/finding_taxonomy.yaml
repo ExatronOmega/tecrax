@@ -1,0 +1,14 @@
+finding_taxonomy:
+  version: "1.0"
+  severities: [info, low, medium, high]
+  kinds:
+    - monitoring.host_inventory_unhealthy
+    - monitoring.ntp_unhealthy
+    - monitoring.zabbix_unhealthy
+    - monitoring.docker_services_unhealthy
+    - monitoring.adguard_unhealthy
+    - monitoring.portainer_unhealthy
+    - monitoring.host_security_degraded
+    - monitoring.ntp_server_unhealthy
+    - monitoring.observed_healthy
+    - monitoring.unclassified_state

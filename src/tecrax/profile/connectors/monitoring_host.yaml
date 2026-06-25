@@ -13,6 +13,11 @@ connector:
     - read_ntp_service_state
     - read_docker_service_state
     - read_docker_socket_state
+    - read_unattended_upgrades_state
+    - read_aslr_state
+    - read_dmesg_restrict_state
+    - read_reboot_required_marker
+    - read_ntp_server_variables
   modes:
     - read_only
     - dry_run
@@ -51,3 +56,18 @@ connector:
     read_docker_socket_state:
       command: systemctl
       args: ["show", "docker.socket", "--property=LoadState", "--property=ActiveState", "--property=SubState", "--property=UnitFileState", "--no-pager"]
+    read_unattended_upgrades_state:
+      command: systemctl
+      args: ["is-enabled", "unattended-upgrades"]
+    read_aslr_state:
+      command: sysctl
+      args: ["-n", "kernel.randomize_va_space"]
+    read_dmesg_restrict_state:
+      command: sysctl
+      args: ["-n", "kernel.dmesg_restrict"]
+    read_reboot_required_marker:
+      command: find
+      args: ["/var/run", "-maxdepth", "1", "-name", "reboot-required", "-printf", "%f\\n"]
+    read_ntp_server_variables:
+      command: ntpq
+      args: ["-c", "rv 0 stratum,offset,rootdelay,rootdisp,leap"]

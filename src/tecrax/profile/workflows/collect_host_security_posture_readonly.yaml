@@ -1,0 +1,13 @@
+workflow:
+  id: tecrax.collect_host_security_posture_readonly
+  intent: collect_host_security_posture_readonly
+  mode: read_only
+  risk: low
+  steps:
+    - {id: read_unattended_upgrades_state, type: connector, connector: monitoring_host, action: read_unattended_upgrades_state, pause_safe: true}
+    - {id: read_aslr_state, type: connector, connector: monitoring_host, action: read_aslr_state, pause_safe: true}
+    - {id: read_dmesg_restrict_state, type: connector, connector: monitoring_host, action: read_dmesg_restrict_state, pause_safe: true}
+    - {id: read_reboot_required_marker, type: connector, connector: monitoring_host, action: read_reboot_required_marker, pause_safe: true}
+    - {id: normalize_host_security_posture, type: internal, action: normalize_host_security_posture, pause_safe: true}
+    - {id: produce_receipt, type: evidence, action: produce_receipt, pause_safe: true}
+  retry: {max_attempts: 1, allowed_on: [transient_connector_error]}

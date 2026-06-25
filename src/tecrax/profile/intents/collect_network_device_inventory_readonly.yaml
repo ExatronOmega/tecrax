@@ -6,11 +6,12 @@ intent:
   modes:
     - read_only
     - dry_run
+  facts_contract: tecrax.network_device_inventory@1.0
   catalog:
     title: Collect network device inventory
     summary: Collect bounded device identity and management SSH posture through an operator-owned read-only adapter.
     target_kinds: [network_device]
-    required_capabilities: [local_shell_readonly]
+    required_capabilities: [local_shell_readonly, tecrax.network_device.inventory.v1]
     side_effect_class: none
     validation_ref: validation_rules/collect_network_device_inventory_readonly.yaml
     runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/network-device-readonly-runbook.md

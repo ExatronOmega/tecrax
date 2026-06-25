@@ -6,11 +6,16 @@ intent:
   modes:
     - read_only
     - dry_run
+  facts_contract: tecrax.monitoring_host_diagnosis@1.0
   catalog:
     title: Diagnose monitoring host
     summary: Aggregate bounded host, NTP, Docker, Zabbix, AdGuard and Portainer observations while preserving partial failures.
     target_kinds: [host]
-    required_capabilities: [http_api, local_shell_readonly, ssh_readonly]
+    required_capabilities:
+      - http_api
+      - local_shell_readonly
+      - ssh_readonly
+      - tecrax.host.monitoring_diagnosis.v1
     side_effect_class: none
     validation_ref: validation_rules/diagnose_monitoring_host.yaml
     runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/ubuntu-host-readonly-runbook.md

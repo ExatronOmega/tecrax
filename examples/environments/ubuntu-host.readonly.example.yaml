@@ -53,6 +53,21 @@ environment:
         - action: read_docker_socket_state
           command: systemctl
           args: ["show", "docker.socket", "--property=LoadState", "--property=ActiveState", "--property=SubState", "--property=UnitFileState", "--no-pager"]
+        - action: read_unattended_upgrades_state
+          command: systemctl
+          args: ["is-enabled", "unattended-upgrades"]
+        - action: read_aslr_state
+          command: sysctl
+          args: ["-n", "kernel.randomize_va_space"]
+        - action: read_dmesg_restrict_state
+          command: sysctl
+          args: ["-n", "kernel.dmesg_restrict"]
+        - action: read_reboot_required_marker
+          command: find
+          args: ["/var/run", "-maxdepth", "1", "-name", "reboot-required", "-printf", "%f\\n"]
+        - action: read_ntp_server_variables
+          command: ntpq
+          args: ["-c", "rv 0 stratum,offset,rootdelay,rootdisp,leap"]
     zabbix_api:
       enabled: true
       backend: http_api
@@ -171,6 +186,14 @@ environment:
           action.mode: read
           action.intent: diagnose_monitoring_host
         reason_code: monitoring_host_diagnosis_allowed
+      - rule_id: allow-host-security-posture-operation
+        effect: allow
+        conditions: {action.category: operation, action.mode: read, action.intent: collect_host_security_posture_readonly}
+        reason_code: host_security_posture_allowed
+      - rule_id: allow-ntp-server-health-operation
+        effect: allow
+        conditions: {action.category: operation, action.mode: read, action.intent: check_ntp_server_health}
+        reason_code: ntp_server_health_allowed
       - rule_id: allow-read-os-release
         effect: allow
         conditions: {action.category: connector, action.mode: read, action.backend: ssh_readonly, action.connector: monitoring_host, action.name: read_os_release}
@@ -214,6 +237,26 @@ environment:
       - rule_id: allow-read-docker-socket-state
         effect: allow
         conditions: {action.category: connector, action.mode: read, action.backend: ssh_readonly, action.connector: monitoring_host, action.name: read_docker_socket_state}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-unattended-upgrades-state
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: ssh_readonly, action.connector: monitoring_host, action.name: read_unattended_upgrades_state}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-aslr-state
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: ssh_readonly, action.connector: monitoring_host, action.name: read_aslr_state}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-dmesg-restrict-state
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: ssh_readonly, action.connector: monitoring_host, action.name: read_dmesg_restrict_state}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-reboot-required-marker
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: ssh_readonly, action.connector: monitoring_host, action.name: read_reboot_required_marker}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-ntp-server-variables
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: ssh_readonly, action.connector: monitoring_host, action.name: read_ntp_server_variables}
         reason_code: fixed_read_allowed
       - rule_id: allow-read-zabbix-api-version
         effect: allow

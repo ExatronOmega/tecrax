@@ -1,0 +1,14 @@
+validation_rule:
+  intent: collect_host_security_posture_readonly
+  steps:
+    - type: require_mapping
+      key: host_security_posture
+      fail:
+        rule: host_security_posture.result_required
+        details: {reason: missing normalized security posture}
+    - type: require_equals
+      path: host_security_posture.complete
+      value: true
+      pass_rule: host_security_posture.contract_complete
+      fail_rule: host_security_posture.contract_incomplete
+      details_from: host_security_posture

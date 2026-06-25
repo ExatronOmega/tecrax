@@ -1,0 +1,15 @@
+intent:
+  id: assess_network_device_management_posture_readonly
+  workflow: workflows/assess_network_device_management_posture_readonly.yaml
+  risk: low
+  enforce_declared_modes: true
+  modes: [read_only, dry_run]
+  facts_contract: tecrax.network_management_posture@1.0
+  catalog:
+    title: Assess network device management posture
+    summary: Assess bounded SSH management posture without reading full configuration or changing the device.
+    target_kinds: [network_device]
+    required_capabilities: [local_shell_readonly, tecrax.network_device.management_posture.v1]
+    side_effect_class: none
+    validation_ref: validation_rules/assess_network_device_management_posture_readonly.yaml
+    runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/network-device-readonly-runbook.md

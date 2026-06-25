@@ -56,6 +56,8 @@ def test_package_version_matches_profile_bundle() -> None:
 def test_unverified_r2_intents_are_not_claimed_by_profile() -> None:
     intents = Path(profile_root()) / "intents"
     assert not (intents / "check_frigate_host_health.yaml").exists()
+    assert not (intents / "check_backup_status.yaml").exists()
+    assert not (intents / "restart_zabbix_agent.yaml").exists()
 
 
 def test_ubuntu_inventory_example_projects_b2_runtime_controls(tmp_path: Path) -> None:

@@ -1,0 +1,15 @@
+intent:
+  id: collect_host_security_posture_readonly
+  workflow: workflows/collect_host_security_posture_readonly.yaml
+  risk: low
+  enforce_declared_modes: true
+  modes: [read_only, dry_run]
+  facts_contract: tecrax.host_security_posture@1.0
+  catalog:
+    title: Collect host security posture
+    summary: Observe four bounded host-hardening signals without enumerating users, packages, ports or configuration.
+    target_kinds: [host]
+    required_capabilities: [ssh_readonly, tecrax.host.security_posture.v1]
+    side_effect_class: none
+    validation_ref: validation_rules/collect_host_security_posture_readonly.yaml
+    runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/ubuntu-host-readonly-runbook.md

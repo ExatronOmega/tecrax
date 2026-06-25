@@ -8,6 +8,8 @@ from rexecop.profile.loader import load_profile
 from rexecop.reaction.compiler import compile_reaction_pack
 from sclite import build_observation_envelope
 
+from tecrax.contracts import validate_facts
+
 
 def build_monitoring_host_observation(
     *,
@@ -17,6 +19,9 @@ def build_monitoring_host_observation(
     observed_at: str | None = None,
 ) -> dict[str, Any]:
     """Project one bounded Tecrax diagnosis into the canonical SCLite envelope."""
+    errors = validate_facts(dict(diagnosis), expected_contract_id="tecrax.monitoring_host_diagnosis")
+    if errors:
+        raise ValueError("invalid_monitoring_host_diagnosis:" + ",".join(errors))
     profile = load_profile(Path(__file__).resolve().parent / "profile")
     pack = compile_reaction_pack(profile)
     return build_observation_envelope(

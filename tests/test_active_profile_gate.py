@@ -1,0 +1,49 @@
+from __future__ import annotations
+
+import shutil
+from pathlib import Path
+
+import yaml
+
+from scripts.validate_active_profile import collect_errors
+from tecrax import profile_root
+
+
+def _copy_profile(tmp_path: Path) -> Path:
+    target = tmp_path / "profile"
+    shutil.copytree(profile_root(), target)
+    return target
+
+
+def test_active_profile_passes_fail_closed_gate() -> None:
+    assert collect_errors() == []
+
+
+def test_active_profile_rejects_apply_intent(tmp_path: Path) -> None:
+    root = _copy_profile(tmp_path)
+    path = root / "intents" / "collect_basic_host_inventory.yaml"
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    data["intent"]["modes"].append("apply")
+    path.write_text(yaml.safe_dump(data), encoding="utf-8")
+
+    assert any("non_readonly_modes" in item for item in collect_errors(root))
+
+
+def test_active_profile_rejects_missing_runbook(tmp_path: Path) -> None:
+    root = _copy_profile(tmp_path)
+    path = root / "intents" / "collect_basic_host_inventory.yaml"
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    data["intent"]["catalog"]["runbook_ref"] = "docs/missing.md"
+    path.write_text(yaml.safe_dump(data), encoding="utf-8")
+
+    assert any("missing_runbook" in item for item in collect_errors(root))
+
+
+def test_active_profile_rejects_undeclared_connector_action(tmp_path: Path) -> None:
+    root = _copy_profile(tmp_path)
+    path = root / "workflows" / "collect_basic_host_inventory.yaml"
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    data["workflow"]["steps"][0]["action"] = "arbitrary_command"
+    path.write_text(yaml.safe_dump(data), encoding="utf-8")
+
+    assert any("undeclared_connector_action" in item for item in collect_errors(root))

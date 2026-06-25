@@ -6,11 +6,12 @@ intent:
   modes:
     - read_only
     - dry_run
+  facts_contract: tecrax.docker_service_health@1.0
   catalog:
     title: Check Docker service health
     summary: Observe Docker service and socket unit state without Docker socket access or container inspection.
     target_kinds: [host]
-    required_capabilities: [ssh_readonly]
+    required_capabilities: [ssh_readonly, tecrax.host.docker_service_health.v1]
     side_effect_class: none
     validation_ref: validation_rules/check_docker_services_health.yaml
     runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/ubuntu-host-readonly-runbook.md

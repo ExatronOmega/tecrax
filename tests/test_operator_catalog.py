@@ -16,11 +16,19 @@ def test_all_tecrax_intents_have_operator_catalog_metadata() -> None:
 
     operations = compile_profile_operations(profile)
 
-    assert len(operations) == 10
-    assert {item.id for item in operations} >= {
+    assert len(operations) == 11
+    assert {item.id for item in operations} == {
+        "check_adguard_health",
+        "check_docker_services_health",
+        "check_ntp_health",
+        "check_portainer_health",
+        "check_zabbix_container_health",
         "collect_basic_host_inventory",
         "diagnose_monitoring_host",
         "collect_network_device_inventory_readonly",
+        "collect_host_security_posture_readonly",
+        "check_ntp_server_health",
+        "assess_network_device_management_posture_readonly",
     }
     assert all(item.runbook_ref for item in operations)
     assert all(item.validation_ref for item in operations)
@@ -41,7 +49,7 @@ def test_sanitized_target_catalog_projects_host_operations() -> None:
     assert by_id["collect_network_device_inventory_readonly"]["applicability"][
         "status"
     ] == "unsupported_target_kind"
-    assert by_id["restart_zabbix_agent"]["applicability"]["applicable"] is False
+    assert "restart_zabbix_agent" not in by_id
 
 
 def test_sanitized_target_catalog_projects_network_device_operation() -> None:

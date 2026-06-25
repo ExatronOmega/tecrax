@@ -1,0 +1,14 @@
+validation_rule:
+  intent: assess_network_device_management_posture_readonly
+  steps:
+    - type: require_mapping
+      key: network_management_posture
+      fail:
+        rule: network_management_posture.result_required
+        details: {reason: missing management posture}
+    - type: require_equals
+      path: network_management_posture.complete
+      value: true
+      pass_rule: network_management_posture.contract_complete
+      fail_rule: network_management_posture.contract_incomplete
+      details_from: network_management_posture

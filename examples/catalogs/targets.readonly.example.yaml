@@ -6,7 +6,19 @@ target_catalog:
       profile_ref: tecrax
       environment_ref: ../environments/ubuntu-host.readonly.example.yaml
       environment_target: monitoring-host-01
-      capabilities: [http_api, local_shell_readonly, ssh_readonly]
+      capabilities:
+        - http_api
+        - local_shell_readonly
+        - ssh_readonly
+        - tecrax.host.basic_inventory.v1
+        - tecrax.host.ntp_local_health.v1
+        - tecrax.host.docker_service_health.v1
+        - tecrax.host.zabbix_api_reachability.v1
+        - tecrax.host.adguard_reachability.v1
+        - tecrax.host.portainer_reachability.v1
+        - tecrax.host.monitoring_diagnosis.v1
+        - tecrax.host.security_posture.v1
+        - tecrax.ntp.server_observation.v1
       connector_refs: [adguard_health, monitoring_host, portainer_api, zabbix_api]
       classification:
         criticality: low
@@ -16,7 +28,10 @@ target_catalog:
       profile_ref: tecrax
       environment_ref: ../environments/network-device.readonly.example.yaml
       environment_target: network-device-01
-      capabilities: [local_shell_readonly]
+      capabilities:
+        - local_shell_readonly
+        - tecrax.network_device.inventory.v1
+        - tecrax.network_device.management_posture.v1
       connector_refs: [network_device_cli]
       classification:
         criticality: low

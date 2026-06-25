@@ -1,0 +1,14 @@
+validation_rule:
+  intent: check_ntp_server_health
+  steps:
+    - type: require_mapping
+      key: ntp_server_observation
+      fail:
+        rule: ntp_server_observation.result_required
+        details: {reason: missing normalized NTP server observation}
+    - type: require_equals
+      path: ntp_server_observation.coverage.state
+      value: complete
+      pass_rule: ntp_server_observation.contract_complete
+      fail_rule: ntp_server_observation.contract_incomplete
+      details_from: ntp_server_observation
