@@ -4,10 +4,15 @@ from typing import Any
 
 from rexecop.execution.backend import StepExecutionContext
 
+from tecrax.contracts import (
+    build_docker_service_health_v1,
+    build_ntp_local_health_v1,
+)
 from tecrax.normalizers.common import (
     connector_results,
     finalize_and_store,
     single_line,
+    store_facts,
     stdout,
 )
 
@@ -22,17 +27,13 @@ def normalize_ntp_health(context: StepExecutionContext) -> dict[str, Any]:
         "service": "ntp",
         "service_state": service_state,
     }
-    result["healthy"] = result["synchronized"] and service_state == "active"
-    return finalize_and_store(
-        context,
-        "ntp_health",
-        result,
-        contract_id="tecrax.ntp_local_health",
-        requested=["local_synchronization", "daemon_state"],
-        observed=["local_synchronization", "daemon_state"],
-        assessment="healthy" if result["healthy"] else "unhealthy",
-        non_claims=["server_serving_state", "peer_identity", "offset", "stratum"],
+    facts = build_ntp_local_health_v1(
+        synchronized=result["synchronized"],
+        systemd_ntp_enabled=result["systemd_ntp_enabled"],
+        service=result["service"],
+        service_state=result["service_state"],
     )
+    return store_facts(context, "ntp_health", facts)
 
 
 def normalize_docker_services_health(context: StepExecutionContext) -> dict[str, Any]:
@@ -53,21 +54,8 @@ def normalize_docker_services_health(context: StepExecutionContext) -> dict[str,
         "socket_unit_file_state": socket.get("UnitFileState", ""),
         "container_runtime_state": "not_observed",
     }
-    result["healthy"] = (
-        result["service_load_state"] == "loaded"
-        and result["service_active_state"] == "active"
-    )
-    return finalize_and_store(
-        context,
-        "docker_services_health",
-        result,
-        contract_id="tecrax.docker_service_health",
-        requested=["docker.service", "docker.socket"],
-        observed=["docker.service", "docker.socket"],
-        not_observed=["containers", "images", "stacks"],
-        assessment="healthy" if result["healthy"] else "unhealthy",
-        non_claims=["container_health", "docker_socket", "container_logs"],
-    )
+    facts = build_docker_service_health_v1(result)
+    return store_facts(context, "docker_services_health", facts)
 
 
 def normalize_zabbix_health(context: StepExecutionContext) -> dict[str, Any]:

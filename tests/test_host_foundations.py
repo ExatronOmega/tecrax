@@ -27,6 +27,7 @@ def test_host_security_posture_normalizes_four_bounded_signals() -> None:
     assert result["complete"] is True
     assert result["healthy"] is True
     assert result["assessment"]["state"] == "healthy"
+    assert result["schema_ref"] == "schemas/host_security_posture.v1.schema.json"
     assert "users" in result["non_claims"]
 
 
@@ -47,6 +48,7 @@ def test_ntp_server_observation_drops_peer_identity() -> None:
     )
     result = normalize_ntp_server_observation(context)
     assert result["healthy"] is True
+    assert result["schema_ref"] == "schemas/ntp_server_observation.v1.schema.json"
     assert result["system_variables"]["stratum"] == 3
     assert result["system_variables"]["offset_ms"] == -0.25
     assert "peer_address" in result["non_claims"]

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/rozmiarD/tecrax/schemas/ntp_server_observation.v1.schema.json",
+  "title": "Tecrax NTP server observation facts v1",
+  "type": "object",
+  "required": [
+    "contract",
+    "schema_ref",
+    "daemon_state",
+    "serving_state",
+    "system_variables",
+    "healthy",
+    "scope",
+    "coverage",
+    "assessment",
+    "non_claims"
+  ],
+  "properties": {
+    "contract": {
+      "type": "object",
+      "required": ["id", "version"],
+      "properties": {
+        "id": {"const": "tecrax.ntp_server_observation"},
+        "version": {"const": "1.0"}
+      },
+      "additionalProperties": false
+    },
+    "schema_ref": {"const": "schemas/ntp_server_observation.v1.schema.json"},
+    "daemon_state": {"type": "string", "minLength": 1, "maxLength": 32},
+    "serving_state": {"type": "string", "minLength": 1, "maxLength": 64},
+    "system_variables": {
+      "type": "object",
+      "required": [
+        "stratum",
+        "leap",
+        "offset_ms",
+        "root_delay_ms",
+        "root_dispersion_ms"
+      ],
+      "properties": {
+        "stratum": {"type": ["integer", "null"], "minimum": 0},
+        "leap": {"type": ["integer", "null"], "minimum": 0},
+        "offset_ms": {"type": ["number", "null"]},
+        "root_delay_ms": {"type": ["number", "null"]},
+        "root_dispersion_ms": {"type": ["number", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "healthy": {"type": "boolean"},
+    "scope": {"type": "object"},
+    "coverage": {"type": "object"},
+    "assessment": {"type": "object"},
+    "non_claims": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/rozmiarD/tecrax/schemas/docker_service_health.v1.schema.json",
+  "title": "Tecrax Docker service health facts v1",
+  "type": "object",
+  "required": [
+    "contract",
+    "schema_ref",
+    "observation_scope",
+    "service",
+    "service_load_state",
+    "service_active_state",
+    "service_sub_state",
+    "service_unit_file_state",
+    "socket",
+    "socket_load_state",
+    "socket_active_state",
+    "socket_sub_state",
+    "socket_unit_file_state",
+    "container_runtime_state",
+    "healthy",
+    "scope",
+    "coverage",
+    "assessment",
+    "non_claims"
+  ],
+  "properties": {
+    "contract": {
+      "type": "object",
+      "required": ["id", "version"],
+      "properties": {
+        "id": {"const": "tecrax.docker_service_health"},
+        "version": {"const": "1.0"}
+      },
+      "additionalProperties": false
+    },
+    "schema_ref": {"const": "schemas/docker_service_health.v1.schema.json"},
+    "observation_scope": {"type": "string", "minLength": 1, "maxLength": 64},
+    "service": {"type": "string", "minLength": 1, "maxLength": 64},
+    "service_load_state": {"type": "string", "minLength": 1, "maxLength": 64},
+    "service_active_state": {"type": "string", "minLength": 1, "maxLength": 64},
+    "service_sub_state": {"type": "string", "minLength": 1, "maxLength": 64},
+    "service_unit_file_state": {"type": "string", "minLength": 1, "maxLength": 64},
+    "socket": {"type": "string", "minLength": 1, "maxLength": 64},
+    "socket_load_state": {"type": "string", "minLength": 1, "maxLength": 64},
+    "socket_active_state": {"type": "string", "minLength": 1, "maxLength": 64},
+    "socket_sub_state": {"type": "string", "minLength": 1, "maxLength": 64},
+    "socket_unit_file_state": {"type": "string", "minLength": 1, "maxLength": 64},
+    "container_runtime_state": {"const": "not_observed"},
+    "healthy": {"type": "boolean"},
+    "scope": {"type": "object"},
+    "coverage": {"type": "object"},
+    "assessment": {"type": "object"},
+    "non_claims": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

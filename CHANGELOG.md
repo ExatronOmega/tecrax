@@ -8,6 +8,8 @@ All notable Tecrax profile changes are documented here.
   Tecrax profile and validate declared facts contract references.
 - Added the versioned `tecrax.basic_host_inventory@1.0` facts contract with a
   packaged schema artifact, bounded model builder, and pure validator.
+- Added versioned local SSH/systemd facts contracts for NTP local health, Docker
+  service health, host security posture, and NTP server observation.
 - Refactored fact normalizer storage so active normalizers share the same
   `finalize_facts` and `shared_state` write path.
 - Split active normalizers into host, services, network, diagnostics, and common

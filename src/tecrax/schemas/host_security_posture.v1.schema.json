@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/rozmiarD/tecrax/schemas/host_security_posture.v1.schema.json",
+  "title": "Tecrax host security posture facts v1",
+  "type": "object",
+  "required": [
+    "contract",
+    "schema_ref",
+    "signals",
+    "complete",
+    "healthy",
+    "scope",
+    "coverage",
+    "assessment",
+    "non_claims"
+  ],
+  "properties": {
+    "contract": {
+      "type": "object",
+      "required": ["id", "version"],
+      "properties": {
+        "id": {"const": "tecrax.host_security_posture"},
+        "version": {"const": "1.0"}
+      },
+      "additionalProperties": false
+    },
+    "schema_ref": {"const": "schemas/host_security_posture.v1.schema.json"},
+    "signals": {
+      "type": "object",
+      "required": [
+        "unattended_upgrades_enabled",
+        "aslr_mode",
+        "dmesg_restrict",
+        "reboot_required"
+      ],
+      "properties": {
+        "unattended_upgrades_enabled": {"type": "boolean"},
+        "aslr_mode": {"type": ["integer", "null"], "minimum": 0},
+        "dmesg_restrict": {"type": ["integer", "null"], "minimum": 0},
+        "reboot_required": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "complete": {"type": "boolean"},
+    "healthy": {"type": "boolean"},
+    "scope": {"type": "object"},
+    "coverage": {"type": "object"},
+    "assessment": {"type": "object"},
+    "non_claims": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

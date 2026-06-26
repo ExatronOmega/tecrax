@@ -6,11 +6,27 @@ from tecrax.contracts import (
     BASIC_HOST_INVENTORY_CONTRACT_ID,
     BASIC_HOST_INVENTORY_CONTRACT_VERSION,
     BASIC_HOST_INVENTORY_SCHEMA_REF,
+    DOCKER_SERVICE_HEALTH_CONTRACT_ID,
+    DOCKER_SERVICE_HEALTH_SCHEMA_REF,
     FACTS_CONTRACTS,
+    HOST_SECURITY_POSTURE_CONTRACT_ID,
+    HOST_SECURITY_POSTURE_SCHEMA_REF,
+    NTP_LOCAL_HEALTH_CONTRACT_ID,
+    NTP_LOCAL_HEALTH_SCHEMA_REF,
+    NTP_SERVER_OBSERVATION_CONTRACT_ID,
+    NTP_SERVER_OBSERVATION_SCHEMA_REF,
     build_basic_host_inventory_v1,
+    build_docker_service_health_v1,
+    build_host_security_posture_v1,
+    build_ntp_local_health_v1,
+    build_ntp_server_observation_v1,
     finalize_facts,
     validate_basic_host_inventory_v1,
+    validate_docker_service_health_v1,
     validate_facts,
+    validate_host_security_posture_v1,
+    validate_ntp_local_health_v1,
+    validate_ntp_server_observation_v1,
 )
 
 
@@ -31,12 +47,11 @@ def test_all_active_results_have_static_contract_specs() -> None:
 
 
 def test_negative_health_is_valid_observation() -> None:
-    facts = finalize_facts(
-        {"synchronized": False, "service_state": "inactive"},
-        contract_id="tecrax.ntp_local_health",
-        requested=["local_synchronization", "daemon_state"],
-        observed=["local_synchronization", "daemon_state"],
-        assessment="unhealthy",
+    facts = build_ntp_local_health_v1(
+        synchronized=False,
+        systemd_ntp_enabled=False,
+        service="ntp",
+        service_state="inactive",
     )
 
     assert validate_facts(facts) == []
@@ -186,13 +201,156 @@ def test_basic_host_inventory_v1_rejects_malformed_payload() -> None:
     assert "basic_host_inventory.invalid_memory_mib:total" in errors
 
 
+def test_local_ssh_fact_contract_v1_builders_emit_schema_refs() -> None:
+    ntp = build_ntp_local_health_v1(
+        synchronized=True,
+        systemd_ntp_enabled=True,
+        service="ntp",
+        service_state="active",
+    )
+    docker = build_docker_service_health_v1(
+        {
+            "observation_scope": "systemd_service_only",
+            "service": "docker",
+            "service_load_state": "loaded",
+            "service_active_state": "active",
+            "service_sub_state": "running",
+            "service_unit_file_state": "enabled",
+            "socket": "docker.socket",
+            "socket_load_state": "loaded",
+            "socket_active_state": "active",
+            "socket_sub_state": "listening",
+            "socket_unit_file_state": "enabled",
+            "container_runtime_state": "not_observed",
+        }
+    )
+    security = build_host_security_posture_v1(
+        signals={
+            "unattended_upgrades_enabled": True,
+            "aslr_mode": 2,
+            "dmesg_restrict": 1,
+            "reboot_required": False,
+        },
+        complete=True,
+        healthy=True,
+    )
+    ntp_server = build_ntp_server_observation_v1(
+        daemon_state="active",
+        serving_state="local_daemon_query_available",
+        system_variables={
+            "stratum": 3,
+            "leap": 0,
+            "offset_ms": -0.25,
+            "root_delay_ms": 1.2,
+            "root_dispersion_ms": 2.3,
+        },
+        healthy=True,
+    )
+
+    assert ntp["contract"]["id"] == NTP_LOCAL_HEALTH_CONTRACT_ID
+    assert ntp["schema_ref"] == NTP_LOCAL_HEALTH_SCHEMA_REF
+    assert docker["contract"]["id"] == DOCKER_SERVICE_HEALTH_CONTRACT_ID
+    assert docker["schema_ref"] == DOCKER_SERVICE_HEALTH_SCHEMA_REF
+    assert security["contract"]["id"] == HOST_SECURITY_POSTURE_CONTRACT_ID
+    assert security["schema_ref"] == HOST_SECURITY_POSTURE_SCHEMA_REF
+    assert ntp_server["contract"]["id"] == NTP_SERVER_OBSERVATION_CONTRACT_ID
+    assert ntp_server["schema_ref"] == NTP_SERVER_OBSERVATION_SCHEMA_REF
+    assert validate_ntp_local_health_v1(ntp) == []
+    assert validate_docker_service_health_v1(docker) == []
+    assert validate_host_security_posture_v1(security) == []
+    assert validate_ntp_server_observation_v1(ntp_server) == []
+
+
+def test_local_ssh_fact_contract_v1_schema_files_are_packaged() -> None:
+    refs = [
+        (NTP_LOCAL_HEALTH_SCHEMA_REF, NTP_LOCAL_HEALTH_CONTRACT_ID),
+        (DOCKER_SERVICE_HEALTH_SCHEMA_REF, DOCKER_SERVICE_HEALTH_CONTRACT_ID),
+        (HOST_SECURITY_POSTURE_SCHEMA_REF, HOST_SECURITY_POSTURE_CONTRACT_ID),
+        (NTP_SERVER_OBSERVATION_SCHEMA_REF, NTP_SERVER_OBSERVATION_CONTRACT_ID),
+    ]
+
+    for schema_ref, contract_id in refs:
+        schema = resources.files("tecrax").joinpath(*schema_ref.split("/"))
+        text = schema.read_text(encoding="utf-8")
+        assert contract_id in text
+
+
+def test_local_ssh_fact_contract_v1_rejects_malformed_payloads() -> None:
+    ntp = build_ntp_local_health_v1(
+        synchronized=True,
+        systemd_ntp_enabled=True,
+        service="ntp",
+        service_state="active",
+    )
+    ntp["schema_ref"] = "schemas/other.schema.json"
+    ntp["healthy"] = "yes"
+
+    docker = build_docker_service_health_v1(
+        {
+            "observation_scope": "systemd_service_only",
+            "service": "docker",
+            "service_load_state": "loaded",
+            "service_active_state": "active",
+            "service_sub_state": "running",
+            "service_unit_file_state": "enabled",
+            "socket": "docker.socket",
+            "socket_load_state": "loaded",
+            "socket_active_state": "active",
+            "socket_sub_state": "listening",
+            "socket_unit_file_state": "enabled",
+            "container_runtime_state": "not_observed",
+        }
+    )
+    docker["container_runtime_state"] = "observed"
+
+    security = build_host_security_posture_v1(
+        signals={
+            "unattended_upgrades_enabled": True,
+            "aslr_mode": 2,
+            "dmesg_restrict": 1,
+            "reboot_required": False,
+        },
+        complete=True,
+        healthy=True,
+    )
+    security["signals"]["aslr_mode"] = -1
+
+    ntp_server = build_ntp_server_observation_v1(
+        daemon_state="active",
+        serving_state="local_daemon_query_available",
+        system_variables={
+            "stratum": 3,
+            "leap": 0,
+            "offset_ms": -0.25,
+            "root_delay_ms": 1.2,
+            "root_dispersion_ms": 2.3,
+        },
+        healthy=True,
+    )
+    ntp_server["system_variables"]["stratum"] = -1
+
+    assert "ntp_local_health.schema_ref_mismatch" in validate_ntp_local_health_v1(ntp)
+    assert "ntp_local_health.invalid_healthy" in validate_ntp_local_health_v1(ntp)
+    assert (
+        "docker_service_health.container_runtime_must_be_not_observed"
+        in validate_docker_service_health_v1(docker)
+    )
+    assert (
+        "host_security_posture.invalid_signals:aslr_mode"
+        in validate_host_security_posture_v1(security)
+    )
+    assert (
+        "ntp_server_observation.invalid_system_variables:stratum"
+        in validate_ntp_server_observation_v1(ntp_server)
+    )
+
+
 def test_raw_connector_output_is_rejected() -> None:
-    facts = finalize_facts(
-        {"synchronized": True, "service_state": "active"},
-        contract_id="tecrax.ntp_local_health",
-        requested=["local_synchronization"],
-        observed=["local_synchronization"],
-        assessment="healthy",
+    facts = build_ntp_local_health_v1(
+        synchronized=True,
+        systemd_ntp_enabled=True,
+        service="ntp",
+        service_state="active",
     )
     facts["stdout"] = "unbounded"
 

@@ -106,6 +106,7 @@ def test_normalize_ntp_health_requires_sync_and_discovered_service() -> None:
     assert result["synchronized"] is True
     assert result["systemd_ntp_enabled"] is False
     assert result["service"] == "ntp"
+    assert result["schema_ref"] == "schemas/ntp_local_health.v1.schema.json"
 
 
 def test_normalize_zabbix_health_does_not_claim_container_runtime_state() -> None:
@@ -171,6 +172,7 @@ def test_normalize_docker_services_health_is_systemd_only() -> None:
     assert result["container_runtime_state"] == "not_observed"
     assert result["healthy"] is True
     assert result["contract"]["id"] == "tecrax.docker_service_health"
+    assert result["schema_ref"] == "schemas/docker_service_health.v1.schema.json"
 
 
 def test_normalize_adguard_health_uses_dns_and_login_only() -> None:

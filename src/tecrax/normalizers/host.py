@@ -4,11 +4,14 @@ from typing import Any
 
 from rexecop.execution.backend import StepExecutionContext
 
-from tecrax.contracts import build_basic_host_inventory_v1
+from tecrax.contracts import (
+    build_basic_host_inventory_v1,
+    build_host_security_posture_v1,
+    build_ntp_server_observation_v1,
+)
 from tecrax.normalizers.common import (
     bounded_float,
     connector_results,
-    finalize_and_store,
     float_value,
     integer,
     single_line,
@@ -55,24 +58,12 @@ def normalize_host_security_posture(context: StepExecutionContext) -> dict[str, 
         and dmesg is not None
     )
     healthy = complete and signals["unattended_upgrades_enabled"] and aslr == 2 and dmesg == 1
-    return finalize_and_store(
-        context,
-        "host_security_posture",
-        {"signals": signals, "complete": complete, "healthy": healthy},
-        contract_id="tecrax.host_security_posture",
-        requested=["unattended_upgrades", "aslr", "dmesg_restrict", "reboot_required"],
-        observed=[
-            "unattended_upgrades",
-            "aslr",
-            "dmesg_restrict",
-            "reboot_required",
-        ]
-        if complete
-        else [],
-        not_observed=[] if complete else ["one_or_more_security_signals"],
-        assessment="healthy" if healthy else ("degraded" if complete else "unknown"),
-        non_claims=["cis_compliance", "users", "packages", "ports", "ssh_configuration"],
+    facts = build_host_security_posture_v1(
+        signals=signals,
+        complete=complete,
+        healthy=healthy,
     )
+    return store_facts(context, "host_security_posture", facts)
 
 
 def normalize_ntp_server_observation(context: StepExecutionContext) -> dict[str, Any]:
@@ -83,49 +74,19 @@ def normalize_ntp_server_observation(context: StepExecutionContext) -> dict[str,
     leap = integer(variables.get("leap", ""))
     complete = daemon_state == "active" and stratum is not None and leap is not None
     healthy = complete and 1 <= int(stratum) <= 15 and leap != 3
-    return finalize_and_store(
-        context,
-        "ntp_server_observation",
-        {
-            "daemon_state": daemon_state,
-            "serving_state": "local_daemon_query_available" if variables else "unknown",
-            "system_variables": {
-                "stratum": stratum,
-                "leap": leap,
-                "offset_ms": bounded_float(variables.get("offset")),
-                "root_delay_ms": bounded_float(variables.get("rootdelay")),
-                "root_dispersion_ms": bounded_float(variables.get("rootdisp")),
-            },
-            "healthy": healthy,
+    facts = build_ntp_server_observation_v1(
+        daemon_state=daemon_state,
+        serving_state="local_daemon_query_available" if variables else "unknown",
+        system_variables={
+            "stratum": stratum,
+            "leap": leap,
+            "offset_ms": bounded_float(variables.get("offset")),
+            "root_delay_ms": bounded_float(variables.get("rootdelay")),
+            "root_dispersion_ms": bounded_float(variables.get("rootdisp")),
         },
-        contract_id="tecrax.ntp_server_observation",
-        requested=[
-            "daemon_state",
-            "stratum",
-            "leap",
-            "offset",
-            "root_delay",
-            "root_dispersion",
-        ],
-        observed=[
-            "daemon_state",
-            "stratum",
-            "leap",
-            "offset",
-            "root_delay",
-            "root_dispersion",
-        ]
-        if complete
-        else [],
-        not_observed=[] if complete else ["one_or_more_ntp_server_fields"],
-        assessment="healthy" if healthy else ("degraded" if complete else "unknown"),
-        non_claims=[
-            "peer_identity",
-            "peer_address",
-            "remote_client_reachability",
-            "firewall_state",
-        ],
+        healthy=healthy,
     )
+    return store_facts(context, "ntp_server_observation", facts)
 
 
 def _parse_os_release(value: str) -> dict[str, str]:

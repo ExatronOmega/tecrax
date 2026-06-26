@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/rozmiarD/tecrax/schemas/ntp_local_health.v1.schema.json",
+  "title": "Tecrax NTP local health facts v1",
+  "type": "object",
+  "required": [
+    "contract",
+    "schema_ref",
+    "synchronized",
+    "systemd_ntp_enabled",
+    "service",
+    "service_state",
+    "healthy",
+    "scope",
+    "coverage",
+    "assessment",
+    "non_claims"
+  ],
+  "properties": {
+    "contract": {
+      "type": "object",
+      "required": ["id", "version"],
+      "properties": {
+        "id": {"const": "tecrax.ntp_local_health"},
+        "version": {"const": "1.0"}
+      },
+      "additionalProperties": false
+    },
+    "schema_ref": {"const": "schemas/ntp_local_health.v1.schema.json"},
+    "synchronized": {"type": "boolean"},
+    "systemd_ntp_enabled": {"type": "boolean"},
+    "service": {"type": "string", "minLength": 1, "maxLength": 32},
+    "service_state": {"type": "string", "minLength": 1, "maxLength": 32},
+    "healthy": {"type": "boolean"},
+    "scope": {"type": "object"},
+    "coverage": {"type": "object"},
+    "assessment": {"type": "object"},
+    "non_claims": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

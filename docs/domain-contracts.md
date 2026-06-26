@@ -34,3 +34,36 @@ Compatibility policy: additive optional fields may stay within `1.x`; removing f
 changing meaning or changing required keys requires a new major contract version and golden
 N-1 vectors. RExecOp executes the workflow, GovEngine governs it, and SCLite owns the
 canonical envelope and evidence lifecycle.
+
+## Local SSH/systemd facts v1
+
+The next T1 slice extends the same pattern to local read-only host observations that do not
+depend on authenticated HTTP APIs:
+
+- `tecrax.ntp_local_health@1.0`:
+  `schemas/ntp_local_health.v1.schema.json`,
+  `NtpLocalHealthV1`, `build_ntp_local_health_v1`,
+  `validate_ntp_local_health_v1`;
+- `tecrax.docker_service_health@1.0`:
+  `schemas/docker_service_health.v1.schema.json`,
+  `DockerServiceHealthV1`, `build_docker_service_health_v1`,
+  `validate_docker_service_health_v1`;
+- `tecrax.host_security_posture@1.0`:
+  `schemas/host_security_posture.v1.schema.json`,
+  `HostSecurityPostureV1`, `build_host_security_posture_v1`,
+  `validate_host_security_posture_v1`;
+- `tecrax.ntp_server_observation@1.0`:
+  `schemas/ntp_server_observation.v1.schema.json`,
+  `NtpServerObservationV1`, `build_ntp_server_observation_v1`,
+  `validate_ntp_server_observation_v1`.
+
+These contracts intentionally stay small. Docker remains a systemd service/socket
+observation and does not claim container runtime health, Docker socket access, `inspect`,
+logs or `exec`. NTP server observation keeps bounded daemon/system variables and does not
+persist peer identities, peer addresses or raw command output. Host security posture remains
+a minimal signal set, not a CIS scanner or package/user/process inventory.
+
+HTTP reachability facts for Zabbix, AdGuard and Portainer keep their current narrow shape
+until the separate HTTP action identity checkpoint is completed. Network device contracts
+remain a later T1/T7 slice because their parser boundaries and golden fixtures are separate
+from local host/systemd observations.
