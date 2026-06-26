@@ -4,17 +4,20 @@ The HTTP action ownership and activation rules are recorded in
 `docs/http-action-identity-checkpoint.md`. RExecOp owns generic shape validation and digest
 binding; Tecrax owns domain action declarations, facts contracts, non-claims and validation.
 
-## Zabbix: T4 blocked beyond reachability
+## Zabbix: bounded summaries
 
 The active `check_zabbix_container_health` id is compatibility-bound but proves only the
-unauthenticated `apiinfo.version` path. Bounded problem and host-availability summaries are
-not active because no technically constrained read-only token/role and response projection
-have been accepted. A broad token is not an acceptable substitute.
+unauthenticated `apiinfo.version` path.
 
-Activation requires a least-privilege role, external secret reference, immutable HTTP action
-shape, bounded pagination/projection, secret canaries, negative permission tests and a
-sanitized operator sign-off. Host names, raw problems, history, macros and configuration
-must not enter evidence by default.
+Authenticated T4 operations are separate and use `zabbix_api_authenticated`. They collect
+bounded counts only:
+
+- `collect_zabbix_problem_summary_readonly`;
+- `collect_zabbix_host_availability_summary_readonly`.
+
+Host names, raw problems, trigger names, event payloads, history, macros, interface
+addresses and configuration must not enter evidence by default. The operator-owned token
+must remain outside git and should be constrained to read-only API access.
 
 ## AdGuard: current boundary
 

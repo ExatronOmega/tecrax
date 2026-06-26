@@ -60,6 +60,16 @@ NETWORK_MANAGEMENT_POSTURE_CONTRACT_ID = "tecrax.network_management_posture"
 NETWORK_MANAGEMENT_POSTURE_CONTRACT_VERSION = "1.0"
 NETWORK_MANAGEMENT_POSTURE_SCHEMA_REF = "schemas/network_management_posture.v1.schema.json"
 NETWORK_MANAGEMENT_POSTURE_REQUESTED = ["ssh_protocols", "ssh_crypto", "idle_timeout"]
+ZABBIX_PROBLEM_SUMMARY_CONTRACT_ID = "tecrax.zabbix_problem_summary"
+ZABBIX_PROBLEM_SUMMARY_CONTRACT_VERSION = "1.0"
+ZABBIX_PROBLEM_SUMMARY_SCHEMA_REF = "schemas/zabbix_problem_summary.v1.schema.json"
+ZABBIX_PROBLEM_SUMMARY_REQUESTED = ["problem_counts_by_severity"]
+ZABBIX_HOST_AVAILABILITY_CONTRACT_ID = "tecrax.zabbix_host_availability_summary"
+ZABBIX_HOST_AVAILABILITY_CONTRACT_VERSION = "1.0"
+ZABBIX_HOST_AVAILABILITY_SCHEMA_REF = (
+    "schemas/zabbix_host_availability_summary.v1.schema.json"
+)
+ZABBIX_HOST_AVAILABILITY_REQUESTED = ["host_counts", "agent_availability_counts"]
 
 
 @dataclass(frozen=True)
@@ -667,6 +677,16 @@ FACTS_CONTRACTS = {
             NETWORK_MANAGEMENT_POSTURE_CONTRACT_ID,
             NETWORK_MANAGEMENT_POSTURE_CONTRACT_VERSION,
             ("findings", "source_inventory_contract"),
+        ),
+        FactsContractSpec(
+            ZABBIX_PROBLEM_SUMMARY_CONTRACT_ID,
+            ZABBIX_PROBLEM_SUMMARY_CONTRACT_VERSION,
+            ("problem_counts_by_severity", "complete"),
+        ),
+        FactsContractSpec(
+            ZABBIX_HOST_AVAILABILITY_CONTRACT_ID,
+            ZABBIX_HOST_AVAILABILITY_CONTRACT_VERSION,
+            ("host_counts", "agent_availability_counts", "complete"),
         ),
     )
 }

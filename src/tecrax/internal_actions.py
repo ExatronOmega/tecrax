@@ -18,7 +18,9 @@ from tecrax.normalizers.services import (
     normalize_docker_services_health,
     normalize_ntp_health,
     normalize_portainer_health,
+    normalize_zabbix_host_availability_summary,
     normalize_zabbix_health,
+    normalize_zabbix_problem_summary,
 )
 
 
@@ -28,6 +30,10 @@ def register_handlers() -> Mapping[str, Any]:
         "normalize_ntp_health": normalize_ntp_health,
         "normalize_docker_services_health": normalize_docker_services_health,
         "normalize_zabbix_health": normalize_zabbix_health,
+        "normalize_zabbix_problem_summary": normalize_zabbix_problem_summary,
+        "normalize_zabbix_host_availability_summary": (
+            normalize_zabbix_host_availability_summary
+        ),
         "normalize_adguard_health": normalize_adguard_health,
         "normalize_portainer_health": normalize_portainer_health,
         "normalize_network_device_inventory": normalize_network_device_inventory,

@@ -1,0 +1,26 @@
+workflow:
+  id: tecrax.collect_zabbix_host_availability_summary_readonly
+  intent: collect_zabbix_host_availability_summary_readonly
+  mode: read_only
+  risk: low
+  description: Collect bounded Zabbix host and agent availability counts.
+
+  steps:
+    - {id: read_zabbix_enabled_host_count, type: connector, connector: zabbix_api_authenticated, action: read_zabbix_enabled_host_count, timeout: 10s, pause_safe: true}
+    - {id: read_zabbix_disabled_host_count, type: connector, connector: zabbix_api_authenticated, action: read_zabbix_disabled_host_count, timeout: 10s, pause_safe: true}
+    - {id: read_zabbix_agent_unknown_count, type: connector, connector: zabbix_api_authenticated, action: read_zabbix_agent_unknown_count, timeout: 10s, pause_safe: true}
+    - {id: read_zabbix_agent_available_count, type: connector, connector: zabbix_api_authenticated, action: read_zabbix_agent_available_count, timeout: 10s, pause_safe: true}
+    - {id: read_zabbix_agent_unavailable_count, type: connector, connector: zabbix_api_authenticated, action: read_zabbix_agent_unavailable_count, timeout: 10s, pause_safe: true}
+    - id: normalize_zabbix_host_availability_summary
+      type: internal
+      action: normalize_zabbix_host_availability_summary
+      pause_safe: true
+    - id: produce_receipt
+      type: evidence
+      action: produce_receipt
+      pause_safe: true
+
+  retry:
+    max_attempts: 1
+    allowed_on: [timeout, transient_connector_error]
+    blocked_on: [policy_denied]

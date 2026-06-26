@@ -1,0 +1,14 @@
+validation_rule:
+  intent: collect_zabbix_problem_summary_readonly
+  steps:
+    - type: require_mapping
+      key: zabbix_problem_summary
+      fail:
+        rule: collect_zabbix_problem_summary_readonly.result_required
+        details: {reason: missing normalized Zabbix problem summary}
+    - type: require_equals
+      path: zabbix_problem_summary.complete
+      value: true
+      pass_rule: collect_zabbix_problem_summary_readonly.complete
+      fail_rule: collect_zabbix_problem_summary_readonly.incomplete
+      details_from: zabbix_problem_summary

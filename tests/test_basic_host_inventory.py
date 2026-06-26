@@ -10,7 +10,9 @@ from tecrax.internal_actions import (
     normalize_docker_services_health,
     normalize_ntp_health,
     normalize_portainer_health,
+    normalize_zabbix_host_availability_summary,
     normalize_zabbix_health,
+    normalize_zabbix_problem_summary,
 )
 
 
@@ -134,6 +136,85 @@ def test_normalize_zabbix_health_does_not_claim_container_runtime_state() -> Non
     assert result["healthy"] is True
     assert result["contract"]["id"] == "tecrax.zabbix_api_reachability"
     assert result["coverage"]["state"] == "partial"
+
+
+def test_normalize_zabbix_problem_summary_is_count_only() -> None:
+    context = StepExecutionContext(
+        operation_id="op-test",
+        target="monitoring-host-01",
+        mode="dry_run",
+        step={"id": "normalize_zabbix_problem_summary"},
+        shared_state={
+            "connector_results": {
+                "read_zabbix_problem_count_not_classified": {"result": "0"},
+                "read_zabbix_problem_count_information": {"result": "1"},
+                "read_zabbix_problem_count_warning": {"result": "2"},
+                "read_zabbix_problem_count_average": {"result": "3"},
+                "read_zabbix_problem_count_high": {"result": "4"},
+                "read_zabbix_problem_count_disaster": {"result": "5"},
+            }
+        },
+    )
+
+    result = normalize_zabbix_problem_summary(context)
+
+    assert result["contract"]["id"] == "tecrax.zabbix_problem_summary"
+    assert result["problem_counts_by_severity"]["warning"] == 2
+    assert result["total_open_problems"] == 15
+    assert result["complete"] is True
+    assert result["healthy"] is False
+    assert result["assessment"]["state"] == "degraded"
+    assert "trigger_names" in result["non_claims"]
+
+
+def test_normalize_zabbix_problem_summary_marks_api_errors_incomplete() -> None:
+    context = StepExecutionContext(
+        operation_id="op-test",
+        target="monitoring-host-01",
+        mode="dry_run",
+        step={"id": "normalize_zabbix_problem_summary"},
+        shared_state={
+            "connector_results": {
+                "read_zabbix_problem_count_not_classified": {"result": "0"},
+                "read_zabbix_problem_count_information": {"error": {"message": "denied"}},
+            }
+        },
+    )
+
+    result = normalize_zabbix_problem_summary(context)
+
+    assert result["complete"] is False
+    assert result["healthy"] is False
+    assert result["coverage"]["state"] == "partial"
+    assert result["assessment"]["state"] == "unknown"
+
+
+def test_normalize_zabbix_host_availability_summary_is_count_only() -> None:
+    context = StepExecutionContext(
+        operation_id="op-test",
+        target="monitoring-host-01",
+        mode="dry_run",
+        step={"id": "normalize_zabbix_host_availability_summary"},
+        shared_state={
+            "connector_results": {
+                "read_zabbix_enabled_host_count": {"result": "4"},
+                "read_zabbix_disabled_host_count": {"result": "1"},
+                "read_zabbix_agent_unknown_count": {"result": "2"},
+                "read_zabbix_agent_available_count": {"result": "3"},
+                "read_zabbix_agent_unavailable_count": {"result": "0"},
+            }
+        },
+    )
+
+    result = normalize_zabbix_host_availability_summary(context)
+
+    assert result["contract"]["id"] == "tecrax.zabbix_host_availability_summary"
+    assert result["host_counts"] == {"enabled": 4, "disabled": 1}
+    assert result["agent_availability_counts"]["available"] == 3
+    assert result["complete"] is True
+    assert result["healthy"] is True
+    assert result["assessment"]["state"] == "healthy"
+    assert "interface_addresses" in result["non_claims"]
 
 
 def test_normalize_docker_services_health_is_systemd_only() -> None:

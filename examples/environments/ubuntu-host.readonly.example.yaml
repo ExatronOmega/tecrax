@@ -86,6 +86,61 @@ environment:
             method: apiinfo.version
             params: {}
             id: 1
+    zabbix_api_authenticated:
+      enabled: true
+      backend: http_api
+      base_url: http://zabbix.example.invalid
+      auth:
+        secret_ref: zabbix_api_token
+        header: Authorization
+        prefix: "Bearer "
+      timeout_seconds: 10
+      max_response_bytes: 1024
+      actions:
+        read_zabbix_problem_count_not_classified:
+          method: POST
+          path: /api_jsonrpc.php
+          body: {jsonrpc: "2.0", method: problem.get, params: {countOutput: true, severities: [0]}, id: 10}
+        read_zabbix_problem_count_information:
+          method: POST
+          path: /api_jsonrpc.php
+          body: {jsonrpc: "2.0", method: problem.get, params: {countOutput: true, severities: [1]}, id: 11}
+        read_zabbix_problem_count_warning:
+          method: POST
+          path: /api_jsonrpc.php
+          body: {jsonrpc: "2.0", method: problem.get, params: {countOutput: true, severities: [2]}, id: 12}
+        read_zabbix_problem_count_average:
+          method: POST
+          path: /api_jsonrpc.php
+          body: {jsonrpc: "2.0", method: problem.get, params: {countOutput: true, severities: [3]}, id: 13}
+        read_zabbix_problem_count_high:
+          method: POST
+          path: /api_jsonrpc.php
+          body: {jsonrpc: "2.0", method: problem.get, params: {countOutput: true, severities: [4]}, id: 14}
+        read_zabbix_problem_count_disaster:
+          method: POST
+          path: /api_jsonrpc.php
+          body: {jsonrpc: "2.0", method: problem.get, params: {countOutput: true, severities: [5]}, id: 15}
+        read_zabbix_enabled_host_count:
+          method: POST
+          path: /api_jsonrpc.php
+          body: {jsonrpc: "2.0", method: host.get, params: {countOutput: true, filter: {status: "0"}}, id: 20}
+        read_zabbix_disabled_host_count:
+          method: POST
+          path: /api_jsonrpc.php
+          body: {jsonrpc: "2.0", method: host.get, params: {countOutput: true, filter: {status: "1"}}, id: 21}
+        read_zabbix_agent_unknown_count:
+          method: POST
+          path: /api_jsonrpc.php
+          body: {jsonrpc: "2.0", method: host.get, params: {countOutput: true, filter: {available: "0"}}, id: 22}
+        read_zabbix_agent_available_count:
+          method: POST
+          path: /api_jsonrpc.php
+          body: {jsonrpc: "2.0", method: host.get, params: {countOutput: true, filter: {available: "1"}}, id: 23}
+        read_zabbix_agent_unavailable_count:
+          method: POST
+          path: /api_jsonrpc.php
+          body: {jsonrpc: "2.0", method: host.get, params: {countOutput: true, filter: {available: "2"}}, id: 24}
     adguard_health:
       enabled: true
       backend: local_shell_readonly
@@ -161,6 +216,20 @@ environment:
           action.mode: read
           action.intent: check_zabbix_container_health
         reason_code: zabbix_health_allowed
+      - rule_id: allow-zabbix-problem-summary-operation
+        effect: allow
+        conditions:
+          action.category: operation
+          action.mode: read
+          action.intent: collect_zabbix_problem_summary_readonly
+        reason_code: zabbix_problem_summary_allowed
+      - rule_id: allow-zabbix-host-availability-summary-operation
+        effect: allow
+        conditions:
+          action.category: operation
+          action.mode: read
+          action.intent: collect_zabbix_host_availability_summary_readonly
+        reason_code: zabbix_host_availability_summary_allowed
       - rule_id: allow-adguard-health-operation
         effect: allow
         conditions:
@@ -268,6 +337,50 @@ environment:
       - rule_id: allow-read-zabbix-api-version
         effect: allow
         conditions: {action.category: connector, action.mode: read, action.backend: http_api, action.connector: zabbix_api, action.name: read_zabbix_api_version}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-zabbix-problem-count-not-classified
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: http_api, action.connector: zabbix_api_authenticated, action.name: read_zabbix_problem_count_not_classified}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-zabbix-problem-count-information
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: http_api, action.connector: zabbix_api_authenticated, action.name: read_zabbix_problem_count_information}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-zabbix-problem-count-warning
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: http_api, action.connector: zabbix_api_authenticated, action.name: read_zabbix_problem_count_warning}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-zabbix-problem-count-average
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: http_api, action.connector: zabbix_api_authenticated, action.name: read_zabbix_problem_count_average}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-zabbix-problem-count-high
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: http_api, action.connector: zabbix_api_authenticated, action.name: read_zabbix_problem_count_high}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-zabbix-problem-count-disaster
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: http_api, action.connector: zabbix_api_authenticated, action.name: read_zabbix_problem_count_disaster}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-zabbix-enabled-host-count
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: http_api, action.connector: zabbix_api_authenticated, action.name: read_zabbix_enabled_host_count}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-zabbix-disabled-host-count
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: http_api, action.connector: zabbix_api_authenticated, action.name: read_zabbix_disabled_host_count}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-zabbix-agent-unknown-count
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: http_api, action.connector: zabbix_api_authenticated, action.name: read_zabbix_agent_unknown_count}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-zabbix-agent-available-count
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: http_api, action.connector: zabbix_api_authenticated, action.name: read_zabbix_agent_available_count}
+        reason_code: fixed_read_allowed
+      - rule_id: allow-read-zabbix-agent-unavailable-count
+        effect: allow
+        conditions: {action.category: connector, action.mode: read, action.backend: http_api, action.connector: zabbix_api_authenticated, action.name: read_zabbix_agent_unavailable_count}
         reason_code: fixed_read_allowed
       - rule_id: allow-read-adguard-dns-resolution
         effect: allow

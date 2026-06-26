@@ -1,0 +1,17 @@
+intent:
+  id: collect_zabbix_host_availability_summary_readonly
+  workflow: workflows/collect_zabbix_host_availability_summary_readonly.yaml
+  risk: low
+  enforce_declared_modes: true
+  modes:
+    - read_only
+    - dry_run
+  facts_contract: tecrax.zabbix_host_availability_summary@1.0
+  catalog:
+    title: Collect Zabbix host availability summary
+    summary: Collect bounded host and agent availability counts through authenticated read-only Zabbix API.
+    target_kinds: [host]
+    required_capabilities: [http_api, tecrax.host.zabbix_host_availability_summary.v1]
+    side_effect_class: none
+    validation_ref: validation_rules/collect_zabbix_host_availability_summary_readonly.yaml
+    runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/zabbix-readonly-summaries-runbook.md

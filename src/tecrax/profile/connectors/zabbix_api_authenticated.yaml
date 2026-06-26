@@ -1,0 +1,86 @@
+connector:
+  name: zabbix_api_authenticated
+  backend: http_api
+  capabilities:
+    - read_zabbix_problem_count_not_classified
+    - read_zabbix_problem_count_information
+    - read_zabbix_problem_count_warning
+    - read_zabbix_problem_count_average
+    - read_zabbix_problem_count_high
+    - read_zabbix_problem_count_disaster
+    - read_zabbix_enabled_host_count
+    - read_zabbix_disabled_host_count
+    - read_zabbix_agent_unknown_count
+    - read_zabbix_agent_available_count
+    - read_zabbix_agent_unavailable_count
+  action_shapes:
+    read_zabbix_problem_count_not_classified:
+      method: POST
+      path: /api_jsonrpc.php
+      body: {jsonrpc: "2.0", method: problem.get, params: {countOutput: true, severities: [0]}, id: 10}
+      mutating: false
+      max_response_bytes: 1024
+    read_zabbix_problem_count_information:
+      method: POST
+      path: /api_jsonrpc.php
+      body: {jsonrpc: "2.0", method: problem.get, params: {countOutput: true, severities: [1]}, id: 11}
+      mutating: false
+      max_response_bytes: 1024
+    read_zabbix_problem_count_warning:
+      method: POST
+      path: /api_jsonrpc.php
+      body: {jsonrpc: "2.0", method: problem.get, params: {countOutput: true, severities: [2]}, id: 12}
+      mutating: false
+      max_response_bytes: 1024
+    read_zabbix_problem_count_average:
+      method: POST
+      path: /api_jsonrpc.php
+      body: {jsonrpc: "2.0", method: problem.get, params: {countOutput: true, severities: [3]}, id: 13}
+      mutating: false
+      max_response_bytes: 1024
+    read_zabbix_problem_count_high:
+      method: POST
+      path: /api_jsonrpc.php
+      body: {jsonrpc: "2.0", method: problem.get, params: {countOutput: true, severities: [4]}, id: 14}
+      mutating: false
+      max_response_bytes: 1024
+    read_zabbix_problem_count_disaster:
+      method: POST
+      path: /api_jsonrpc.php
+      body: {jsonrpc: "2.0", method: problem.get, params: {countOutput: true, severities: [5]}, id: 15}
+      mutating: false
+      max_response_bytes: 1024
+    read_zabbix_enabled_host_count:
+      method: POST
+      path: /api_jsonrpc.php
+      body: {jsonrpc: "2.0", method: host.get, params: {countOutput: true, filter: {status: "0"}}, id: 20}
+      mutating: false
+      max_response_bytes: 1024
+    read_zabbix_disabled_host_count:
+      method: POST
+      path: /api_jsonrpc.php
+      body: {jsonrpc: "2.0", method: host.get, params: {countOutput: true, filter: {status: "1"}}, id: 21}
+      mutating: false
+      max_response_bytes: 1024
+    read_zabbix_agent_unknown_count:
+      method: POST
+      path: /api_jsonrpc.php
+      body: {jsonrpc: "2.0", method: host.get, params: {countOutput: true, filter: {available: "0"}}, id: 22}
+      mutating: false
+      max_response_bytes: 1024
+    read_zabbix_agent_available_count:
+      method: POST
+      path: /api_jsonrpc.php
+      body: {jsonrpc: "2.0", method: host.get, params: {countOutput: true, filter: {available: "1"}}, id: 23}
+      mutating: false
+      max_response_bytes: 1024
+    read_zabbix_agent_unavailable_count:
+      method: POST
+      path: /api_jsonrpc.php
+      body: {jsonrpc: "2.0", method: host.get, params: {countOutput: true, filter: {available: "2"}}, id: 24}
+      mutating: false
+      max_response_bytes: 1024
+  modes:
+    - read_only
+    - dry_run
+  timeout_default: 10s

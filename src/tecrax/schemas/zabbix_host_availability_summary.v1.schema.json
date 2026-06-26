@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/rozmiarD/tecrax/schemas/zabbix_host_availability_summary.v1.schema.json",
+  "title": "Tecrax Zabbix host availability summary facts v1",
+  "type": "object",
+  "required": [
+    "contract",
+    "schema_ref",
+    "observation_scope",
+    "host_counts",
+    "agent_availability_counts",
+    "complete",
+    "healthy",
+    "scope",
+    "coverage",
+    "assessment",
+    "non_claims"
+  ],
+  "properties": {
+    "contract": {
+      "type": "object",
+      "required": ["id", "version"],
+      "properties": {
+        "id": {"const": "tecrax.zabbix_host_availability_summary"},
+        "version": {"const": "1.0"}
+      },
+      "additionalProperties": false
+    },
+    "schema_ref": {
+      "const": "schemas/zabbix_host_availability_summary.v1.schema.json"
+    },
+    "observation_scope": {"const": "host_and_agent_availability_counts_only"},
+    "host_counts": {
+      "type": "object",
+      "required": ["enabled", "disabled"],
+      "properties": {
+        "enabled": {"type": "integer", "minimum": 0},
+        "disabled": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "agent_availability_counts": {
+      "type": "object",
+      "required": ["unknown", "available", "unavailable"],
+      "properties": {
+        "unknown": {"type": "integer", "minimum": 0},
+        "available": {"type": "integer", "minimum": 0},
+        "unavailable": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "complete": {"type": "boolean"},
+    "healthy": {"type": "boolean"},
+    "scope": {"type": "object"},
+    "coverage": {"type": "object"},
+    "assessment": {"type": "object"},
+    "non_claims": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

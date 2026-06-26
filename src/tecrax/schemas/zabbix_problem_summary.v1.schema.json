@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/rozmiarD/tecrax/schemas/zabbix_problem_summary.v1.schema.json",
+  "title": "Tecrax Zabbix problem summary facts v1",
+  "type": "object",
+  "required": [
+    "contract",
+    "schema_ref",
+    "observation_scope",
+    "problem_counts_by_severity",
+    "total_open_problems",
+    "complete",
+    "healthy",
+    "scope",
+    "coverage",
+    "assessment",
+    "non_claims"
+  ],
+  "properties": {
+    "contract": {
+      "type": "object",
+      "required": ["id", "version"],
+      "properties": {
+        "id": {"const": "tecrax.zabbix_problem_summary"},
+        "version": {"const": "1.0"}
+      },
+      "additionalProperties": false
+    },
+    "schema_ref": {"const": "schemas/zabbix_problem_summary.v1.schema.json"},
+    "observation_scope": {"const": "problem_count_summary_only"},
+    "problem_counts_by_severity": {
+      "type": "object",
+      "required": [
+        "not_classified",
+        "information",
+        "warning",
+        "average",
+        "high",
+        "disaster"
+      ],
+      "properties": {
+        "not_classified": {"type": "integer", "minimum": 0},
+        "information": {"type": "integer", "minimum": 0},
+        "warning": {"type": "integer", "minimum": 0},
+        "average": {"type": "integer", "minimum": 0},
+        "high": {"type": "integer", "minimum": 0},
+        "disaster": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "total_open_problems": {"type": ["integer", "null"], "minimum": 0},
+    "complete": {"type": "boolean"},
+    "healthy": {"type": "boolean"},
+    "scope": {"type": "object"},
+    "coverage": {"type": "object"},
+    "assessment": {"type": "object"},
+    "non_claims": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

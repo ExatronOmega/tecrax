@@ -5,6 +5,12 @@ from typing import Any
 from rexecop.execution.backend import StepExecutionContext
 
 from tecrax.contracts import (
+    ZABBIX_HOST_AVAILABILITY_CONTRACT_ID,
+    ZABBIX_HOST_AVAILABILITY_REQUESTED,
+    ZABBIX_HOST_AVAILABILITY_SCHEMA_REF,
+    ZABBIX_PROBLEM_SUMMARY_CONTRACT_ID,
+    ZABBIX_PROBLEM_SUMMARY_REQUESTED,
+    ZABBIX_PROBLEM_SUMMARY_SCHEMA_REF,
     build_docker_service_health_v1,
     build_ntp_local_health_v1,
 )
@@ -80,6 +86,94 @@ def normalize_zabbix_health(context: StepExecutionContext) -> dict[str, Any]:
         not_observed=["container_runtime", "problems", "hosts", "configuration"],
         assessment="healthy" if result["healthy"] else "unhealthy",
         non_claims=["container_health", "monitoring_health", "authenticated_api"],
+    )
+
+
+def normalize_zabbix_problem_summary(context: StepExecutionContext) -> dict[str, Any]:
+    results = connector_results(context)
+    severity_steps = {
+        "not_classified": "read_zabbix_problem_count_not_classified",
+        "information": "read_zabbix_problem_count_information",
+        "warning": "read_zabbix_problem_count_warning",
+        "average": "read_zabbix_problem_count_average",
+        "high": "read_zabbix_problem_count_high",
+        "disaster": "read_zabbix_problem_count_disaster",
+    }
+    counts = {
+        severity: _jsonrpc_count(results.get(step_id))
+        for severity, step_id in severity_steps.items()
+    }
+    complete = all(value is not None for value in counts.values())
+    normalized_counts = {key: (value if value is not None else 0) for key, value in counts.items()}
+    total = sum(normalized_counts.values()) if complete else None
+    result = {
+        "schema_ref": ZABBIX_PROBLEM_SUMMARY_SCHEMA_REF,
+        "observation_scope": "problem_count_summary_only",
+        "problem_counts_by_severity": normalized_counts,
+        "total_open_problems": total,
+        "complete": complete,
+    }
+    result["healthy"] = bool(complete and total == 0)
+    return finalize_and_store(
+        context,
+        "zabbix_problem_summary",
+        result,
+        contract_id=ZABBIX_PROBLEM_SUMMARY_CONTRACT_ID,
+        requested=ZABBIX_PROBLEM_SUMMARY_REQUESTED,
+        observed=ZABBIX_PROBLEM_SUMMARY_REQUESTED if complete else [],
+        not_observed=[] if complete else ["one_or_more_problem_severity_counts"],
+        assessment="healthy" if result["healthy"] else ("degraded" if complete else "unknown"),
+        non_claims=[
+            "problem_names",
+            "trigger_names",
+            "host_names",
+            "event_payloads",
+            "root_cause",
+        ],
+    )
+
+
+def normalize_zabbix_host_availability_summary(
+    context: StepExecutionContext,
+) -> dict[str, Any]:
+    results = connector_results(context)
+    host_counts = {
+        "enabled": _jsonrpc_count(results.get("read_zabbix_enabled_host_count")),
+        "disabled": _jsonrpc_count(results.get("read_zabbix_disabled_host_count")),
+    }
+    agent_counts = {
+        "unknown": _jsonrpc_count(results.get("read_zabbix_agent_unknown_count")),
+        "available": _jsonrpc_count(results.get("read_zabbix_agent_available_count")),
+        "unavailable": _jsonrpc_count(results.get("read_zabbix_agent_unavailable_count")),
+    }
+    complete = all(value is not None for value in (*host_counts.values(), *agent_counts.values()))
+    normalized_hosts = {key: (value if value is not None else 0) for key, value in host_counts.items()}
+    normalized_agents = {key: (value if value is not None else 0) for key, value in agent_counts.items()}
+    result = {
+        "schema_ref": ZABBIX_HOST_AVAILABILITY_SCHEMA_REF,
+        "observation_scope": "host_and_agent_availability_counts_only",
+        "host_counts": normalized_hosts,
+        "agent_availability_counts": normalized_agents,
+        "complete": complete,
+    }
+    unavailable = normalized_agents["unavailable"]
+    result["healthy"] = bool(complete and unavailable == 0)
+    return finalize_and_store(
+        context,
+        "zabbix_host_availability_summary",
+        result,
+        contract_id=ZABBIX_HOST_AVAILABILITY_CONTRACT_ID,
+        requested=ZABBIX_HOST_AVAILABILITY_REQUESTED,
+        observed=ZABBIX_HOST_AVAILABILITY_REQUESTED if complete else [],
+        not_observed=[] if complete else ["one_or_more_host_availability_counts"],
+        assessment="healthy" if result["healthy"] else ("degraded" if complete else "unknown"),
+        non_claims=[
+            "host_names",
+            "interface_addresses",
+            "templates",
+            "inventory_fields",
+            "configuration",
+        ],
     )
 
 
@@ -160,3 +254,14 @@ def _parse_systemctl_show(value: str) -> dict[str, str]:
         if separator and key in allowed:
             parsed[key] = raw.strip()[:64]
     return parsed
+
+
+def _jsonrpc_count(payload: Any) -> int | None:
+    if not isinstance(payload, dict) or payload.get("error"):
+        return None
+    value = payload.get("result")
+    try:
+        result = int(str(value))
+    except (TypeError, ValueError):
+        return None
+    return max(0, min(result, 1_000_000))

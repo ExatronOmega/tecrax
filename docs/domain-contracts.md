@@ -90,3 +90,12 @@ HTTP reachability facts for Zabbix, AdGuard and Portainer keep their current nar
 The HTTP action identity checkpoint in `docs/http-action-identity-checkpoint.md` defines
 the activation gate for any future HTTP expansion without moving domain semantics into
 RExecOp.
+
+Authenticated Zabbix T4 summaries are separate facts contracts:
+
+- `tecrax.zabbix_problem_summary@1.0` contains only open problem counts by severity.
+- `tecrax.zabbix_host_availability_summary@1.0` contains only enabled/disabled host
+  counts and Zabbix agent availability counts.
+
+They do not contain host names, problem names, trigger names, event payloads, interface
+addresses, templates, inventory fields or Zabbix configuration.

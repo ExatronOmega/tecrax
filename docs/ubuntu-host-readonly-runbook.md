@@ -9,6 +9,8 @@ through `http_api`; AdGuard uses fixed `dig` and `curl` probes through
 `local_shell_readonly`.
 `check_portainer_health` uses only the unauthenticated status endpoint through a verified
 TLS tunnel; it does not list Portainer-managed objects.
+Authenticated Zabbix summaries are separate T4 operations documented in
+`zabbix-readonly-summaries-runbook.md`.
 
 ## Operator prerequisites
 

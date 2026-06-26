@@ -14,12 +14,19 @@ target_catalog:
         - tecrax.host.ntp_local_health.v1
         - tecrax.host.docker_service_health.v1
         - tecrax.host.zabbix_api_reachability.v1
+        - tecrax.host.zabbix_problem_summary.v1
+        - tecrax.host.zabbix_host_availability_summary.v1
         - tecrax.host.adguard_reachability.v1
         - tecrax.host.portainer_reachability.v1
         - tecrax.host.monitoring_diagnosis.v1
         - tecrax.host.security_posture.v1
         - tecrax.ntp.server_observation.v1
-      connector_refs: [adguard_health, monitoring_host, portainer_api, zabbix_api]
+      connector_refs:
+        - adguard_health
+        - monitoring_host
+        - portainer_api
+        - zabbix_api
+        - zabbix_api_authenticated
       classification:
         criticality: low
         lifecycle: operator_managed
