@@ -29,6 +29,8 @@ All notable Tecrax profile changes are documented here.
   output tests.
 - Activated the network management-posture read-only lite slice over existing
   inventory facts, with bounded SSH findings and example policy admission.
+- Added the VLAN and port-security read-only design checkpoint, keeping those
+  observations out of the active profile until separate contracts and fixtures exist.
 - Documented the HTTP action identity checkpoint for future Zabbix, AdGuard and
   Portainer API expansion while preserving RExecOp core neutrality.
 - Refactored fact normalizer storage so active normalizers share the same

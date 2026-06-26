@@ -86,6 +86,9 @@ It does not claim running configuration, VLANs, port state, port security, SNMP 
 firmware compliance. The posture contract consumes the inventory fact and emits bounded
 findings such as legacy SSH v1, observed legacy SSH crypto, disabled SSH server, disabled
 SSH v2, unknown idle timeout and unknown max-client bound.
+Future VLAN and port-security observations are gated by
+`docs/vlan-port-security-readonly-checkpoint.md` and require separate contracts;
+they are not part of the current network-device facts.
 
 HTTP reachability facts for Zabbix, AdGuard and Portainer keep their current narrow shape.
 The HTTP action identity checkpoint in `docs/http-action-identity-checkpoint.md` defines

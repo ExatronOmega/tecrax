@@ -70,6 +70,22 @@ def test_unverified_r2_intents_are_not_claimed_by_profile() -> None:
     assert not (intents / "collect_adguard_runtime_summary_readonly.yaml").exists()
 
 
+def test_vlan_and_port_security_checkpoint_is_not_active_profile() -> None:
+    intents = Path(profile_root()) / "intents"
+    workflows = Path(profile_root()) / "workflows"
+    connectors = Path(profile_root()) / "connectors"
+
+    assert not (intents / "collect_switch_vlan_summary_readonly.yaml").exists()
+    assert not (intents / "assess_switch_port_security_posture_readonly.yaml").exists()
+    assert not (workflows / "collect_switch_vlan_summary_readonly.yaml").exists()
+    assert not (workflows / "assess_switch_port_security_posture_readonly.yaml").exists()
+    network_connector = (connectors / "network_device_cli.yaml").read_text(
+        encoding="utf-8"
+    )
+    assert "vlan-summary" not in network_connector
+    assert "port-security-summary" not in network_connector
+
+
 def test_ubuntu_inventory_example_projects_b2_runtime_controls(tmp_path: Path) -> None:
     controller = OperationController(store=FileStore(tmp_path / ".rexecop"))
 

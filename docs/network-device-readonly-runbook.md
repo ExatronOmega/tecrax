@@ -140,6 +140,8 @@ The current bounded findings are limited to:
 The posture fact keeps `running_configuration`, `port_security`, `vlans` and
 `firmware_compliance` as explicit non-claims. VLAN and port-security checks need a
 separate future design checkpoint with a dedicated facts contract and fixtures.
+That checkpoint is recorded in `docs/vlan-port-security-readonly-checkpoint.md`;
+it does not activate VLAN or port-security operations.
 
 ## Safety notes
 
