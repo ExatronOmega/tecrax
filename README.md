@@ -25,6 +25,8 @@ This package provides:
   outside the repository.
 - **Monitoring-host reaction pack** — deterministic domain findings map only to
   existing read-only intents; unknown states escalate without a free-form action.
+- **Bounded escalation proposal vectors** — `diagnose_monitoring_host` facts can be
+  projected into untrusted SCLite proposal artifacts that never grant execution.
 - **Operator catalog metadata** — target kinds, required capabilities, side-effect
   classes, validation references and runbook references projected by RExecOp from
   the profile; sanitized target-catalog example included.
@@ -101,6 +103,10 @@ The first release is deliberately read-only. It can re-run bounded host inventor
 Docker service, Zabbix, AdGuard, Portainer, or network device inventory checks; a healthy
 observation is `no_op`, and an unclassified state is `escalate`. RExecOp owns deterministic
 mechanics and lifecycle, GovEngine owns admission, and SCLite owns the evidence chain.
+For operator review, Tecrax can also build a bounded untrusted escalation proposal from
+the diagnosis facts. Validate it with `rexecop reaction-proposal-validate`; a valid proposal
+still has `may_execute=false` and requires GovEngine admission before any future follow-up.
+See `docs/escalation-proposal-vectors.md`.
 
 ## Local fixture proof
 

@@ -106,3 +106,9 @@ component states and bounded `findings`. Findings carry stable `kind`, `componen
 `reason_code` and `severity` fields from the Tecrax finding taxonomy. They are deterministic
 diagnostic summaries, not remediation instructions, policy decisions or SCLite canonical
 truth.
+
+`build_monitoring_host_escalation_proposal()` can project those diagnosis facts into a
+bounded SCLite `escalation_proposal.v0.1` advisory artifact. The proposal is untrusted,
+contains no connector payload or command, rejects unsafe evidence refs and secret-like
+explanations, and cannot grant execution. RExecOp validates the generic proposal shape;
+GovEngine owns any later admission decision.

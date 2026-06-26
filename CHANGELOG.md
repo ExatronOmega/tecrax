@@ -21,6 +21,9 @@ All notable Tecrax profile changes are documented here.
   constrained read-only projection is proven.
 - Added the monitoring-host diagnosis v1 schema and deterministic bounded findings
   with stable reason codes over existing read-only component observations.
+- Added bounded monitoring-host escalation proposal vectors with negative tests
+  for unknown intents, raw command payloads, unsafe evidence refs and secret-like
+  explanations; proposals remain untrusted and never grant execution.
 - Documented the HTTP action identity checkpoint for future Zabbix, AdGuard and
   Portainer API expansion while preserving RExecOp core neutrality.
 - Refactored fact normalizer storage so active normalizers share the same

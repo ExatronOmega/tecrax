@@ -26,6 +26,9 @@ Docker, AdGuard and Portainer expansion is in
 `tecrax.monitoring_host_diagnosis@1.0` aggregate with bounded findings. Reactions may use
 those findings to select an already declared read-only intent, no-op or escalation proposal;
 they do not create free-form actions.
+Bounded escalation proposal vectors are documented in
+`docs/escalation-proposal-vectors.md`. They are untrusted advisory artifacts with
+`may_execute=false`; RExecOp validation and GovEngine admission remain separate gates.
 
 ## Current network-device operation
 
