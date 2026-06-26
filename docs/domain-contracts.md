@@ -83,5 +83,7 @@ It does not claim running configuration, VLANs, port state, port security, SNMP 
 firmware compliance. The posture contract consumes the inventory fact and emits bounded
 findings such as legacy SSH v1, observed legacy SSH crypto and unknown idle timeout.
 
-HTTP reachability facts for Zabbix, AdGuard and Portainer keep their current narrow shape
-until the separate HTTP action identity checkpoint is completed.
+HTTP reachability facts for Zabbix, AdGuard and Portainer keep their current narrow shape.
+The HTTP action identity checkpoint in `docs/http-action-identity-checkpoint.md` defines
+the activation gate for any future HTTP expansion without moving domain semantics into
+RExecOp.

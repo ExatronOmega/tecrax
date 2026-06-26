@@ -1,5 +1,9 @@
 # Service API boundaries
 
+The HTTP action ownership and activation rules are recorded in
+`docs/http-action-identity-checkpoint.md`. RExecOp owns generic shape validation and digest
+binding; Tecrax owns domain action declarations, facts contracts, non-claims and validation.
+
 ## Zabbix: T4 blocked beyond reachability
 
 The active `check_zabbix_container_health` id is compatibility-bound but proves only the

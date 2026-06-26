@@ -37,6 +37,9 @@ component health remains a separate field.
   constrained API. Container, endpoint, stack and user inventory are not collected.
 - AdGuard management API remains blocked without a read-only credential/role. The current
   health check intentionally uses only DNS resolution and web-login reachability.
+- Future HTTP expansion must satisfy the action identity checkpoint in
+  `docs/http-action-identity-checkpoint.md`; runtime environments must not redefine
+  Tecrax-owned method/path/body/query/projection semantics.
 
 No Docker inspect, `ps`, logs, exec, lifecycle command, configuration change, service restart,
 or NTP modification is part of R2.
