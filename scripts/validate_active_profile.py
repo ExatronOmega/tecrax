@@ -17,6 +17,26 @@ from tecrax.contracts import FACTS_CONTRACTS  # noqa: E402
 
 
 READ_ONLY_MODES = {"read_only", "dry_run"}
+TRIGGER_DECISIONS = {"plan_operation", "ignore", "escalate"}
+TRIGGER_OPERATORS = {"exists", "equals", "not_equals", "in"}
+TRIGGER_RULE_KEYS = {
+    "id",
+    "priority",
+    "event_type",
+    "when",
+    "decision",
+    "operation",
+    "cooldown_seconds",
+}
+TRIGGER_OPERATION_KEYS = {
+    "intent",
+    "target",
+    "target_from",
+    "catalog_target",
+    "catalog_target_from",
+    "mode",
+    "auto_react",
+}
 REACTION_OBSERVATION_KEYS = {
     "shared_state_key",
     "schema_ref",
@@ -64,6 +84,7 @@ def collect_errors(profile_root: Path | None = None) -> list[str]:
     intents = sorted((profile / "intents").glob("*.yaml"))
     if not intents:
         return ["active_profile:no_intents"]
+    intent_ids = {path.stem for path in intents}
 
     for intent_path in intents:
         data = _load(intent_path).get("intent")
@@ -205,8 +226,86 @@ def collect_errors(profile_root: Path | None = None) -> list[str]:
     for token in FORBIDDEN_ACTIVE_TOKENS:
         if token in taxonomy_text:
             errors.append(f"taxonomy:forbidden_future_token:{token}")
+    errors.extend(_collect_trigger_errors(profile, intent_ids))
 
     return sorted(set(errors))
+
+
+def _collect_trigger_errors(profile: Path, intent_ids: set[str]) -> list[str]:
+    path = profile / "triggers" / "trigger_rules.yaml"
+    if not path.exists():
+        return []
+    errors: list[str] = []
+    document = _load(path)
+    trigger_rules = document.get("trigger_rules")
+    if not isinstance(trigger_rules, dict):
+        return ["trigger_rules:missing_mapping"]
+    rule_set_id = str(trigger_rules.get("id") or "")
+    version = str(trigger_rules.get("version") or "")
+    rules = trigger_rules.get("rules")
+    if not rule_set_id or not version:
+        errors.append("trigger_rules:missing_id_or_version")
+    if not isinstance(rules, list) or not rules:
+        errors.append("trigger_rules:no_rules")
+        return errors
+    seen: set[str] = set()
+    for item in rules:
+        if not isinstance(item, dict):
+            errors.append("trigger_rules:rule_not_mapping")
+            continue
+        rule_id = str(item.get("id") or "")
+        if not rule_id or rule_id in seen:
+            errors.append("trigger_rules:duplicate_or_missing_rule_id")
+        seen.add(rule_id)
+        unknown = sorted(str(key) for key in item if key not in TRIGGER_RULE_KEYS)
+        if unknown:
+            errors.append(f"{rule_id}:unknown_trigger_rule_keys:{unknown}")
+        decision = str(item.get("decision") or "")
+        if decision not in TRIGGER_DECISIONS:
+            errors.append(f"{rule_id}:unsupported_trigger_decision:{decision}")
+        if int(item.get("cooldown_seconds") or 0) < 0:
+            errors.append(f"{rule_id}:negative_cooldown")
+        conditions = item.get("when")
+        if not isinstance(conditions, list) or not conditions:
+            errors.append(f"{rule_id}:missing_trigger_conditions")
+        else:
+            for condition in conditions:
+                if not isinstance(condition, dict):
+                    errors.append(f"{rule_id}:condition_not_mapping")
+                    continue
+                operator = str(condition.get("operator") or "")
+                path_ref = str(condition.get("path") or "")
+                if not path_ref:
+                    errors.append(f"{rule_id}:condition_missing_path")
+                if operator not in TRIGGER_OPERATORS:
+                    errors.append(f"{rule_id}:condition_unsupported_operator:{operator}")
+        operation = item.get("operation") or {}
+        if not isinstance(operation, dict):
+            errors.append(f"{rule_id}:trigger_operation_not_mapping")
+            continue
+        unknown_operation_keys = sorted(
+            str(key) for key in operation if key not in TRIGGER_OPERATION_KEYS
+        )
+        if unknown_operation_keys:
+            errors.append(f"{rule_id}:unknown_trigger_operation_keys:{unknown_operation_keys}")
+        if decision == "plan_operation":
+            intent = str(operation.get("intent") or "")
+            mode = str(operation.get("mode") or "")
+            if intent not in intent_ids:
+                errors.append(f"{rule_id}:unknown_trigger_intent:{intent}")
+            if mode not in READ_ONLY_MODES:
+                errors.append(f"{rule_id}:trigger_mode_not_readonly:{mode}")
+            literal_target = str(operation.get("target") or operation.get("catalog_target") or "")
+            dynamic_target = str(
+                operation.get("target_from") or operation.get("catalog_target_from") or ""
+            )
+            if bool(literal_target) == bool(dynamic_target):
+                errors.append(f"{rule_id}:trigger_requires_exactly_one_target_binding")
+            if operation.get("catalog_target_from") != "subject":
+                errors.append(f"{rule_id}:trigger_must_use_catalog_subject_binding")
+        elif operation:
+            errors.append(f"{rule_id}:non_plan_trigger_has_operation")
+    return errors
 
 
 def main() -> int:

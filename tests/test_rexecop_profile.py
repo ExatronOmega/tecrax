@@ -38,6 +38,7 @@ def test_profile_root_points_to_bundled_directory() -> None:
     assert (root / "connectors" / "adguard_health.yaml").is_file()
     assert (root / "connectors" / "portainer_api.yaml").is_file()
     assert (root / "connectors" / "network_device_cli.yaml").is_file()
+    assert (root / "triggers" / "trigger_rules.yaml").is_file()
 
 
 def test_profile_yaml_loads_with_expected_contract() -> None:

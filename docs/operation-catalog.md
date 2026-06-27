@@ -35,6 +35,14 @@ Bounded escalation proposal vectors are documented in
 The bounded adapter contract for `collect_network_device_inventory_readonly` is
 in `docs/network-device-readonly-runbook.md`.
 
+## Current trigger rules
+
+The first active trigger rules are documented in `docs/trigger-rules.md`. They map
+a bounded `network.host_observed` event either to a planned dry-run
+`collect_basic_host_inventory` operation for a known catalog target, or to
+escalation for an unknown host. RExecOp owns trigger mechanics; Tecrax owns only
+this domain mapping.
+
 ## Future backup status
 
 `check_backup_status` is not part of the active profile. Future backup support

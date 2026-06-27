@@ -1,0 +1,23 @@
+trigger_rules:
+  id: tecrax.infrastructure-readonly-triggers
+  version: "0.1"
+  rules:
+    - id: network.known-host-observed.inventory
+      priority: 10
+      event_type: network.host_observed
+      when:
+        - {path: payload.known, operator: equals, value: true}
+        - {path: payload.target_kind, operator: equals, value: host}
+      decision: plan_operation
+      operation:
+        intent: collect_basic_host_inventory
+        catalog_target_from: subject
+        mode: dry_run
+      cooldown_seconds: 300
+    - id: network.unknown-host-observed.escalate
+      priority: 20
+      event_type: network.host_observed
+      when:
+        - {path: payload.known, operator: equals, value: false}
+      decision: escalate
+      cooldown_seconds: 300

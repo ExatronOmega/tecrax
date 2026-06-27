@@ -27,6 +27,9 @@ This package provides:
   existing read-only intents; unknown states escalate without a free-form action.
 - **Bounded escalation proposal vectors** — `diagnose_monitoring_host` facts can be
   projected into untrusted SCLite proposal artifacts that never grant execution.
+- **Source-line trigger rules** — bounded `network.host_observed` events can map a
+  known catalog target to `collect_basic_host_inventory` planning, while unknown hosts
+  escalate without execution.
 - **Operator catalog metadata** — target kinds, required capabilities, side-effect
   classes, validation references and runbook references projected by RExecOp from
   the profile; sanitized target-catalog example included.
@@ -107,6 +110,15 @@ For operator review, Tecrax can also build a bounded untrusted escalation propos
 the diagnosis facts. Validate it with `rexecop reaction-proposal-validate`; a valid proposal
 still has `may_execute=false` and requires GovEngine admission before any future follow-up.
 See `docs/escalation-proposal-vectors.md`.
+
+## Trigger rules
+
+Tecrax declares domain trigger mappings in
+`src/tecrax/profile/triggers/trigger_rules.yaml`. The initial source-line rule family
+handles bounded `network.host_observed` events: a known host subject maps to a dry-run
+`collect_basic_host_inventory` plan through an operator-owned target catalog; an unknown
+host escalates and does not execute anything. RExecOp owns event intake, dedupe,
+cooldown and planning mechanics. See `docs/trigger-rules.md`.
 
 ## Local fixture proof
 

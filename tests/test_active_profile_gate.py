@@ -93,3 +93,39 @@ def test_active_profile_rejects_forbidden_network_connector_action(
     path.write_text(yaml.safe_dump(data), encoding="utf-8")
 
     assert any("forbidden_connector_action_token:vlan-summary" in item for item in collect_errors(root))
+
+
+def test_active_profile_rejects_trigger_mutating_mode(tmp_path: Path) -> None:
+    root = _copy_profile(tmp_path)
+    path = root / "triggers" / "trigger_rules.yaml"
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    data["trigger_rules"]["rules"][0]["operation"]["mode"] = "apply"
+    path.write_text(yaml.safe_dump(data), encoding="utf-8")
+
+    assert any("trigger_mode_not_readonly:apply" in item for item in collect_errors(root))
+
+
+def test_active_profile_rejects_trigger_literal_target_binding(tmp_path: Path) -> None:
+    root = _copy_profile(tmp_path)
+    path = root / "triggers" / "trigger_rules.yaml"
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    operation = data["trigger_rules"]["rules"][0]["operation"]
+    operation.pop("catalog_target_from")
+    operation["catalog_target"] = "monitoring-host-01"
+    path.write_text(yaml.safe_dump(data), encoding="utf-8")
+
+    assert any("trigger_must_use_catalog_subject_binding" in item for item in collect_errors(root))
+
+
+def test_active_profile_rejects_escalation_trigger_operation(tmp_path: Path) -> None:
+    root = _copy_profile(tmp_path)
+    path = root / "triggers" / "trigger_rules.yaml"
+    data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    data["trigger_rules"]["rules"][1]["operation"] = {
+        "intent": "collect_basic_host_inventory",
+        "catalog_target_from": "subject",
+        "mode": "dry_run",
+    }
+    path.write_text(yaml.safe_dump(data), encoding="utf-8")
+
+    assert any("non_plan_trigger_has_operation" in item for item in collect_errors(root))

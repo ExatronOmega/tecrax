@@ -11,6 +11,9 @@ All notable Tecrax profile changes are documented here.
 - Declared the `diagnose_monitoring_host` reaction-observation contract in
   intent metadata and extended the active-profile gate to reject drift between
   the declaration and workflow producer step.
+- Added source-line Tecrax trigger rules for bounded `network.host_observed`
+  events: known catalog hosts plan `collect_basic_host_inventory` in dry-run
+  mode, while unknown hosts escalate without execution.
 
 ## 0.3.6a0 - 2026-06-27
 
