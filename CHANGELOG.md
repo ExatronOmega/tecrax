@@ -4,6 +4,8 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+## 0.3.7a0 - 2026-06-28
+
 - `diagnose_monitoring_host` now persists a profile-owned SCLite
   `reaction_observation` envelope in workflow shared state so RExecOp can plan
   deterministic reactions from a completed operation without constructing
@@ -14,6 +16,10 @@ All notable Tecrax profile changes are documented here.
 - Added source-line Tecrax trigger rules for bounded `network.host_observed`
   events: known catalog hosts plan `collect_basic_host_inventory` in dry-run
   mode, while unknown hosts escalate without execution.
+- Published the coordinated trigger/reaction profile line over
+  `govengine>=0.16.2,<0.17`, `sclite-core>=1.0.6,<1.1`, and
+  `rexecop>=0.2.8a0,<0.3` without moving event intake, execution, governance,
+  scheduler ownership or evidence truth into Tecrax.
 
 ## 0.3.6a0 - 2026-06-27
 
