@@ -15,4 +15,5 @@ taxonomy:
     - tecrax.network_device.inventory.v1
     - tecrax.host.security_posture.v1
     - tecrax.ntp.server_observation.v1
+    - tecrax.host.chrony_ntp_server_config.v1
     - tecrax.network_device.management_posture.v1

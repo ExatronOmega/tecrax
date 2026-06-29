@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/rozmiarD/tecrax/schemas/chrony_ntp_server_mutation.v1.schema.json",
+  "title": "Tecrax chrony NTP server mutation facts v1",
+  "type": "object",
+  "required": [
+    "contract",
+    "schema_ref",
+    "allowed_subnet",
+    "managed_file",
+    "desired_state_applied",
+    "rollback_available",
+    "scope",
+    "coverage",
+    "assessment",
+    "non_claims"
+  ],
+  "properties": {
+    "contract": {
+      "type": "object",
+      "required": ["id", "version"],
+      "properties": {
+        "id": {"const": "tecrax.chrony_ntp_server_mutation"},
+        "version": {"const": "1.0"}
+      },
+      "additionalProperties": false
+    },
+    "schema_ref": {"const": "schemas/chrony_ntp_server_mutation.v1.schema.json"},
+    "allowed_subnet": {
+      "type": "string",
+      "pattern": "^[0-9]{1,3}(\\.[0-9]{1,3}){3}/[0-9]{1,2}$"
+    },
+    "managed_file": {
+      "const": "/etc/chrony/conf.d/tecrax-ntp-server.conf"
+    },
+    "desired_state_applied": {"type": "boolean"},
+    "rollback_available": {"type": "boolean"},
+    "scope": {"type": "object"},
+    "coverage": {"type": "object"},
+    "assessment": {"type": "object"},
+    "non_claims": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

@@ -33,11 +33,13 @@ def test_profile_root_points_to_bundled_directory() -> None:
     assert (root / "intents" / "check_portainer_health.yaml").is_file()
     assert (root / "intents" / "diagnose_monitoring_host.yaml").is_file()
     assert (root / "intents" / "collect_network_device_inventory_readonly.yaml").is_file()
+    assert (root / "intents" / "configure_chrony_ntp_server.yaml").is_file()
     assert (root / "connectors" / "zabbix_api.yaml").is_file()
     assert (root / "connectors" / "zabbix_api_authenticated.yaml").is_file()
     assert (root / "connectors" / "adguard_health.yaml").is_file()
     assert (root / "connectors" / "portainer_api.yaml").is_file()
     assert (root / "connectors" / "network_device_cli.yaml").is_file()
+    assert (root / "connectors" / "chrony_ntp_server.yaml").is_file()
     assert (root / "triggers" / "trigger_rules.yaml").is_file()
 
 
@@ -58,7 +60,7 @@ def test_rexecop_profiles_entry_point_registered() -> None:
 
 
 def test_package_version_matches_profile_bundle() -> None:
-    assert tecrax.__version__ == "0.3.8a0"
+    assert tecrax.__version__ == "0.3.9a0"
 
 
 def test_unverified_r2_intents_are_not_claimed_by_profile() -> None:

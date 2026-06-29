@@ -4,6 +4,19 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+## 0.3.9a0 - 2026-06-29
+
+- Added the first governed mutating Tecrax slice:
+  `configure_chrony_ntp_server`, limited to a deterministic chrony/NTP server
+  apply path with GovEngine admission, RExecOp execution, SCLite evidence, and
+  operator-owned live wrapper configuration outside the repository.
+- Added the `tecrax_chrony_ntp` connector backend, chrony/NTP mutation facts
+  contract, sanitized fixture environment, active-profile gates, and tests that
+  deny unadmitted apply attempts and reject unsafe subnet scope.
+- Documented the Proxmox chrony/NTP mutation runbook while preserving the
+  existing boundary against credentials, private topology, arbitrary commands,
+  scheduler ownership, or a second truth layer.
+
 ## 0.3.8a0 - 2026-06-29
 
 - Declared the single supported alpha stack line for the current solo-development

@@ -60,8 +60,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     print(
-        "Tecrax 0.3.8-alpha read-only profile: operator-configured live access "
-        "runs through RExecOp; infrastructure mutation remains unavailable."
+        "Tecrax 0.3.9-alpha profile: read-only observations plus one governed "
+        "chrony/NTP apply slice. Live access runs through RExecOp, GovEngine "
+        "admission, and operator-owned configuration outside this package."
     )
     return 0
 

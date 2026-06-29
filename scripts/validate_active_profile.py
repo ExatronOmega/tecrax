@@ -17,6 +17,8 @@ from tecrax.contracts import FACTS_CONTRACTS  # noqa: E402
 
 
 READ_ONLY_MODES = {"read_only", "dry_run"}
+APPROVED_MUTATING_INTENTS = {"configure_chrony_ntp_server"}
+APPROVED_MUTATING_SIDE_EFFECTS = {"bounded_config_file_and_service_restart"}
 TRIGGER_DECISIONS = {"plan_operation", "ignore", "escalate"}
 TRIGGER_OPERATORS = {"exists", "equals", "not_equals", "in"}
 TRIGGER_RULE_KEYS = {
@@ -97,14 +99,20 @@ def collect_errors(profile_root: Path | None = None) -> list[str]:
         if data.get("enforce_declared_modes") is not True:
             errors.append(f"{intent_id}:declared_modes_not_enforced")
         modes = {str(item) for item in data.get("modes") or []}
-        if not modes or not modes <= READ_ONLY_MODES:
+        mutating_approved = intent_id in APPROVED_MUTATING_INTENTS
+        allowed_modes = {"apply"} if mutating_approved else READ_ONLY_MODES
+        if not modes or not modes <= allowed_modes:
             errors.append(f"{intent_id}:non_readonly_modes:{sorted(modes)}")
 
         catalog = data.get("catalog")
         if not isinstance(catalog, dict):
             errors.append(f"{intent_id}:missing_catalog")
             continue
-        if catalog.get("side_effect_class") != "none":
+        side_effect_class = str(catalog.get("side_effect_class") or "")
+        if mutating_approved:
+            if side_effect_class not in APPROVED_MUTATING_SIDE_EFFECTS:
+                errors.append(f"{intent_id}:unexpected_mutating_side_effect")
+        elif side_effect_class != "none":
             errors.append(f"{intent_id}:side_effect_not_none")
         for key in (
             "title",
@@ -155,8 +163,9 @@ def collect_errors(profile_root: Path | None = None) -> list[str]:
         if not isinstance(workflow, dict) or workflow.get("intent") != intent_id:
             errors.append(f"{intent_id}:workflow_intent_mismatch")
             continue
-        if workflow.get("mode") != "read_only":
-            errors.append(f"{intent_id}:workflow_not_read_only")
+        expected_workflow_mode = "apply" if mutating_approved else "read_only"
+        if workflow.get("mode") != expected_workflow_mode:
+            errors.append(f"{intent_id}:workflow_mode_mismatch")
         reaction_observation = data.get("reaction_observation")
         if reaction_observation is not None:
             if not isinstance(reaction_observation, dict):
@@ -218,7 +227,11 @@ def collect_errors(profile_root: Path | None = None) -> list[str]:
                     errors.append(f"{connector}:forbidden_connector_action_token:{token}")
 
         active_text = (intent_path.read_text(encoding="utf-8") + workflow_path.read_text(encoding="utf-8")).lower()
-        for token in FORBIDDEN_ACTIVE_TOKENS:
+        forbidden_tokens = set(FORBIDDEN_ACTIVE_TOKENS)
+        if mutating_approved:
+            forbidden_tokens.discard("apply")
+            forbidden_tokens.discard("restart")
+        for token in forbidden_tokens:
             if token in active_text:
                 errors.append(f"{intent_id}:forbidden_active_token:{token}")
 

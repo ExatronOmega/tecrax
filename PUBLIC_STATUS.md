@@ -1,6 +1,6 @@
 # Tecrax Public Status
 
-- **Package version:** `0.3.8a0` (`0.3.8-alpha`) published alpha
+- **Source package version:** `0.3.9a0` (`0.3.9-alpha`) alpha
 - **Latest published PyPI package:** `tecrax==0.3.8a0`; it contains the current B2 profile vector
 - **Dependencies:** `govengine==0.16.5`, `sclite-core==1.0.8`, `rexecop==0.2.11a0`
 - **RExecOp profile:** bundled at `src/tecrax/profile/` via `rexecop.profiles:tecrax`
@@ -24,8 +24,12 @@
 - **Operator catalog metadata:** every bundled intent declares target kinds,
   capabilities, side-effect class, validation and runbook references; RExecOp projects
   applicability from a private target catalog without claiming authorization
+- **Controlled apply slice:** `configure_chrony_ntp_server` is the only active
+  mutating intent; it is limited to a managed chrony config file and service restart,
+  requires GovEngine admission, and uses operator-owned live wrapper configuration
+  outside the repository
 - **Execution boundary:** RExecOp owns operator-configured SSH execution; Tecrax does not
   manage credentials or embed target infrastructure data
-- **Not claimed:** infrastructure mutation, credential management, automatic discovery,
+- **Not claimed:** arbitrary host changes, credential management, automatic discovery,
   CMDB synchronization, catalog-based authorization, carrier adapters, scheduler/storage,
   or production readiness

@@ -1,7 +1,7 @@
 # Mutation entry criteria
 
-Mutation is not implemented in the current Tecrax line. A future single action requires a
-separate architecture decision and all of the following:
+Mutation is limited to explicitly admitted single-action slices. Every new action requires
+a separate architecture decision and all of the following:
 
 - stable versioned read-only pre-state and diagnosis;
 - one exact action contract and explicit side effect;
@@ -16,10 +16,10 @@ not a deployer design or implementation backlog.
 
 ## First candidate: Proxmox chrony/NTP server
 
-The first approved candidate for crossing the read-only boundary is a bounded
-chrony/NTP server activation on a freshly installed Proxmox node.
+The first approved slice for crossing the read-only boundary is a bounded
+chrony/NTP server activation on a freshly installed host.
 
-Before implementation, `docs/proxmox-access-handoff.md` must be complete. In
+Before live execution, `docs/proxmox-access-handoff.md` must be complete. In
 particular, the target host identity must be verified as fresh, access must use
 the `rexecop` account, and all real target bindings, keys and known-hosts files
 must remain outside Git.

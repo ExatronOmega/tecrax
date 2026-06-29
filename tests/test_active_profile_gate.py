@@ -29,6 +29,12 @@ def test_active_profile_rejects_apply_intent(tmp_path: Path) -> None:
     assert any("non_readonly_modes" in item for item in collect_errors(root))
 
 
+def test_active_profile_allows_only_declared_chrony_apply() -> None:
+    assert not any(
+        "configure_chrony_ntp_server" in item for item in collect_errors()
+    )
+
+
 def test_active_profile_rejects_missing_runbook(tmp_path: Path) -> None:
     root = _copy_profile(tmp_path)
     path = root / "intents" / "collect_basic_host_inventory.yaml"

@@ -1,0 +1,13 @@
+validation_rule:
+  intent: configure_chrony_ntp_server
+  steps:
+    - type: require_mapping
+      key: mutation_states
+      fail:
+        rule: chrony_ntp_server.mutation_state_required
+        details: {reason: missing chrony mutation state}
+    - type: require_truthy_path
+      path: mutation_states.apply_chrony_ntp_server.after_state.desired_state_applied
+      pass_rule: chrony_ntp_server.desired_state_applied
+      fail_rule: chrony_ntp_server.desired_state_not_applied
+      details_from: mutation_states

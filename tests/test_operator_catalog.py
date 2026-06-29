@@ -16,8 +16,9 @@ def test_all_tecrax_intents_have_operator_catalog_metadata() -> None:
 
     operations = compile_profile_operations(profile)
 
-    assert len(operations) == 13
+    assert len(operations) == 14
     assert {item.id for item in operations} == {
+        "configure_chrony_ntp_server",
         "check_adguard_health",
         "check_docker_services_health",
         "check_ntp_health",

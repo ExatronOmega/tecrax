@@ -1,0 +1,15 @@
+intent:
+  id: configure_chrony_ntp_server
+  workflow: workflows/configure_chrony_ntp_server.yaml
+  risk: medium
+  enforce_declared_modes: true
+  modes: [apply]
+  facts_contract: tecrax.chrony_ntp_server_mutation@1.0
+  catalog:
+    title: Configure chrony NTP server
+    summary: Apply one bounded chrony server configuration for an operator-declared LAN subnet.
+    target_kinds: [host]
+    required_capabilities: [host_mutation, tecrax.host.chrony_ntp_server_config.v1]
+    side_effect_class: bounded_config_file_and_service_restart
+    validation_ref: validation_rules/configure_chrony_ntp_server.yaml
+    runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/chrony-ntp-server-mutation-runbook.md

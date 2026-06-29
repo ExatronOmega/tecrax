@@ -52,6 +52,11 @@ NTP_SERVER_OBSERVATION_REQUESTED = [
     "root_delay",
     "root_dispersion",
 ]
+CHRONY_NTP_SERVER_MUTATION_CONTRACT_ID = "tecrax.chrony_ntp_server_mutation"
+CHRONY_NTP_SERVER_MUTATION_CONTRACT_VERSION = "1.0"
+CHRONY_NTP_SERVER_MUTATION_SCHEMA_REF = (
+    "schemas/chrony_ntp_server_mutation.v1.schema.json"
+)
 NETWORK_DEVICE_INVENTORY_CONTRACT_ID = "tecrax.network_device_inventory"
 NETWORK_DEVICE_INVENTORY_CONTRACT_VERSION = "1.0"
 NETWORK_DEVICE_INVENTORY_SCHEMA_REF = "schemas/network_device_inventory.v1.schema.json"
@@ -695,6 +700,11 @@ FACTS_CONTRACTS = {
             NTP_SERVER_OBSERVATION_CONTRACT_ID,
             NTP_SERVER_OBSERVATION_CONTRACT_VERSION,
             ("daemon_state", "system_variables"),
+        ),
+        FactsContractSpec(
+            CHRONY_NTP_SERVER_MUTATION_CONTRACT_ID,
+            CHRONY_NTP_SERVER_MUTATION_CONTRACT_VERSION,
+            ("allowed_subnet", "managed_file", "desired_state_applied"),
         ),
         FactsContractSpec(
             NETWORK_MANAGEMENT_POSTURE_CONTRACT_ID,

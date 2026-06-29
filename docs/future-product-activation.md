@@ -93,6 +93,6 @@ Until the gates are satisfied, do not add placeholder files for future products:
 The correct output for a future product before activation is this document plus,
 if needed, a separate design checkpoint. It is not an inactive hidden operation.
 
-The Proxmox chrony/NTP server path is the first approved candidate for moving
-past read-only, but it remains blocked until the access handoff checkpoint is
-complete and the single-action mutation contract is implemented with tests.
+The chrony/NTP server path is the first active candidate for moving past read-only.
+Live use against a Proxmox host remains blocked until the access handoff checkpoint
+is complete and the operator-owned live wrapper is configured outside Git.

@@ -11,9 +11,9 @@ python -m pytest -q
 tecrax fixture-review --service demo-web
 ```
 
-Expected result for published package `0.3.8a0`:
+Expected result for source package `0.3.9a0`:
 
-- `pyproject.toml`, `tecrax.__version__`, README, public status, and validators agree on `0.3.8a0` / `0.3.8-alpha`;
+- `pyproject.toml`, `tecrax.__version__`, README, public status, and validators agree on `0.3.9a0` / `0.3.9-alpha`;
 - latest PyPI publication is `0.3.8a0`, including the coordinated B2 profile vector;
 - dependency truth is `govengine==0.16.5`, `sclite-core==1.0.8`, and `rexecop==0.2.11a0`;
 - RExecOp profile entry point `tecrax:profile_root` resolves to a valid profile bundle;
@@ -29,11 +29,12 @@ Expected result for published package `0.3.8a0`:
   target addresses, usernames, private keys, or operator-specific configuration;
 - every profile intent has bounded catalog metadata, and the sanitized target catalog
   projects host and network-device applicability without environment paths or secrets;
-- active-profile gates reject future-product placeholders, mutating modes, undeclared
-  connector actions and premature VLAN/port-security action names;
+- active-profile gates reject future-product placeholders, undeclared mutating modes,
+  undeclared connector actions and premature VLAN/port-security action names, while
+  admitting only the bounded chrony/NTP apply slice;
 - secret/topology gates scan tracked text files for private IPs, MAC addresses,
   key material, private SSH paths and obvious token/password assignments;
 - fixture review output validates GovEngine profile, planning, supervision, runtime snapshot, review result, and runtime contract proof objects;
 - SCLite is used only for local artifact descriptors;
-- non-claims remain explicit for mutation, credential management, carrier adapters,
-  scheduler/storage, and production readiness.
+- non-claims remain explicit for arbitrary mutation, credential management, carrier
+  adapters, scheduler/storage, and production readiness.

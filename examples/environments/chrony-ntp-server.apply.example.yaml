@@ -1,0 +1,63 @@
+environment:
+  id: chrony-ntp-server-apply-example
+  description: Sanitized fixture template for the bounded chrony NTP server mutation.
+  profile: tecrax
+
+  targets:
+    chrony-host-01:
+      type: host
+      criticality: low
+
+  connectors:
+    chrony_ntp_server:
+      enabled: true
+      backend: tecrax_chrony_ntp
+      fixture_only: true
+      allowed_subnet: 192.0.2.0/24
+      timeout_seconds: 30
+
+  safety:
+    default_mode: dry_run
+    apply_requires_govengine: true
+    secrets_source: external
+    max_concurrent_operations: 1
+    target_lock_enabled: true
+
+  policy_pack:
+    policy_id: tecrax-chrony-ntp-server-apply
+    version: "2026-06-29"
+    rules:
+      - rule_id: allow-configure-chrony-ntp-server-operation
+        effect: allow
+        conditions:
+          action.category: operation
+          action.mode: mutating
+          action.intent: configure_chrony_ntp_server
+        reason_code: chrony_ntp_server_apply_allowed
+      - rule_id: allow-read-chrony-state-during-apply
+        effect: allow
+        conditions:
+          action.category: connector
+          action.mode: mutating
+          action.backend: tecrax_chrony_ntp
+          action.connector: chrony_ntp_server
+          action.name: read_chrony_ntp_server_state
+        reason_code: chrony_ntp_server_state_read_allowed
+      - rule_id: allow-apply-chrony-ntp-server
+        effect: allow
+        conditions:
+          action.category: connector
+          action.mode: mutating
+          action.backend: tecrax_chrony_ntp
+          action.connector: chrony_ntp_server
+          action.name: apply_chrony_ntp_server
+        reason_code: chrony_ntp_server_apply_connector_allowed
+      - rule_id: allow-rollback-chrony-ntp-server
+        effect: allow
+        conditions:
+          action.category: connector
+          action.mode: mutating
+          action.backend: tecrax_chrony_ntp
+          action.connector: chrony_ntp_server
+          action.name: rollback_chrony_ntp_server
+        reason_code: chrony_ntp_server_rollback_connector_allowed

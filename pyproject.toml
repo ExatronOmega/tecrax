@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tecrax"
-version = "0.3.8a0"
+version = "0.3.9a0"
 description = "Governed infrastructure-operations profile and RExecOp domain package over GovEngine and SCLite."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -32,6 +32,9 @@ tecrax = "tecrax:profile_root"
 
 [project.entry-points."rexecop.internal_actions"]
 tecrax = "tecrax.internal_actions:register_handlers"
+
+[project.entry-points."rexecop.connector_backends"]
+tecrax_chrony_ntp = "tecrax.connectors.chrony:build_chrony_ntp_backend"
 
 [project.urls]
 Homepage = "https://github.com/rozmiarD/tecrax"

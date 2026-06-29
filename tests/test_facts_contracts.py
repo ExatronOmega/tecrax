@@ -55,6 +55,7 @@ def test_all_active_results_have_static_contract_specs() -> None:
         "tecrax.network_management_posture",
         "tecrax.zabbix_problem_summary",
         "tecrax.zabbix_host_availability_summary",
+        "tecrax.chrony_ntp_server_mutation",
     }
 
 
