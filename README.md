@@ -68,6 +68,9 @@ resolves the same coordinated release line.
 The profile root is exposed via `tecrax:profile_root` (directory `src/tecrax/profile/`).
 For network devices, see `docs/network-device-readonly-runbook.md`; real target
 configuration and legacy SSH compatibility wrappers stay outside this repository.
+For the fresh Proxmox host deployment baseline, see
+`docs/proxmox-host-readiness-runbook.md`; it is an operator-owned readiness
+procedure, not an active Tecrax intent.
 
 ## Target and operation catalog
 

@@ -49,6 +49,12 @@ this domain mapping.
 must pass `docs/future-product-activation.md` and keep backup readiness, job
 execution, restore evidence and coverage as separate claims.
 
+## Proxmox host readiness
+
+`docs/proxmox-host-readiness-runbook.md` documents the manual readiness pass for
+the fresh Proxmox host. It is not an active operation and does not add generic
+Proxmox mutation to Tecrax.
+
 ## Restart Zabbix agent
 
 `restart_zabbix_agent` is a legacy fixture-only mutating workflow. Current

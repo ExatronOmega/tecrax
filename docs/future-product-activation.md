@@ -20,6 +20,8 @@ Current active work is limited to:
 - bounded Zabbix, AdGuard and Portainer health/count summaries already declared
   in the active profile;
 - bounded legacy network-device identity and SSH management posture.
+- the manually operated Proxmox host readiness runbook, which is not an active
+  profile intent and does not claim generic Proxmox mutation.
 
 ## Universal activation gates
 

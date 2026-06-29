@@ -4,6 +4,10 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Added the Proxmox host readiness runbook for the fresh T150 deployment,
+  keeping host update, SMART, ZFS and storage baseline steps operator-owned
+  rather than claiming a generic Proxmox mutation intent.
+
 ## 0.3.9a0 - 2026-06-29
 
 - Added the first governed mutating Tecrax slice:
