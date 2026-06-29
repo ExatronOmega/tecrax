@@ -91,6 +91,10 @@ The follow-up PBS gates are documented in
 For DNS authority planning before Samba AD DC and AdGuard, see
 `docs/dns-authority-checkpoint-runbook.md`; it records the operator-owned
 authority and forwarding model without deploying DNS services.
+For Samba AD DC deployment planning, see
+`docs/samba-ad-dc-deployment-runbook.md`; it records the VM, domain-identity,
+AD DNS and backup gates without exposing private domain values or adding an
+active identity-management connector.
 
 ## Target and operation catalog
 

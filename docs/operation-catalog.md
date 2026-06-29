@@ -86,6 +86,11 @@ and restore-proof workload.
 authority model for Samba AD DNS and AdGuard filtering DNS. It is not an active
 DNS connector and does not deploy either service.
 
+`docs/samba-ad-dc-deployment-runbook.md` documents the operator-owned Samba AD
+DC deployment gate. It keeps domain identity, AD DNS authority, backup handling
+and validation separate from any active Tecrax connector or generic identity
+management surface.
+
 ## Restart Zabbix agent
 
 `restart_zabbix_agent` is a legacy fixture-only mutating workflow. Current
