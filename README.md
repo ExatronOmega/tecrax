@@ -98,6 +98,9 @@ active identity-management connector.
 For the first AD baseline, see `docs/samba-ad-baseline-runbook.md`; it records
 the operator-owned OU, group, password-policy and low-impact GPO baseline
 without joining clients or turning Tecrax into identity-management tooling.
+For AdGuard Home deployment planning, see
+`docs/adguard-home-deployment-runbook.md`; it records the filtering DNS gate
+while keeping Samba AD DNS authoritative and Hillstone DHCP out of scope.
 
 ## Target and operation catalog
 

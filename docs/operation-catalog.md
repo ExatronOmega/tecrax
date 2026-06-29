@@ -96,6 +96,10 @@ baseline for OUs, groups, password policy and low-impact GPO placeholders. It
 does not join clients, migrate users or add active identity-management
 operations to Tecrax.
 
+`docs/adguard-home-deployment-runbook.md` documents the operator-owned AdGuard
+Home deployment gate. It keeps filtering DNS, AD DNS authority and Hillstone
+DHCP ownership separate, and does not add an active AdGuard connector to Tecrax.
+
 ## Restart Zabbix agent
 
 `restart_zabbix_agent` is a legacy fixture-only mutating workflow. Current
