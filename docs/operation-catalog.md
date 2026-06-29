@@ -57,6 +57,12 @@ an active backup connector or backup-health claim.
 PBS VM deployment gate. It separates deployment, first backup, restore proof and
 external-copy coverage as distinct claims.
 
+`docs/proxmox-backup-server-post-deploy-hardening-runbook.md`,
+`docs/proxmox-backup-server-first-backup-job-runbook.md`,
+`docs/proxmox-backup-server-restore-proof-runbook.md` and
+`docs/proxmox-backup-server-external-copy-checkpoint-runbook.md` document the
+remaining operator-owned PBS gates. They are not active backup-health operations.
+
 ## Proxmox host readiness
 
 `docs/proxmox-host-readiness-runbook.md` documents the manual readiness pass for

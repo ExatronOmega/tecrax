@@ -80,6 +80,11 @@ external-copy coverage as separate claims.
 For local PBS deployment, see `docs/proxmox-backup-server-deployment-runbook.md`;
 it documents the operator-owned VM deployment gate without turning PBS status
 into an active Tecrax connector.
+The follow-up PBS gates are documented in
+`docs/proxmox-backup-server-post-deploy-hardening-runbook.md`,
+`docs/proxmox-backup-server-first-backup-job-runbook.md`,
+`docs/proxmox-backup-server-restore-proof-runbook.md`, and
+`docs/proxmox-backup-server-external-copy-checkpoint-runbook.md`.
 
 ## Target and operation catalog
 
