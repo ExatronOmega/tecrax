@@ -27,7 +27,7 @@ jobs:
               {
                 echo "REXECOP_REF=v0.2.6a0"
                 echo "GOVENGINE_REF=v0.16.0"
-                echo "SCLITE_REF=v1.0.4"
+                echo "SCLITE_REF=v1.0.5"
               } >> "$GITHUB_ENV"
               ;;
             v0.3.6a0)
@@ -87,7 +87,7 @@ jobs:
               {
                 echo "REXECOP_REF=v0.2.6a0"
                 echo "GOVENGINE_REF=v0.16.0"
-                echo "SCLITE_REF=v1.0.4"
+                echo "SCLITE_REF=v1.0.5"
               } >> "$GITHUB_ENV"
               ;;
             v0.3.6a0)
