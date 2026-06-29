@@ -71,6 +71,9 @@ configuration and legacy SSH compatibility wrappers stay outside this repository
 For the fresh Proxmox host deployment baseline, see
 `docs/proxmox-host-readiness-runbook.md`; it is an operator-owned readiness
 procedure, not an active Tecrax intent.
+For the private live-run substrate used by Proxmox deployment, see
+`docs/admin-tools-substrate-runbook.md`; it defines wrapper, environment,
+runtime and sign-off boundaries without storing private topology in Git.
 
 ## Target and operation catalog
 

@@ -55,6 +55,13 @@ execution, restore evidence and coverage as separate claims.
 the fresh Proxmox host. It is not an active operation and does not add generic
 Proxmox mutation to Tecrax.
 
+## Admin-tools substrate
+
+`docs/admin-tools-substrate-runbook.md` documents the operator-owned private
+layout for live environments, wrappers, runtime evidence and sign-offs. It is
+not an active operation and does not turn Tecrax into an Ansible, CMDB, vault or
+generic shell-runner layer.
+
 ## Restart Zabbix agent
 
 `restart_zabbix_agent` is a legacy fixture-only mutating workflow. Current
