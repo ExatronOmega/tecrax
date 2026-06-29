@@ -47,7 +47,7 @@ must be true:
 
 | Product area | Activation condition | First allowed shape | Explicitly out of scope |
 | --- | --- | --- | --- |
-| Proxmox | Real Proxmox endpoint and read-only API role exist. | inventory/readiness summaries only. | VM creation, power actions, storage mutation, cluster changes. |
+| Proxmox | Real Proxmox endpoint exists and `docs/proxmox-access-handoff.md` is complete. | bounded chrony/NTP server activation after read-only pre-state and GovEngine admission. | VM creation, power actions, storage mutation, cluster changes. |
 | PBS | Real PBS endpoint and read-only role exist. | backup readiness, job summary and restore-evidence separation. | Calling backup healthy without restore evidence, prune/mutation actions. |
 | Wazuh | Real Wazuh endpoint and least-privilege read-only API exist. | count summaries by state/severity. | SIEM replacement, agent management, rule changes. |
 | Samba | Real Samba service exists and read-only status can be bounded. | service/share readiness counts without identities. | ACL/user/group dumps, share mutation. |
@@ -92,3 +92,7 @@ Until the gates are satisfied, do not add placeholder files for future products:
 
 The correct output for a future product before activation is this document plus,
 if needed, a separate design checkpoint. It is not an inactive hidden operation.
+
+The Proxmox chrony/NTP server path is the first approved candidate for moving
+past read-only, but it remains blocked until the access handoff checkpoint is
+complete and the single-action mutation contract is implemented with tests.
