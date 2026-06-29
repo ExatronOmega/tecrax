@@ -91,6 +91,11 @@ DC deployment gate. It keeps domain identity, AD DNS authority, backup handling
 and validation separate from any active Tecrax connector or generic identity
 management surface.
 
+`docs/samba-ad-baseline-runbook.md` documents the first operator-owned AD
+baseline for OUs, groups, password policy and low-impact GPO placeholders. It
+does not join clients, migrate users or add active identity-management
+operations to Tecrax.
+
 ## Restart Zabbix agent
 
 `restart_zabbix_agent` is a legacy fixture-only mutating workflow. Current

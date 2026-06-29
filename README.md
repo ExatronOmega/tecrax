@@ -95,6 +95,9 @@ For Samba AD DC deployment planning, see
 `docs/samba-ad-dc-deployment-runbook.md`; it records the VM, domain-identity,
 AD DNS and backup gates without exposing private domain values or adding an
 active identity-management connector.
+For the first AD baseline, see `docs/samba-ad-baseline-runbook.md`; it records
+the operator-owned OU, group, password-policy and low-impact GPO baseline
+without joining clients or turning Tecrax into identity-management tooling.
 
 ## Target and operation catalog
 
