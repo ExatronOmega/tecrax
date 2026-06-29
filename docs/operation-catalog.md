@@ -76,6 +76,10 @@ layout for live environments, wrappers, runtime evidence and sign-offs. It is
 not an active operation and does not turn Tecrax into an Ansible, CMDB, vault or
 generic shell-runner layer.
 
+`docs/admin-tools-ct-deployment-runbook.md` documents the first lightweight
+admin-tools CT deployment gate and its role as the initial low-risk PBS backup
+and restore-proof workload.
+
 ## Restart Zabbix agent
 
 `restart_zabbix_agent` is a legacy fixture-only mutating workflow. Current
