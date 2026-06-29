@@ -4,6 +4,16 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+## 0.3.8a0 - 2026-06-29
+
+- Declared the single supported alpha stack line for the current solo-development
+  phase: `tecrax==0.3.8a0`, `rexecop==0.2.11a0`, `govengine==0.16.5`, and
+  `sclite-core==1.0.8`.
+- Replaced broad cross-stack dependency ranges with exact pins so fresh installs
+  use one coherent current stack line instead of mixing older alpha wheels.
+- Removed historical tag compatibility selection from CI; source checks now test
+  the current `main` stack line only while older PyPI artifacts remain archived.
+
 ## 0.3.7a0 - 2026-06-28
 
 - `diagnose_monitoring_host` now persists a profile-owned SCLite

@@ -22,9 +22,9 @@ The `subject` value must be an operator-owned target catalog id, not an IP addre
 hostname, username, path or secret. Real catalog entries remain outside Git. The
 sanitized example catalog uses `monitoring-host-01` only as a public placeholder.
 
-This is a source-line feature until the next coordinated stack release. It requires
-the RExecOp trigger event intake with `catalog_target_from` support. The published
-Tecrax `0.3.6a0` package remains the current PyPI baseline.
+This rule family is part of the current coordinated stack line. It requires the
+RExecOp trigger event intake with `catalog_target_from` support and remains
+bounded to dry-run planning or escalation only.
 
 ## Non-goals
 

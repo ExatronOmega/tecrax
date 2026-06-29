@@ -14,12 +14,12 @@ import tecrax  # noqa: E402
 from tecrax.local_fixture import build_local_fixture_review  # noqa: E402
 
 
-EXPECTED_VERSION = '0.3.7a0'
-EXPECTED_RELEASE_LABEL = '0.3.7-alpha'
-PUBLISHED_VERSION = '0.3.7a0'
-EXPECTED_GOVENGINE = 'govengine>=0.16.2,<0.17'
-EXPECTED_SCLITE = 'sclite-core>=1.0.6,<1.1'
-EXPECTED_REXECOP = 'rexecop>=0.2.8a0,<0.3'
+EXPECTED_VERSION = '0.3.8a0'
+EXPECTED_RELEASE_LABEL = '0.3.8-alpha'
+PUBLISHED_VERSION = '0.3.8a0'
+EXPECTED_GOVENGINE = 'govengine==0.16.5'
+EXPECTED_SCLITE = 'sclite-core==1.0.8'
+EXPECTED_REXECOP = 'rexecop==0.2.11a0'
 PUBLIC_DOCS = (
     'README.md',
     'PUBLIC_STATUS.md',
@@ -48,7 +48,7 @@ def _pyproject() -> dict:
 
 
 def _dependency(project: dict, name: str) -> str:
-    prefix = f'{name}>='
+    prefix = name
     for dependency in project.get('dependencies', []):
         text = str(dependency)
         if text.startswith(prefix):
@@ -100,6 +100,7 @@ def collect_errors() -> list[str]:
         errors.append('profile_bundle_missing:profile.yaml')
     _require(errors, 'VALIDATION.md', 'python scripts/validate_public_truth.py')
     _require(errors, '.github/workflows/ci.yml', 'actions/checkout@v6')
+    _require(errors, '.github/workflows/ci.yml', 'branches: [main]')
     _require(errors, '.github/workflows/ci.yml', 'actions/setup-python@v6')
     _require(errors, '.github/workflows/ci.yml', "python-version: ['3.11', '3.12']")
     _require(errors, '.github/workflows/ci.yml', 'python scripts/validate_public_truth.py')
@@ -109,23 +110,20 @@ def collect_errors() -> list[str]:
     _require(errors, '.github/workflows/ci.yml', 'rm -rf dist build *.egg-info')
     _require(errors, '.github/workflows/ci.yml', 'python -m twine check dist/*')
     _require(errors, '.github/workflows/ci.yml', 'python -m pip check')
-    _require(errors, '.github/workflows/ci.yml', 'REXECOP_REF=')
-    _require(errors, '.github/workflows/ci.yml', 'GOVENGINE_REF=')
-    _require(errors, '.github/workflows/ci.yml', 'SCLITE_REF=')
     _require(
         errors,
         '.github/workflows/ci.yml',
-        'git clone --depth 1 --branch "$REXECOP_REF" https://github.com/rozmiarD/RExecOP.git',
+        'git clone --depth 1 --branch main https://github.com/rozmiarD/RExecOP.git',
     )
     _require(
         errors,
         '.github/workflows/ci.yml',
-        'sclite-core @ git+https://github.com/rozmiarD/SCLite.git@${SCLITE_REF}',
+        'sclite-core @ git+https://github.com/rozmiarD/SCLite.git@main',
     )
     _require(
         errors,
         '.github/workflows/ci.yml',
-        'govengine @ git+https://github.com/rozmiarD/GovEngine.git@${GOVENGINE_REF}',
+        'govengine @ git+https://github.com/rozmiarD/GovEngine.git@main',
     )
     _require(errors, '.github/workflows/ci.yml', 'pip install -e ./ci-deps/rexecop')
 

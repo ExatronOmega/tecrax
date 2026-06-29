@@ -3,9 +3,9 @@
 Tecrax is a governed infrastructure-operations profile for RExecOp, using
 GovEngine governance and SCLite artifact truth.
 
-Current source line: `tecrax==0.3.7a0`, depending on
-`govengine>=0.16.2,<0.17`, `sclite-core>=1.0.6,<1.1`, and `rexecop>=0.2.8a0,<0.3`.
-Latest published PyPI baseline: `tecrax==0.3.7a0`; it contains the coordinated
+Current source line: `tecrax==0.3.8a0`, depending on
+`govengine==0.16.5`, `sclite-core==1.0.8`, and `rexecop==0.2.11a0`.
+Latest published PyPI baseline: `tecrax==0.3.8a0`; it contains the coordinated
 B2 dependency floor and policy vector.
 
 This package provides:
@@ -53,11 +53,11 @@ Tecrax profile -> RExecOp plan -> GovEngine admission -> RExecOp execution -> SC
 Install the coordinated published line to register the current domain profile:
 
 ```bash
-pip install "tecrax==0.3.7a0"
+pip install "tecrax==0.3.8a0"
 tecrax status
 ```
 
-For an explicit cross-stack pin, `pip install "rexecop[tecrax]==0.2.8a0"`
+For an explicit cross-stack pin, `pip install "rexecop[tecrax]==0.2.11a0"`
 resolves the same coordinated release line.
 
 The profile root is exposed via `tecrax:profile_root` (directory `src/tecrax/profile/`).
@@ -131,8 +131,8 @@ profile/planning/supervision/runtime-review contracts and binds its fixture
 receipt through an SCLite artifact descriptor. It has no live runner, host
 inventory, credential path, or infrastructure adapter.
 
-The published `0.3.7-alpha` line combines the profile-owned read-only reaction pack
-and B2 policy vector over RExecOp `0.2.8a0`, GovEngine `0.16.2`, and SCLite `1.0.6`. It does not add a second policy engine, lifecycle runner, or truth layer.
+The published `0.3.8-alpha` line combines the profile-owned read-only reaction pack
+and B2 policy vector over RExecOp `0.2.11a0`, GovEngine `0.16.5`, and SCLite `1.0.8`. It does not add a second policy engine, lifecycle runner, or truth layer.
 
 The Ubuntu environment example uses profile-owned policy semantics, but GovEngine
 compiles and admits the controls and RExecOp enforces them. Tecrax does not claim
