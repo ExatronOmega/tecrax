@@ -90,6 +90,11 @@ Install Grafana from the vendor package repository. Enable and start the
 
 Install the Zabbix app plugin and restart Grafana if required.
 
+Set the Grafana `domain` and `root_url` to the operator-approved access URL.
+Do not leave the service on the package default `localhost` URL when operators
+will access Grafana through a stable address. A mismatched root URL can make
+frontend redirects and dynamic chunks harder to diagnose.
+
 After installing plugins through an elevated CLI path, verify that the active
 Grafana service user owns the plugin directory. Backend plugin binaries must
 remain executable by that service user. A root-owned plugin directory can break
@@ -148,6 +153,7 @@ Validate:
 
 - CT is running after service deployment;
 - Grafana service is active;
+- Grafana `domain` and `root_url` match the approved operator access URL;
 - Grafana login/API works with operator-owned credentials;
 - Zabbix plugin is installed and enabled;
 - Zabbix datasource health is `OK`;
