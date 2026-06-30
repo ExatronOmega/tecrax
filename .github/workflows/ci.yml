@@ -43,7 +43,7 @@ jobs:
       - name: Mypy
         run: python -m mypy src/tecrax
       - name: Run tests
-        run: python -m pytest -q
+        run: python -m pytest -q tests
 
   package-dry-run:
     runs-on: ubuntu-latest
