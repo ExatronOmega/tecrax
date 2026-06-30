@@ -105,6 +105,9 @@ For Zabbix deployment planning, see
 `docs/zabbix-vm-docker-deployment-runbook.md`; it records the VM, Docker
 Compose, PostgreSQL and backup gates without exposing monitoring credentials or
 adding a live Zabbix administration connector.
+For Zabbix application-level backup planning, see
+`docs/zabbix-postgresql-app-backup-runbook.md`; it records the logical database
+dump gate without storing database credentials or dump artifacts in Git.
 
 ## Target and operation catalog
 

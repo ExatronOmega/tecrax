@@ -107,6 +107,10 @@ Zabbix VM deployment gate. It records the VM, Docker Compose, PostgreSQL and
 backup boundaries without turning Tecrax into a Zabbix administration tool or
 storing Zabbix credentials in Git.
 
+`docs/zabbix-postgresql-app-backup-runbook.md` documents the operator-owned
+Zabbix PostgreSQL logical dump gate. It complements PBS VM-level backup and
+keeps database credentials, dump files and restore targets outside Tecrax.
+
 ## Restart Zabbix agent
 
 `restart_zabbix_agent` is a legacy fixture-only mutating workflow. Current
