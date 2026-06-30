@@ -153,6 +153,11 @@ single-node central components, host-level monitoring and VM-level backup
 coverage while keeping generated passwords, enrollment secrets and certificates
 outside Tecrax.
 
+`docs/wazuh-agent-baseline-runbook.md` documents the operator-owned Wazuh agent
+baseline for Linux infrastructure hosts. It enrolls the current server stack
+into Wazuh while keeping enrollment secrets, generated keys and user endpoint
+inventory outside Tecrax.
+
 ## Restart Zabbix agent
 
 `restart_zabbix_agent` is a legacy fixture-only mutating workflow. Current
