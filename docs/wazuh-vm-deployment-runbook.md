@@ -181,6 +181,41 @@ state is index-backed, so a later gate should decide whether additional
 application-aware export, snapshot or restore procedures are needed before
 treating indexed security history as recoverable at application level.
 
+### 8. Small-Environment Tuning
+
+On a small single-node Wazuh deployment, especially when the VM is backed by an
+HDD mirror, avoid treating the first post-agent workload as a generic memory
+leak. Wazuh can briefly generate high CPU and I/O while `wazuh-modulesd`
+processes system inventory and vulnerability data for newly enrolled agents.
+
+Before disabling Wazuh features, validate:
+
+- Linux memory `available`, not only Proxmox guest memory consumption;
+- swap availability inside the VM;
+- host and guest I/O pressure;
+- `wazuh-modulesd`, Wazuh indexer and dashboard RSS;
+- `/var/ossec/queue/vd` size;
+- dashboard HTTP response time;
+- kernel OOM or hung-task messages.
+
+Recommended small-environment baseline after initial deployment:
+
+- add a modest swap file if the VM has no swap;
+- keep Wazuh indexer heap conservative unless query/index pressure proves
+  otherwise;
+- set Syscollector to a less aggressive interval after the first enrollment
+  burst;
+- disable Syscollector, SCA and Syscheck/FIM scan-on-start if boot-time
+  responsiveness matters;
+- set the vulnerability feed update interval to a daily cadence unless there is
+  an explicit reason for hourly feed updates;
+- keep Wazuh package repositories disabled outside intentional maintenance
+  windows.
+
+This tuning reduces startup and feed-update pressure. It does not replace later
+retention planning, storage placement review or the strong and wide hardening
+stage.
+
 ## Stop Conditions
 
 Stop before sign-off if any of these are true:
@@ -191,6 +226,8 @@ Stop before sign-off if any of these are true:
 - Wazuh installer source cannot be verified as the official endpoint;
 - generated credentials would be exposed to Git, chat or public logs;
 - Wazuh services do not return after reboot;
+- memory or I/O pressure makes the dashboard unusable after the initial
+  enrollment burst and no tuning window is approved;
 - PBS is unavailable and no alternate backup path is approved;
 - evidence would require publishing secrets, raw topology or host fingerprints.
 
@@ -209,6 +246,7 @@ Use `docs/operator-signoff-template.md` and include:
 - NTP/DNS validation summary;
 - reboot proof summary;
 - monitoring and backup status;
+- small-environment tuning summary if applied;
 - explicit non-claims.
 
 Non-claims:
