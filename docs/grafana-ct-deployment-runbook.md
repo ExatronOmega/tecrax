@@ -90,6 +90,12 @@ Install Grafana from the vendor package repository. Enable and start the
 
 Install the Zabbix app plugin and restart Grafana if required.
 
+After installing plugins through an elevated CLI path, verify that the active
+Grafana service user owns the plugin directory. Backend plugin binaries must
+remain executable by that service user. A root-owned plugin directory can break
+Grafana Home or Explore plugin activation; a non-executable backend binary can
+break datasource plugins.
+
 ### 3. Secure bootstrap credentials
 
 Generate or set the Grafana admin credential through an operator-owned secret
@@ -112,6 +118,11 @@ should confirm the Zabbix API version without printing the token.
 Import only starter dashboards that do not embed secrets. If a dashboard export
 contains private topology, keep the export outside Git and summarize it in the
 sign-off instead.
+
+When importing dashboards that reference a datasource, validate that dashboard
+JSON points to the datasource UID, not only to its display name. A dashboard may
+render with panel errors if the datasource exists but the imported reference is
+the wrong UID.
 
 ### 6. Add monitoring for Grafana CT
 
@@ -141,6 +152,8 @@ Validate:
 - Zabbix plugin is installed and enabled;
 - Zabbix datasource health is `OK`;
 - initial dashboards are present;
+- imported dashboards reference the actual datasource UID;
+- plugin directory ownership and backend executable bits are correct;
 - Grafana web UI returns a login page;
 - `zabbix-agent2` is active on the CT;
 - Zabbix has fresh `agent.ping=1` and `icmpping=1`;
