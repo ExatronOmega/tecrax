@@ -63,6 +63,11 @@ external-copy coverage as distinct claims.
 `docs/proxmox-backup-server-external-copy-checkpoint-runbook.md` document the
 remaining operator-owned PBS gates. They are not active backup-health operations.
 
+`docs/proxmox-external-cifs-backup-runbook.md` documents the operator-owned
+external CIFS backup gate for selected Proxmox VM/CT workloads. It complements
+local PBS backup and keeps endpoint, share and credential details outside
+Tecrax.
+
 ## Proxmox host readiness
 
 `docs/proxmox-host-readiness-runbook.md` documents the manual readiness pass for
