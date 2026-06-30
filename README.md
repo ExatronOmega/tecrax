@@ -108,6 +108,10 @@ adding a live Zabbix administration connector.
 For Zabbix application-level backup planning, see
 `docs/zabbix-postgresql-app-backup-runbook.md`; it records the logical database
 dump gate without storing database credentials or dump artifacts in Git.
+For first Zabbix target adoption, see
+`docs/zabbix-first-targets-adoption-runbook.md`; it records the ICMP-only
+baseline adoption gate without claiming agent, SNMP, alerting or dashboard
+coverage.
 
 ## Target and operation catalog
 

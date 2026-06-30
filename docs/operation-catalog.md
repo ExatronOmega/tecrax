@@ -111,6 +111,11 @@ storing Zabbix credentials in Git.
 Zabbix PostgreSQL logical dump gate. It complements PBS VM-level backup and
 keeps database credentials, dump files and restore targets outside Tecrax.
 
+`docs/zabbix-first-targets-adoption-runbook.md` documents the first
+operator-owned Zabbix monitored-target adoption gate. It starts with ICMP
+availability only and does not claim agent, SNMP, alerting or dashboard
+coverage.
+
 ## Restart Zabbix agent
 
 `restart_zabbix_agent` is a legacy fixture-only mutating workflow. Current
