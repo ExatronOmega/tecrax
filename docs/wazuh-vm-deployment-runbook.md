@@ -201,6 +201,8 @@ Before disabling Wazuh features, validate:
 Recommended small-environment baseline after initial deployment:
 
 - add a modest swap file if the VM has no swap;
+- consider increasing the VM memory allocation after the first agent rollout if
+  the service is expected to remain an all-in-one Wazuh node;
 - keep Wazuh indexer heap conservative unless query/index pressure proves
   otherwise;
 - set Syscollector to a less aggressive interval after the first enrollment
@@ -215,6 +217,22 @@ Recommended small-environment baseline after initial deployment:
 This tuning reduces startup and feed-update pressure. It does not replace later
 retention planning, storage placement review or the strong and wide hardening
 stage.
+
+### 9. Dashboard Credential Recovery
+
+If dashboard login fails after an operator password reset, diagnose it as an
+authentication path first, not as a memory issue. Validate the dashboard login
+page, Wazuh indexer basic authentication, OpenSearch Security user state and
+service logs separately.
+
+For operator recovery, prefer updating the intended internal dashboard user
+through the OpenSearch Security REST API with the admin certificate, then test
+basic authentication repeatedly before handing the credential back to the
+operator. Keep temporary credentials in a root-only file on the Wazuh VM and
+remove stale password reset files after the working credential is verified.
+
+Do not publish dashboard passwords, admin certificates, reset transcripts or raw
+security API payloads in Git, chat or public sign-offs.
 
 ## Stop Conditions
 
