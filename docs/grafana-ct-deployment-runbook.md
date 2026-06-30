@@ -95,6 +95,16 @@ Do not leave the service on the package default `localhost` URL when operators
 will access Grafana through a stable address. A mismatched root URL can make
 frontend redirects and dynamic chunks harder to diagnose.
 
+If an intermediate security gateway performs HTTP inspection, prefer HTTPS for
+operator access even before the final TLS/CA hardening pass. Grafana dashboard
+URLs commonly contain relative time ranges such as `from=now-6h`; some security
+inspection policies can reset clear-text HTTP requests containing those query
+values. In that case, verify the affected URL locally from the same service
+segment and externally through the operator path, then set the Grafana
+`protocol`, `root_url`, `cert_file` and `cert_key` to an HTTPS endpoint. A
+self-signed internal certificate is acceptable as an interim transport fix, but
+it does not replace the later TLS trust and hardening review.
+
 After installing plugins through an elevated CLI path, verify that the active
 Grafana service user owns the plugin directory. Backend plugin binaries must
 remain executable by that service user. A root-owned plugin directory can break
@@ -154,6 +164,8 @@ Validate:
 - CT is running after service deployment;
 - Grafana service is active;
 - Grafana `domain` and `root_url` match the approved operator access URL;
+- if HTTP inspection breaks relative time-range dashboard URLs, HTTPS access is
+  active and the same URL works through the operator path;
 - Grafana login/API works with operator-owned credentials;
 - Zabbix plugin is installed and enabled;
 - Zabbix datasource health is `OK`;
@@ -198,7 +210,7 @@ Non-claims:
 
 - no Wazuh datasource yet;
 - no final alert routing;
-- no HTTPS/TLS hardening claim;
+- no final HTTPS/TLS hardening or private CA trust claim;
 - no SSO claim;
 - no full dashboard design completion;
 - no disaster-recovery one-command restore claim.
