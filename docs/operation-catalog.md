@@ -163,6 +163,11 @@ basic alerting baseline. It adds local Zabbix and Wazuh alert spools through
 systemd timers without claiming final external notification routing, GLPI ticket
 creation or incident escalation policy.
 
+`docs/bookstack-ct-deployment-runbook.md` documents the operator-owned
+BookStack CT deployment gate. It introduces BookStack as the documentation and
+handoff layer while keeping application secrets, database credentials and future
+documentation migration outside Tecrax.
+
 ## Restart Zabbix agent
 
 `restart_zabbix_agent` is a legacy fixture-only mutating workflow. Current
