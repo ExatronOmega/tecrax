@@ -147,6 +147,12 @@ Zabbix datasource, initial dashboards, Zabbix monitoring of the Grafana CT and
 backup coverage, while keeping Grafana credentials, Zabbix tokens and private
 dashboard exports outside Tecrax.
 
+`docs/wazuh-vm-deployment-runbook.md` documents the operator-owned Wazuh VM
+deployment gate. Wazuh is introduced as the security monitoring layer with
+single-node central components, host-level monitoring and VM-level backup
+coverage while keeping generated passwords, enrollment secrets and certificates
+outside Tecrax.
+
 ## Restart Zabbix agent
 
 `restart_zabbix_agent` is a legacy fixture-only mutating workflow. Current
