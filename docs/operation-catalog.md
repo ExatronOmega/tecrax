@@ -158,6 +158,11 @@ baseline for Linux infrastructure hosts. It enrolls the current server stack
 into Wazuh while keeping enrollment secrets, generated keys and user endpoint
 inventory outside Tecrax.
 
+`docs/basic-alerting-baseline-runbook.md` documents the first operator-owned
+basic alerting baseline. It adds local Zabbix and Wazuh alert spools through
+systemd timers without claiming final external notification routing, GLPI ticket
+creation or incident escalation policy.
+
 ## Restart Zabbix agent
 
 `restart_zabbix_agent` is a legacy fixture-only mutating workflow. Current
