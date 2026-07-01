@@ -48,6 +48,8 @@ All notable Tecrax profile changes are documented here.
   baseline.
 - Documented the BookStack isolated restore proof from CT backup with bounded
   validation counters and cleanup/non-claims.
+- Documented the Samba AD application-aware backup, isolated AD restore proof
+  and PBS full OS upgrade retry, including the PBS VM EFI bootloader caveat.
 
 ### Changed
 

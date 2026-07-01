@@ -63,6 +63,10 @@ external-copy coverage as distinct claims.
 `docs/runbooks/proxmox-backup-server-external-copy-checkpoint-runbook.md` document the
 remaining operator-owned PBS gates. They are not active backup-health operations.
 
+`docs/runbooks/proxmox-backup-server-full-os-upgrade-runbook.md` documents the
+operator-owned PBS full OS upgrade retry, including package-integrity retry,
+kernel reboot validation and the PBS VM EFI bootloader caveat.
+
 `docs/runbooks/proxmox-external-cifs-backup-runbook.md` documents the operator-owned
 external CIFS backup gate for selected Proxmox VM/CT workloads. It complements
 local PBS backup and keeps endpoint, share and credential details outside
@@ -105,6 +109,15 @@ management surface.
 baseline for OUs, groups, password policy and low-impact GPO placeholders. It
 does not join clients, migrate users or add active identity-management
 operations to Tecrax.
+
+`docs/runbooks/samba-ad-app-backup-runbook.md` documents the operator-owned
+application-aware Samba AD backup gate that complements VM-level PBS backup
+without exposing domain backup contents or secrets.
+
+`docs/runbooks/samba-ad-isolated-restore-proof-runbook.md` documents the
+operator-owned isolated restore proof for the Samba AD DC VM. It restores a DC
+backup to a temporary network-isolated VM, validates local Samba AD and AD DNS
+health through the guest agent and removes the temporary target.
 
 `docs/runbooks/adguard-home-deployment-runbook.md` documents the operator-owned AdGuard
 Home deployment gate. It keeps filtering DNS, AD DNS authority and Hillstone
