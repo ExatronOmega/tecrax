@@ -173,6 +173,13 @@ deployment gate. It introduces GLPI as the helpdesk, inventory and incident
 register layer while keeping credentials, mail/LDAP integration and compliance
 claims outside Tecrax.
 
+## GLPI Isolated Restore Proof
+
+`docs/glpi-isolated-restore-proof-runbook.md` documents the operator-owned GLPI
+restore-proof gate. It restores the GLPI VM backup to an isolated temporary VM,
+validates bounded application and database health, then removes the temporary
+target without exposing restored data or secrets.
+
 ## Restart Zabbix agent
 
 `restart_zabbix_agent` is a legacy fixture-only mutating workflow. Current
