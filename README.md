@@ -66,50 +66,50 @@ For an explicit cross-stack pin, `pip install "rexecop[tecrax]==0.2.11a0"`
 resolves the same coordinated release line.
 
 The profile root is exposed via `tecrax:profile_root` (directory `src/tecrax/profile/`).
-For network devices, see `docs/network-device-readonly-runbook.md`; real target
+For network devices, see `docs/runbooks/network-device-readonly-runbook.md`; real target
 configuration and legacy SSH compatibility wrappers stay outside this repository.
 For the fresh Proxmox host deployment baseline, see
-`docs/proxmox-host-readiness-runbook.md`; it is an operator-owned readiness
+`docs/runbooks/proxmox-host-readiness-runbook.md`; it is an operator-owned readiness
 procedure, not an active Tecrax intent.
 For the private live-run substrate used by Proxmox deployment, see
-`docs/admin-tools-substrate-runbook.md`; it defines wrapper, environment,
+`docs/runbooks/admin-tools-substrate-runbook.md`; it defines wrapper, environment,
 runtime and sign-off boundaries without storing private topology in Git.
 For the first admin-tools workload, see
-`docs/admin-tools-ct-deployment-runbook.md`; it keeps the CT deployment
+`docs/runbooks/admin-tools-ct-deployment-runbook.md`; it keeps the CT deployment
 operator-owned and separates backup eligibility from restore proof.
-For local backup planning, see `docs/proxmox-backup-server-readiness-runbook.md`;
+For local backup planning, see `docs/runbooks/proxmox-backup-server-readiness-runbook.md`;
 it defines PBS readiness gates and keeps backup-job success, restore proof and
 external-copy coverage as separate claims.
-For local PBS deployment, see `docs/proxmox-backup-server-deployment-runbook.md`;
+For local PBS deployment, see `docs/runbooks/proxmox-backup-server-deployment-runbook.md`;
 it documents the operator-owned VM deployment gate without turning PBS status
 into an active Tecrax connector.
 The follow-up PBS gates are documented in
-`docs/proxmox-backup-server-post-deploy-hardening-runbook.md`,
-`docs/proxmox-backup-server-first-backup-job-runbook.md`,
-`docs/proxmox-backup-server-restore-proof-runbook.md`, and
-`docs/proxmox-backup-server-external-copy-checkpoint-runbook.md`.
+`docs/runbooks/proxmox-backup-server-post-deploy-hardening-runbook.md`,
+`docs/runbooks/proxmox-backup-server-first-backup-job-runbook.md`,
+`docs/runbooks/proxmox-backup-server-restore-proof-runbook.md`, and
+`docs/runbooks/proxmox-backup-server-external-copy-checkpoint-runbook.md`.
 For DNS authority planning before Samba AD DC and AdGuard, see
-`docs/dns-authority-checkpoint-runbook.md`; it records the operator-owned
+`docs/runbooks/dns-authority-checkpoint-runbook.md`; it records the operator-owned
 authority and forwarding model without deploying DNS services.
 For Samba AD DC deployment planning, see
-`docs/samba-ad-dc-deployment-runbook.md`; it records the VM, domain-identity,
+`docs/runbooks/samba-ad-dc-deployment-runbook.md`; it records the VM, domain-identity,
 AD DNS and backup gates without exposing private domain values or adding an
 active identity-management connector.
-For the first AD baseline, see `docs/samba-ad-baseline-runbook.md`; it records
+For the first AD baseline, see `docs/runbooks/samba-ad-baseline-runbook.md`; it records
 the operator-owned OU, group, password-policy and low-impact GPO baseline
 without joining clients or turning Tecrax into identity-management tooling.
 For AdGuard Home deployment planning, see
-`docs/adguard-home-deployment-runbook.md`; it records the filtering DNS gate
+`docs/runbooks/adguard-home-deployment-runbook.md`; it records the filtering DNS gate
 while keeping Samba AD DNS authoritative and Hillstone DHCP out of scope.
 For Zabbix deployment planning, see
-`docs/zabbix-vm-docker-deployment-runbook.md`; it records the VM, Docker
+`docs/runbooks/zabbix-vm-docker-deployment-runbook.md`; it records the VM, Docker
 Compose, PostgreSQL and backup gates without exposing monitoring credentials or
 adding a live Zabbix administration connector.
 For Zabbix application-level backup planning, see
-`docs/zabbix-postgresql-app-backup-runbook.md`; it records the logical database
+`docs/runbooks/zabbix-postgresql-app-backup-runbook.md`; it records the logical database
 dump gate without storing database credentials or dump artifacts in Git.
 For first Zabbix target adoption, see
-`docs/zabbix-first-targets-adoption-runbook.md`; it records the ICMP-only
+`docs/runbooks/zabbix-first-targets-adoption-runbook.md`; it records the ICMP-only
 baseline adoption gate without claiming agent, SNMP, alerting or dashboard
 coverage.
 
@@ -192,7 +192,7 @@ that writing obligations in YAML alone satisfies them.
 
 `configure_chrony_ntp_server` is the only active mutating intent. It is deterministic,
 requires GovEngine admission, uses the `tecrax_chrony_ntp` connector backend, and is
-documented in `docs/chrony-ntp-server-mutation-runbook.md`.
+documented in `docs/runbooks/chrony-ntp-server-mutation-runbook.md`.
 
 ## Validation
 

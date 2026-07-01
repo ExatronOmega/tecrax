@@ -12,4 +12,4 @@ intent:
     required_capabilities: [ssh_readonly, tecrax.ntp.server_observation.v1]
     side_effect_class: none
     validation_ref: validation_rules/check_ntp_server_health.yaml
-    runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/ubuntu-host-readonly-runbook.md
+    runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/runbooks/ubuntu-host-readonly-runbook.md

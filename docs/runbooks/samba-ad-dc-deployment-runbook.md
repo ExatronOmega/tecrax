@@ -198,7 +198,7 @@ Stop before or during deployment if any of these are true:
 
 ## Sign-Off Shape
 
-Use `docs/operator-signoff-template.md` and include:
+Use `../operator-signoff-template.md` and include:
 
 - date;
 - target alias: `samba-ad-dc-01`;

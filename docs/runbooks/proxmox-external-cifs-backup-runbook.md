@@ -116,7 +116,7 @@ Stop before sign-off if any of these are true:
 
 ## Sign-Off Shape
 
-Use `docs/operator-signoff-template.md` and include:
+Use `../operator-signoff-template.md` and include:
 
 - date;
 - run class: `proxmox-external-cifs-backup`;

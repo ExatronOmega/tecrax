@@ -14,4 +14,4 @@ intent:
     required_capabilities: [http_api, tecrax.host.zabbix_host_availability_summary.v1]
     side_effect_class: none
     validation_ref: validation_rules/collect_zabbix_host_availability_summary_readonly.yaml
-    runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/zabbix-readonly-summaries-runbook.md
+    runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/runbooks/zabbix-readonly-summaries-runbook.md

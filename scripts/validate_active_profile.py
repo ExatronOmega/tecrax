@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
+GITHUB_DOCS_PREFIX = "https://github.com/rozmiarD/tecrax/blob/main/"
 
 from tecrax import profile_root as bundled_profile_root  # noqa: E402
 from tecrax.contracts import FACTS_CONTRACTS  # noqa: E402
@@ -74,6 +75,12 @@ FORBIDDEN_CONNECTOR_ACTION_TOKENS = {
 def _load(path: Path) -> dict[str, Any]:
     value = yaml.safe_load(path.read_text(encoding="utf-8"))
     return value if isinstance(value, dict) else {}
+
+
+def _runbook_path(runbook_ref: str) -> Path:
+    if runbook_ref.startswith(GITHUB_DOCS_PREFIX):
+        runbook_ref = runbook_ref.removeprefix(GITHUB_DOCS_PREFIX)
+    return ROOT / runbook_ref
 
 
 def collect_errors(profile_root: Path | None = None) -> list[str]:
@@ -156,7 +163,7 @@ def collect_errors(profile_root: Path | None = None) -> list[str]:
             continue
         if not validation_path.is_file():
             errors.append(f"{intent_id}:missing_validation:{validation_ref}")
-        if not runbook_ref or not (ROOT / "docs" / Path(runbook_ref).name).is_file():
+        if not runbook_ref or not _runbook_path(runbook_ref).is_file():
             errors.append(f"{intent_id}:missing_runbook:{runbook_ref}")
 
         workflow = _load(workflow_path).get("workflow")

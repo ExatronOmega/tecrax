@@ -14,4 +14,4 @@ intent:
     required_capabilities: [local_shell_readonly, tecrax.network_device.inventory.v1]
     side_effect_class: none
     validation_ref: validation_rules/collect_network_device_inventory_readonly.yaml
-    runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/network-device-readonly-runbook.md
+    runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/runbooks/network-device-readonly-runbook.md

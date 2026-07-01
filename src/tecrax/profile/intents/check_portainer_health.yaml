@@ -14,4 +14,4 @@ intent:
     required_capabilities: [http_api, tecrax.host.portainer_reachability.v1]
     side_effect_class: none
     validation_ref: validation_rules/check_portainer_health.yaml
-    runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/ubuntu-host-readonly-runbook.md
+    runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/runbooks/ubuntu-host-readonly-runbook.md

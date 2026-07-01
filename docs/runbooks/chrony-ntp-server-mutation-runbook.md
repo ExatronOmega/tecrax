@@ -28,7 +28,7 @@ shell command.
 
 ## Operator prerequisites
 
-- the access handoff in `docs/proxmox-access-handoff.md` is complete;
+- the access handoff in `../proxmox-access-handoff.md` is complete;
 - target access uses the `rexecop` account;
 - real target binding, SSH keys and known-hosts files stay outside Git;
 - live execution uses an operator-owned wrapper outside Git;

@@ -149,7 +149,7 @@ PBS readiness is complete when:
 
 ## Sign-Off Shape
 
-Use `docs/operator-signoff-template.md` and include:
+Use `../operator-signoff-template.md` and include:
 
 - date;
 - generic target alias;

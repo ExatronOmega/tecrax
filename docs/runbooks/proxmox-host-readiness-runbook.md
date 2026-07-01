@@ -41,7 +41,7 @@ Must remain outside Git and public sign-offs:
 
 ## Prerequisites
 
-- Access handoff in `docs/proxmox-access-handoff.md` is complete.
+- Access handoff in `../proxmox-access-handoff.md` is complete.
 - Operator access uses the `rexecop` account where automation is involved.
 - Emergency console or Web UI access exists before any update or reboot.
 - The operator has confirmed the host is the intended freshly installed Proxmox
@@ -175,7 +175,7 @@ A readiness pass is complete when:
 
 ## Sign-Off Shape
 
-Use `docs/operator-signoff-template.md` and include:
+Use `../operator-signoff-template.md` and include:
 
 - date;
 - Tecrax repository HEAD;
@@ -202,6 +202,6 @@ Non-claims:
 
 After this runbook passes, continue with one of:
 
-- `docs/chrony-ntp-server-mutation-runbook.md` for the governed NTP slice;
+- `chrony-ntp-server-mutation-runbook.md` for the governed NTP slice;
 - a private `admin-tools` substrate runbook outside this public package;
 - a PBS readiness runbook before critical service deployment.

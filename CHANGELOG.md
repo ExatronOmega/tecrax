@@ -31,6 +31,8 @@ All notable Tecrax profile changes are documented here.
   outside Git.
 - Documented the basic alerting baseline, BookStack CT deployment baseline and
   GLPI VM deployment plus isolated restore-proof runbook.
+- Moved public runbooks under `docs/runbooks/` and updated README,
+  operation-catalog and profile intent references to use the new structure.
 
 ### Changed
 

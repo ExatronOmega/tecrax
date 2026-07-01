@@ -12,4 +12,4 @@ intent:
     required_capabilities: [host_mutation, tecrax.host.chrony_ntp_server_config.v1]
     side_effect_class: bounded_config_file_and_service_restart
     validation_ref: validation_rules/configure_chrony_ntp_server.yaml
-    runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/chrony-ntp-server-mutation-runbook.md
+    runbook_ref: https://github.com/rozmiarD/tecrax/blob/main/docs/runbooks/chrony-ntp-server-mutation-runbook.md
