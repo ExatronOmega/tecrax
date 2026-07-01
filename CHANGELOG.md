@@ -4,9 +4,44 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
-- Added the Proxmox host readiness runbook for the fresh T150 deployment,
+### Done
+
+- Documented the Proxmox host readiness runbook for the fresh T150 deployment,
   keeping host update, SMART, ZFS and storage baseline steps operator-owned
   rather than claiming a generic Proxmox mutation intent.
+- Documented the Proxmox backup and restore-proof path, including PBS
+  readiness, deployment, post-deploy hardening, first-backup, restore-proof and
+  external-copy checkpoints, plus the external CIFS backup and restore proof
+  runbooks.
+- Documented the lightweight admin-tools CT deployment gate as the first
+  low-risk workload for private operator layouts and backup/restore-proof
+  handoff.
+- Documented the Samba AD DC deployment gate, Samba AD baseline, DNS authority
+  checkpoint and AdGuard Home deployment gate, keeping domain authority,
+  filtering DNS and private runtime details separate.
+- Documented the chrony/NTP foundation and mutation runbook as a bounded,
+  operator-owned baseline instead of a generic time-sync surface.
+- Documented the Zabbix VM deployment gate, PostgreSQL app backup, first
+  monitored-target adoption, agent baseline, ICMP adoption and SNMP adoption
+  runbooks.
+- Documented the Grafana CT deployment baseline with the initial Zabbix
+  datasource, dashboards and backup coverage.
+- Documented the Wazuh VM deployment gate, agent baseline and performance
+  tuning notes while keeping enrollment secrets and generated credentials
+  outside Git.
+- Documented the basic alerting baseline, BookStack CT deployment baseline and
+  GLPI VM deployment plus isolated restore-proof runbook.
+
+### Changed
+
+- Kept the public documentation boundary explicit across the new runbooks:
+  operator-owned live wrappers, credentials, target addresses and private
+  topology remain outside the repository.
+
+### Deferred
+
+- No active claims were added for arbitrary host management, CMDB sync,
+  automatic discovery, production readiness or a second truth layer.
 
 ## 0.3.9a0 - 2026-06-29
 

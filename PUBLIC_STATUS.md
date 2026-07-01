@@ -28,6 +28,11 @@
   mutating intent; it is limited to a managed chrony config file and service restart,
   requires GovEngine admission, and uses operator-owned live wrapper configuration
   outside the repository
+- **Public docs baseline:** the repo now documents the Proxmox/PBS readiness,
+  backup/restore-proof, admin-tools CT, Samba AD DC, AdGuard, chrony/NTP,
+  Zabbix, Grafana, Wazuh, basic alerting, BookStack and GLPI isolated
+  restore-proof runbooks while keeping private addresses, credentials and
+  target mappings out of Git
 - **Execution boundary:** RExecOp owns operator-configured SSH execution; Tecrax does not
   manage credentials or embed target infrastructure data
 - **Not claimed:** arbitrary host changes, credential management, automatic discovery,
