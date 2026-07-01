@@ -42,6 +42,8 @@ All notable Tecrax profile changes are documented here.
 - Documented the server room temperature and humidity sensor integration through
   bounded Zabbix Agent 2 user parameters, Zabbix items/triggers and Grafana
   environment panels.
+- Documented the isolated Zabbix PostgreSQL restore proof for the logical dump,
+  including bounded validation counters and cleanup/non-claims.
 
 ### Changed
 
