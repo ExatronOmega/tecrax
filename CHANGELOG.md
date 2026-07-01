@@ -46,6 +46,8 @@ All notable Tecrax profile changes are documented here.
   including bounded validation counters and cleanup/non-claims.
 - Documented the GLPI compliance-readiness boundary for the minimal operational
   baseline.
+- Documented the BookStack isolated restore proof from CT backup with bounded
+  validation counters and cleanup/non-claims.
 
 ### Changed
 
