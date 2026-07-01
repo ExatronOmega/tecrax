@@ -44,6 +44,8 @@ All notable Tecrax profile changes are documented here.
   environment panels.
 - Documented the isolated Zabbix PostgreSQL restore proof for the logical dump,
   including bounded validation counters and cleanup/non-claims.
+- Documented the GLPI compliance-readiness boundary for the minimal operational
+  baseline.
 
 ### Changed
 

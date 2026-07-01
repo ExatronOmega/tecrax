@@ -149,3 +149,24 @@ Non-claims:
 After this baseline, the next GLPI-related gate is final alert ticket routing
 from Zabbix and Wazuh through an operator-owned credential, with duplicate
 suppression and a rollback path.
+
+## Compliance Boundary
+
+This GLPI baseline is an operational helpdesk, inventory and incident-register
+starting point. It is not a compliance-readiness claim.
+
+Explicit non-claims:
+
+- no NIS2/KSC2 readiness claim;
+- no completed incident-response process;
+- no legal retention policy;
+- no complete asset inventory;
+- no mail ingestion or user self-service workflow;
+- no LDAP/SSO integration;
+- no final alert-ticket automation;
+- no evidence chain suitable for audit without a later governance process;
+- no privacy/data-classification review for ticket contents and attachments.
+
+Before using GLPI for compliance evidence, define the incident taxonomy,
+retention policy, access model, audit/export process and operator-owned custody
+for any sensitive ticket contents.

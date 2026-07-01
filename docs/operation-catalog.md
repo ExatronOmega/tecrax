@@ -204,7 +204,7 @@ target without exposing restored data or secrets.
 operator-owned GLPI operational baseline. It records default-account hygiene,
 minimal helpdesk/inventory/incident categories, request-source values and the
 decision that GLPI is the future ticket channel for Zabbix and Wazuh alerts
-without enabling final alert automation yet.
+without enabling final alert automation or claiming compliance readiness.
 
 ## Restart Zabbix agent
 
