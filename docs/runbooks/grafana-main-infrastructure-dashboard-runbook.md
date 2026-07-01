@@ -56,6 +56,10 @@ The first dashboard should remain operational and conservative:
 Provisioning through files is preferred for this first baseline because it does
 not require pasting Grafana credentials or API tokens into shell history.
 
+Provision the main dashboard into the root dashboard folder for discoverability
+in the standard Grafana dashboard list. A separate folder can be introduced
+later after the naming/IPAM cleanup if the dashboard estate grows.
+
 ## Validation
 
 Validate:
@@ -63,6 +67,8 @@ Validate:
 - Grafana service is active;
 - dashboard resource exists in Grafana storage;
 - dashboard title and UID match the expected values;
+- dashboard is in the root folder unless the operator explicitly chooses a
+  foldered layout;
 - panel count is nonzero and includes text, stat, table and time-series panels;
 - Zabbix datasource is still present;
 - Zabbix has enabled hosts and returns problem state through the existing API
