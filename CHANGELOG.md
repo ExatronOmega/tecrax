@@ -56,6 +56,8 @@ All notable Tecrax profile changes are documented here.
 - Extended the Windows pilot helper and runbook for post-domain Windows Time
   behavior, including domain-hierarchy sync and Samba AD DC chrony/ntp-signd
   serving requirements.
+- Documented bounded Samba AD user provisioning and added a dry-run/apply
+  helper that keeps real user lists and temporary passwords outside Git.
 
 ### Changed
 

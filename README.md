@@ -98,6 +98,10 @@ active identity-management connector.
 For the first AD baseline, see `docs/runbooks/samba-ad-baseline-runbook.md`; it records
 the operator-owned OU, group, password-policy and low-impact GPO baseline
 without joining clients or turning Tecrax into identity-management tooling.
+For bounded Samba AD user provisioning, see
+`docs/runbooks/samba-ad-user-provisioning-runbook.md`; it records the CSV-driven
+operator workflow for ordinary users while keeping real user lists and temporary
+passwords outside Git.
 For the first Windows endpoint pilot before AD join, see
 `docs/runbooks/windows-ad-pilot-endpoint-runbook.md`; it records public-safe
 endpoint naming, SSH/PowerShell access, DNS/NTP baseline and validation gates

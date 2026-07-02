@@ -110,6 +110,11 @@ baseline for OUs, groups, password policy and low-impact GPO placeholders. It
 does not join clients, migrate users or add active identity-management
 operations to Tecrax.
 
+`docs/runbooks/samba-ad-user-provisioning-runbook.md` documents bounded
+operator-owned creation of ordinary Samba AD user accounts from a private CSV.
+It keeps real user lists, temporary passwords and privileged account assignment
+outside Tecrax.
+
 `docs/runbooks/samba-ad-app-backup-runbook.md` documents the operator-owned
 application-aware Samba AD backup gate that complements VM-level PBS backup
 without exposing domain backup contents or secrets.
