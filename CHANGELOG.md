@@ -50,6 +50,9 @@ All notable Tecrax profile changes are documented here.
   validation counters and cleanup/non-claims.
 - Documented the Samba AD application-aware backup, isolated AD restore proof
   and PBS full OS upgrade retry, including the PBS VM EFI bootloader caveat.
+- Documented the Windows AD pilot endpoint baseline and added a public-safe
+  SSH/PowerShell helper for dry-run/apply preparation of test endpoints without
+  storing private naming, credentials, keys, fingerprints or inventory in Git.
 
 ### Changed
 

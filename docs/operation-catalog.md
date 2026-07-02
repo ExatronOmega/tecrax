@@ -119,6 +119,11 @@ operator-owned isolated restore proof for the Samba AD DC VM. It restores a DC
 backup to a temporary network-isolated VM, validates local Samba AD and AD DNS
 health through the guest agent and removes the temporary target.
 
+`docs/runbooks/windows-ad-pilot-endpoint-runbook.md` documents the operator-owned
+Windows endpoint pilot baseline before AD join. It covers public-safe naming,
+SSH/PowerShell access, endpoint DNS/NTP baseline and validation gates without
+adding a domain-join intent or storing private endpoint inventory in Tecrax.
+
 `docs/runbooks/adguard-home-deployment-runbook.md` documents the operator-owned AdGuard
 Home deployment gate. It keeps filtering DNS, AD DNS authority and Hillstone
 DHCP ownership separate, and does not add an active AdGuard connector to Tecrax.
