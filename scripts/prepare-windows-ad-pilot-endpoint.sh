@@ -218,6 +218,8 @@ if (-not \$Apply) {
   }
 
   if (\$NtpServer) {
+    Set-Service w32time -StartupType Automatic
+    Start-Service w32time -ErrorAction SilentlyContinue
     w32tm /config /manualpeerlist:\$NtpServer /syncfromflags:manual /reliable:no /update
     Restart-Service w32time
     w32tm /resync /force
@@ -229,6 +231,7 @@ Get-DnsClientServerAddress -InterfaceAlias \$InterfaceAlias -AddressFamily IPv4 
   Format-List InterfaceAlias, AddressFamily, ServerAddresses
 
 if (\$NtpServer) {
+  Get-Service w32time | Select-Object Name, Status, StartType | Format-List
   w32tm /stripchart /computer:\$NtpServer /samples:3 /dataonly
   w32tm /query /status
 }
