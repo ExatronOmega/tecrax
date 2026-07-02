@@ -58,6 +58,8 @@ All notable Tecrax profile changes are documented here.
   serving requirements.
 - Documented bounded Samba AD user provisioning and added a dry-run/apply
   helper that keeps real user lists and temporary passwords outside Git.
+- Documented the first Samba AD domain-user logon and low-impact GPO pilot gate
+  as an L1 runbook before any endpoint rollout or mutating identity intent.
 
 ### Changed
 

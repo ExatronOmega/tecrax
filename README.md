@@ -102,6 +102,9 @@ For bounded Samba AD user provisioning, see
 `docs/runbooks/samba-ad-user-provisioning-runbook.md`; it records the CSV-driven
 operator workflow for ordinary users while keeping real user lists and temporary
 passwords outside Git.
+For the first domain-user logon and low-impact GPO pilot, see
+`docs/runbooks/samba-ad-user-logon-gpo-pilot-runbook.md`; it records the
+operator-owned validation gate before broader endpoint rollout.
 For the first Windows endpoint pilot before AD join, see
 `docs/runbooks/windows-ad-pilot-endpoint-runbook.md`; it records public-safe
 endpoint naming, SSH/PowerShell access, DNS/NTP baseline and validation gates

@@ -115,6 +115,11 @@ operator-owned creation of ordinary Samba AD user accounts from a private CSV.
 It keeps real user lists, temporary passwords and privileged account assignment
 outside Tecrax.
 
+`docs/runbooks/samba-ad-user-logon-gpo-pilot-runbook.md` documents the first
+operator-owned domain-user logon and low-impact GPO validation gate on a pilot
+Windows workstation. It stays at runbook level and does not claim broad endpoint
+rollout or a mutating identity-management intent.
+
 `docs/runbooks/samba-ad-app-backup-runbook.md` documents the operator-owned
 application-aware Samba AD backup gate that complements VM-level PBS backup
 without exposing domain backup contents or secrets.
