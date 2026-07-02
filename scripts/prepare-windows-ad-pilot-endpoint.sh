@@ -9,6 +9,7 @@ Usage:
     [--target-name NAME] [--interface-alias NAME]
     [--dns-server SERVER[,SERVER...]]
     [--ntp-server SERVER]
+    [--domain-time]
     [--domain DOMAIN]
 
 Public-safe operator helper for a Windows AD pilot endpoint baseline.
@@ -28,6 +29,7 @@ target_name=""
 interface_alias="Ethernet"
 dns_servers=""
 ntp_server=""
+domain_time=false
 domain=""
 
 while [[ $# -gt 0 ]]; do
@@ -68,6 +70,10 @@ while [[ $# -gt 0 ]]; do
       ntp_server="${2:-}"
       shift 2
       ;;
+    --domain-time)
+      domain_time=true
+      shift
+      ;;
     --domain)
       domain="${2:-}"
       shift 2
@@ -98,6 +104,11 @@ require_value "--host" "$host"
 require_value "--user" "$user"
 require_value "--identity-file" "$identity_file"
 require_value "--known-hosts" "$known_hosts"
+
+if [[ "$domain_time" == true && -n "$ntp_server" ]]; then
+  echo "--domain-time and --ntp-server are mutually exclusive" >&2
+  exit 2
+fi
 
 if [[ ! -f "$identity_file" ]]; then
   echo "Identity file does not exist: $identity_file" >&2
@@ -146,12 +157,18 @@ if [[ "$apply" == true ]]; then
   apply_ps='$true'
 fi
 
+domain_time_ps='$false'
+if [[ "$domain_time" == true ]]; then
+  domain_time_ps='$true'
+fi
+
 dns_array="$(ps_string_array_from_csv "$dns_servers")"
 
 read -r -d '' ps_script <<EOF || true
 \$ErrorActionPreference = 'Stop'
 \$ProgressPreference = 'SilentlyContinue'
 \$Apply = $apply_ps
+\$DomainTime = $domain_time_ps
 \$TargetName = $(ps_quote "$target_name")
 \$InterfaceAlias = $(ps_quote "$interface_alias")
 \$DnsServers = $dns_array
@@ -204,6 +221,9 @@ if (-not \$Apply) {
   if (\$NtpServer) {
     Show-Value "would_set_ntp_server" \$NtpServer
   }
+  if (\$DomainTime) {
+    Show-Value "would_set_time_sync" "domain_hierarchy"
+  }
 } else {
   Section "apply"
   if (\$TargetName -and \$ComputerSystem.Name -ne \$TargetName) {
@@ -224,6 +244,14 @@ if (-not \$Apply) {
     Restart-Service w32time
     w32tm /resync /force
   }
+
+  if (\$DomainTime) {
+    Set-Service w32time -StartupType Automatic
+    Start-Service w32time -ErrorAction SilentlyContinue
+    w32tm /config /syncfromflags:domhier /update
+    Restart-Service w32time
+    w32tm /resync /force
+  }
 }
 
 Section "validation"
@@ -236,6 +264,12 @@ if (\$NtpServer) {
   w32tm /query /status
 }
 
+if (\$DomainTime) {
+  Get-Service w32time | Select-Object Name, Status, StartType | Format-List
+  w32tm /query /status
+  w32tm /query /peers
+}
+
 if (\$Domain) {
   Resolve-DnsName \$Domain -ErrorAction Stop | Format-Table -AutoSize
   Resolve-DnsName "_ldap._tcp.dc._msdcs.\$Domain" -Type SRV -ErrorAction Stop |
@@ -246,16 +280,11 @@ Section "result"
 Show-Value "restart_required" \$RestartRequired
 EOF
 
-encoded="$(
-  printf '%s' "$ps_script" |
-    iconv -f UTF-8 -t UTF-16LE |
-    base64 -w 0
-)"
-
+printf '%s' "$ps_script" |
 ssh -i "$identity_file" \
   -o IdentitiesOnly=yes \
   -o BatchMode=yes \
   -o StrictHostKeyChecking=yes \
   -o UserKnownHostsFile="$known_hosts" \
   "$user@$host" \
-  "powershell -NoProfile -ExecutionPolicy Bypass -EncodedCommand $encoded"
+  "powershell -NoProfile -ExecutionPolicy Bypass -Command -"

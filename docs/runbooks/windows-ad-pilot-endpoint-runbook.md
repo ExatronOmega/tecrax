@@ -144,6 +144,54 @@ Expected effects:
 The rename takes effect only after reboot. Reboot timing remains an operator
 decision.
 
+## Domain join
+
+Domain join credentials stay operator-owned and must not be passed through
+repository files, chat logs or persistent command history. For the first pilot,
+prefer a dedicated delegated join account over a Domain Admin credential.
+
+The target OU for workstation pilots should be the existing workstation OU, for
+example:
+
+```text
+OU=Workstations,OU=Computers,OU=ORG,DC=ad,DC=example,DC=invalid
+```
+
+If an environment temporarily uses a broad built-in delegation group during the
+pilot, record it as a hardening follow-up and later replace it with an
+OU-specific ACL for the workstation OU.
+
+## Post-domain time sync
+
+Before domain join, it is acceptable for the pilot endpoint to use the local
+infrastructure NTP source directly so Kerberos-sensitive clocks are sane before
+the join.
+
+After domain join, Windows clients should use the domain time hierarchy:
+
+```bash
+scripts/prepare-windows-ad-pilot-endpoint.sh \
+  --apply \
+  --host windows-endpoint.example.invalid \
+  --user local-admin \
+  --identity-file /path/outside/repo/windows-pilot-key \
+  --known-hosts /path/outside/repo/known_hosts \
+  --target-name ORG-LT-001 \
+  --interface-alias Ethernet \
+  --dns-server ad-dns.example.invalid \
+  --domain-time \
+  --domain ad.example.invalid
+```
+
+For Samba AD DC deployments using chrony, the DC must actually serve NTP to
+domain clients. The DC-side baseline should include:
+
+- chrony synchronized to the approved infrastructure time source;
+- chrony listening on UDP/123 for the relevant client subnets;
+- `ntpsigndsocket` pointing at the Samba `ntp_signd` socket directory;
+- filesystem permissions that let the chrony service account access that socket;
+- a client-side `w32tm /stripchart /computer:<dc-fqdn>` proof.
+
 ## Validation
 
 After reboot, rerun dry-run and confirm:
@@ -153,7 +201,9 @@ After reboot, rerun dry-run and confirm:
 - endpoint is still outside the domain until the operator begins the AD join
   step;
 - selected interface has the approved DNS server;
-- Windows Time source is the approved local NTP source;
+- before domain join, Windows Time source is the approved local NTP source;
+- after domain join, Windows Time source is the domain controller/domain
+  hierarchy;
 - AD DNS root and `_ldap._tcp.dc._msdcs.<domain>` resolve through AD DNS.
 
 ## Rollback

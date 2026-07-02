@@ -53,6 +53,9 @@ All notable Tecrax profile changes are documented here.
 - Documented the Windows AD pilot endpoint baseline and added a public-safe
   SSH/PowerShell helper for dry-run/apply preparation of test endpoints without
   storing private naming, credentials, keys, fingerprints or inventory in Git.
+- Extended the Windows pilot helper and runbook for post-domain Windows Time
+  behavior, including domain-hierarchy sync and Samba AD DC chrony/ntp-signd
+  serving requirements.
 
 ### Changed
 
