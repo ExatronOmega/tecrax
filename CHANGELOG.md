@@ -63,6 +63,9 @@ All notable Tecrax profile changes are documented here.
 - Documented the workstation GPO/RDP pilot as an L1 runbook, including separate
   pilot GPOs, internal-only RDP listener validation and the endpoint
   update-management gate before broad rollout.
+- Documented the Windows endpoint update-management pilot as an L1 runbook,
+  including GPO/WUfB rings, active hours, restart boundaries and Wake-on-LAN as
+  a later enhancement rather than an active update orchestrator.
 
 ### Changed
 

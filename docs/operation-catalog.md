@@ -126,6 +126,12 @@ joined. It records separate pilot GPOs, internal-only RDP validation and the
 endpoint update-management gate without adding a generic GPO editor, endpoint
 manager or Windows Update orchestrator to Tecrax.
 
+`docs/runbooks/windows-endpoint-update-management-pilot-runbook.md` documents
+the operator-owned Windows endpoint update-management pilot. It records a
+GPO/WUfB ring baseline, active hours, restart boundaries and Wake-on-LAN future
+gate without adding WSUS, RMM, WoL automation or endpoint update orchestration
+to Tecrax.
+
 `docs/runbooks/samba-ad-app-backup-runbook.md` documents the operator-owned
 application-aware Samba AD backup gate that complements VM-level PBS backup
 without exposing domain backup contents or secrets.
