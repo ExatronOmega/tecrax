@@ -60,6 +60,9 @@ All notable Tecrax profile changes are documented here.
   helper that keeps real user lists and temporary passwords outside Git.
 - Documented the first Samba AD domain-user logon and low-impact GPO pilot gate
   as an L1 runbook before any endpoint rollout or mutating identity intent.
+- Documented the workstation GPO/RDP pilot as an L1 runbook, including separate
+  pilot GPOs, internal-only RDP listener validation and the endpoint
+  update-management gate before broad rollout.
 
 ### Changed
 

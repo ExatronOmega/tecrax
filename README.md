@@ -105,6 +105,10 @@ passwords outside Git.
 For the first domain-user logon and low-impact GPO pilot, see
 `docs/runbooks/samba-ad-user-logon-gpo-pilot-runbook.md`; it records the
 operator-owned validation gate before broader endpoint rollout.
+For the first workstation GPO/RDP pilot, see
+`docs/runbooks/samba-ad-workstation-gpo-rdp-pilot-runbook.md`; it records the
+separate workstation GPO shape, internal-only RDP validation and endpoint
+update-management gate without adding a GPO editor or endpoint manager.
 For the first Windows endpoint pilot before AD join, see
 `docs/runbooks/windows-ad-pilot-endpoint-runbook.md`; it records public-safe
 endpoint naming, SSH/PowerShell access, DNS/NTP baseline and validation gates

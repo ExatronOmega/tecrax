@@ -120,6 +120,12 @@ operator-owned domain-user logon and low-impact GPO validation gate on a pilot
 Windows workstation. It stays at runbook level and does not claim broad endpoint
 rollout or a mutating identity-management intent.
 
+`docs/runbooks/samba-ad-workstation-gpo-rdp-pilot-runbook.md` documents the
+operator-owned workstation GPO/RDP pilot after the first endpoint is domain
+joined. It records separate pilot GPOs, internal-only RDP validation and the
+endpoint update-management gate without adding a generic GPO editor, endpoint
+manager or Windows Update orchestrator to Tecrax.
+
 `docs/runbooks/samba-ad-app-backup-runbook.md` documents the operator-owned
 application-aware Samba AD backup gate that complements VM-level PBS backup
 without exposing domain backup contents or secrets.
