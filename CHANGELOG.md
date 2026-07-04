@@ -4,14 +4,19 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
-### Done
+## [0.3.10a0] - 2026-07-04
+
+- Published `tecrax==0.3.10a0` on PyPI aligned to `rexecop==0.2.15a0`,
+  `govengine==0.16.8` and `sclite-core==1.0.8`.
+
+### Done (prior)
 
 - Aligned the Tecrax source dependency truth with the published RExecOp
-  `0.2.14a0` stack line while keeping `govengine==0.16.8` and
+  `0.2.15a0` stack line while keeping `govengine==0.16.8` and
   `sclite-core==1.0.8`.
 - Aligned the Tecrax source dependency truth with the published GovEngine
   `0.16.8` stack line while keeping `sclite-core==1.0.8` and
-  `rexecop==0.2.14a0`.
+  `rexecop==0.2.15a0`.
 - Documented the Proxmox host readiness runbook for the fresh T150 deployment,
   keeping host update, SMART, ZFS and storage baseline steps operator-owned
   rather than claiming a generic Proxmox mutation intent.
@@ -84,10 +89,10 @@ All notable Tecrax profile changes are documented here.
 - No active claims were added for arbitrary host management, CMDB sync,
   automatic discovery, production readiness or a second truth layer.
 
-## 0.3.9a0 - 2026-06-29
+## 0.3.10a0 - 2026-06-29
 
-- Published `tecrax==0.3.9a0` on PyPI with `govengine==0.16.8`,
-  `rexecop==0.2.14a0`, and `sclite-core==1.0.8`.
+- Published `tecrax==0.3.10a0` on PyPI with `govengine==0.16.8`,
+  `rexecop==0.2.15a0`, and `sclite-core==1.0.8`.
 - Added the first governed mutating Tecrax slice:
   `configure_chrony_ntp_server`, limited to a deterministic chrony/NTP server
   apply path with GovEngine admission, RExecOp execution, SCLite evidence, and
