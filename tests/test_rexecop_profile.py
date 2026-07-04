@@ -149,6 +149,15 @@ def test_ubuntu_inventory_example_projects_b2_runtime_controls(tmp_path: Path) -
             "inventory-receipt",
             "inventory-timeout",
         ],
+        "allowed_backend_classes": [],
+        "allowed_network_egress": [],
+        "mutation_requires_approval": False,
+        "no_raw_shell": False,
+        "read_only_required": False,
+        "typed_execution_control_ids": [
+            "output_digest_required",
+            "receipt_required",
+        ],
     }
 
 
