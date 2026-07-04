@@ -4,7 +4,7 @@ Tecrax is a governed infrastructure-operations profile for RExecOp, using
 GovEngine governance and SCLite artifact truth.
 
 Current source line: `tecrax==0.3.9a0`, depending on
-`govengine==0.16.5`, `sclite-core==1.0.8`, and `rexecop==0.2.11a0`.
+`govengine==0.16.6`, `sclite-core==1.0.8`, and `rexecop==0.2.11a0`.
 Latest published PyPI baseline: `tecrax==0.3.8a0`; it contains the coordinated
 B2 dependency floor and read-only policy vector.
 
@@ -202,7 +202,7 @@ inventory, credential path, or infrastructure adapter.
 
 The source `0.3.9-alpha` line combines the profile-owned read-only reaction pack,
 B2 policy vector, and the first governed chrony/NTP apply slice over RExecOp
-`0.2.11a0`, GovEngine `0.16.5`, and SCLite `1.0.8`. It does not add a second
+`0.2.11a0`, GovEngine `0.16.6`, and SCLite `1.0.8`. It does not add a second
 policy engine, lifecycle runner, or truth layer.
 
 The Ubuntu environment example uses profile-owned policy semantics, but GovEngine

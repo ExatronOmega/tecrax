@@ -45,7 +45,7 @@ def test_version_and_public_truth_validator_agree() -> None:
     )
     assert result.stdout.strip() == (
         'public_truth_ok:tecrax==0.3.9a0:'
-        'govengine==0.16.5:'
+        'govengine==0.16.6:'
         'sclite-core==1.0.8:'
         'rexecop==0.2.11a0'
     )

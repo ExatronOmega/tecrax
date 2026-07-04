@@ -6,6 +6,9 @@ All notable Tecrax profile changes are documented here.
 
 ### Done
 
+- Aligned the Tecrax source dependency truth with the published GovEngine
+  `0.16.6` stack line while keeping `sclite-core==1.0.8` and
+  `rexecop==0.2.11a0`.
 - Documented the Proxmox host readiness runbook for the fresh T150 deployment,
   keeping host update, SMART, ZFS and storage baseline steps operator-owned
   rather than claiming a generic Proxmox mutation intent.

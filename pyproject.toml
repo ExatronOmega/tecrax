@@ -22,7 +22,7 @@ classifiers = [
   "Topic :: System :: Systems Administration",
 ]
 dependencies = [
-  "govengine==0.16.5",
+  "govengine==0.16.6",
   "sclite-core==1.0.8",
   "rexecop==0.2.11a0",
 ]
