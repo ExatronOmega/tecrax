@@ -4,6 +4,12 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+## [0.3.13a0] - 2026-07-05
+
+- Published `tecrax==0.3.13a0` on PyPI aligned to `rexecop==0.2.18a0`,
+  `govengine==0.16.9` and `sclite-core==1.0.8`.
+- Repaired stack pin after `0.3.12a0` shipped with `rexecop==0.2.17a0`.
+
 ## [0.3.12a0] - 2026-07-05
 
 - Published `tecrax==0.3.12a0` on PyPI aligned to `rexecop==0.2.17a0`,
