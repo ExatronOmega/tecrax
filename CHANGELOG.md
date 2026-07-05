@@ -4,21 +4,20 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
-- `ace171f`: reorganize README (badges, intent table, runbook index) and fix
-  Changelog header ordering; docs only, no PyPI release.
+## [0.3.18a0] - 2026-07-05
+
+- Published `tecrax==0.3.18a0` on PyPI aligned to `rexecop==0.2.23a0`,
+  `govengine==0.16.9` and `sclite-core==1.0.8`.
+- **Profile delta:** none — dependency pin and public-truth markers only.
+  Supersedes `0.3.17a0` for coordinated `rexecop[tecrax]==0.2.23a0` installs.
+- Docs-only source commits since `0.3.17a0`: `ace171f`, `50e9a8a` (README/CHANGELOG).
 
 ## [0.3.17a0] - 2026-07-05
 
 - Published `tecrax==0.3.17a0` on PyPI aligned to `rexecop==0.2.22a0`,
-  `govengine==0.16.9` and `sclite-core==1.0.8` (`341e231`).
-- **Profile delta:** none. Active intents, workflows, connectors and validation are
-  unchanged since `0.3.11a0`.
-- **Why republished:** RExecOp G8 publish follow-up (`0.2.17a0`–`0.2.22a0`) ships
-  `rexecop[tecrax]` with an exact `tecrax==…` extra pin. PyPI must expose a matching
-  wheel for `pip install "rexecop[tecrax]==…"` even when Tecrax source is unchanged.
-  These are coordinated stack repair artifacts, not feature releases.
-- **Current supported line:** install `tecrax==0.3.17a0` or `rexecop[tecrax]==0.2.22a0`.
-  Older repair wheels below are archived only.
+  `govengine==0.16.9` and `sclite-core==1.0.8` (`341e231`); superseded by `0.3.18a0`.
+- **Profile delta:** none since `0.3.11a0`. `0.3.12a0`–`0.3.17a0` were coordinated stack
+  repair artifacts only (stale `rexecop[tecrax]` extra pins).
 
 ### Publish follow-up repair line (superseded, pin-only)
 
