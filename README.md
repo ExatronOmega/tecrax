@@ -1,7 +1,7 @@
 # Tecrax
 
 [![CI](https://github.com/rozmiarD/tecrax/actions/workflows/ci.yml/badge.svg)](https://github.com/rozmiarD/tecrax/actions/workflows/ci.yml)
-[![Package: tecrax 0.3.20a0](https://img.shields.io/badge/package-tecrax%200.3.20a0-blueviolet.svg)](https://pypi.org/project/tecrax/0.3.20a0/)
+[![Package: tecrax 0.3.21a0](https://img.shields.io/badge/package-tecrax%200.3.21a0-blueviolet.svg)](https://pypi.org/project/tecrax/0.3.21a0/)
 [![Python: 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](pyproject.toml)
 [![Dependency: GovEngine ==0.16.11](https://img.shields.io/badge/dependency-GovEngine%20%3D%3D0.16.11-informational.svg)](https://github.com/rozmiarD/GovEngine)
 [![Dependency: RExecOp ==0.2.24a0](https://img.shields.io/badge/dependency-RExecOp%20%3D%3D0.2.24a0-informational.svg)](https://github.com/rozmiarD/RExecOP)
@@ -21,15 +21,15 @@ credentials, embed target topology, or accept arbitrary infrastructure commands.
 
 | Item | Value |
 | --- | --- |
-| Current source line | `0.3.20a0` (`0.3.20-alpha`) |
+| Current source line | `0.3.21a0` (`0.3.21-alpha`) |
 | Maturity | **alpha** — operator evaluation with documented limits |
-| Latest PyPI | [`tecrax==0.3.20a0`](https://pypi.org/project/tecrax/0.3.20a0/) |
+| Latest PyPI | [`tecrax==0.3.21a0`](https://pypi.org/project/tecrax/0.3.21a0/) |
 | Source dependencies | `govengine==0.16.11`, `sclite-core==1.0.9`, `rexecop==0.2.24a0` |
 | Profile entry point | `rexecop.profiles:tecrax` |
 | Active mutating intent | `configure_chrony_ntp_server` only |
 | Public status | [`PUBLIC_STATUS.md`](PUBLIC_STATUS.md) |
 
-Latest published PyPI baseline: `tecrax==0.3.20a0`; it contains the coordinated
+Latest published PyPI baseline: `tecrax==0.3.21a0`; it contains the coordinated
 B2 dependency floor and read-only policy vector.
 
 ## What Tecrax provides
@@ -111,7 +111,7 @@ outside this package.
 Install the coordinated published line to register the current domain profile:
 
 ```bash
-pip install "tecrax==0.3.20a0"
+pip install "tecrax==0.3.21a0"
 tecrax status
 ```
 
@@ -192,7 +192,7 @@ profile/planning/supervision/runtime-review contracts and binds its fixture
 receipt through an SCLite artifact descriptor. It has no live runner, host
 inventory, credential path, or infrastructure adapter.
 
-The source `0.3.20-alpha` line combines the profile-owned read-only reaction pack,
+The source `0.3.21-alpha` line combines the profile-owned read-only reaction pack,
 B2 policy vector, and the first governed chrony/NTP apply slice over RExecOp
 `0.2.24a0`, GovEngine `0.16.11`, and SCLite `1.0.9`. It does not add a second
 policy engine, lifecycle runner, or truth layer.

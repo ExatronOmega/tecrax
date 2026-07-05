@@ -4,6 +4,15 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+## [0.3.21a0] - 2026-07-05
+
+- Published `tecrax==0.3.21a0` on PyPI aligned to `rexecop==0.2.24a0`,
+  `govengine==0.16.11` and `sclite-core==1.0.9`.
+- **Profile delta:** none — packaging repair only. The wheel now includes the
+  public `examples/` directory used by RExecOp golden fixtures and operator
+  quickstart paths.
+- Supersedes `0.3.20a0` for coordinated `rexecop[tecrax]==0.2.24a0` installs.
+
 ## [0.3.20a0] - 2026-07-05
 
 - Published `tecrax==0.3.20a0` on PyPI aligned to `rexecop==0.2.24a0`,

@@ -1,7 +1,7 @@
 # Tecrax Public Status
 
-- **Source package version:** `0.3.20a0` (`0.3.20-alpha`) alpha
-- **Latest published PyPI package:** `tecrax==0.3.20a0`; it contains the current B2 profile vector
+- **Source package version:** `0.3.21a0` (`0.3.21-alpha`) alpha
+- **Latest published PyPI package:** `tecrax==0.3.21a0`; it contains the current B2 profile vector
 - **Dependencies:** `govengine==0.16.11`, `sclite-core==1.0.9`, `rexecop==0.2.24a0`
 - **RExecOp profile:** bundled at `src/tecrax/profile/` via `rexecop.profiles:tecrax`
 - **Local fixture:** `tecrax fixture-review` — dry-run GovEngine/SCLite proof only
