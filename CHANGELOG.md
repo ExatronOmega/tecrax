@@ -4,6 +4,20 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+## [0.3.20a0] - 2026-07-05
+
+- Published `tecrax==0.3.20a0` on PyPI aligned to `rexecop==0.2.24a0`,
+  `govengine==0.16.11` and `sclite-core==1.0.9`.
+- **Profile delta:** none — dependency pin and public-truth markers only.
+  Supersedes `0.3.19a0` for coordinated `rexecop[tecrax]==0.2.24a0` installs.
+
+## [0.3.19a0] - 2026-07-05
+
+- Published `tecrax==0.3.19a0` on PyPI aligned to `rexecop==0.2.24a0`,
+  `govengine==0.16.10` and `sclite-core==1.0.8`.
+- **Profile delta:** none — dependency pin and public-truth markers only.
+  Supersedes `0.3.18a0` for coordinated `rexecop[tecrax]==0.2.24a0` installs.
+
 ## [0.3.18a0] - 2026-07-05
 
 - Published `tecrax==0.3.18a0` on PyPI aligned to `rexecop==0.2.23a0`,
