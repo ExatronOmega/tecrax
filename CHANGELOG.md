@@ -4,53 +4,29 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
-## [0.3.21a0] - 2026-07-05
+## [0.3.17a0-0.3.21a0] - 2026-07-05
 
-- Published `tecrax==0.3.21a0` on PyPI aligned to `rexecop==0.2.24a0`,
-  `govengine==0.16.11` and `sclite-core==1.0.9`.
-- **Profile delta:** none — packaging repair only. The wheel now includes the
-  public `examples/` directory used by RExecOp golden fixtures and operator
-  quickstart paths.
-- Supersedes `0.3.20a0` for coordinated `rexecop[tecrax]==0.2.24a0` installs.
-
-## [0.3.20a0] - 2026-07-05
-
-- Published `tecrax==0.3.20a0` on PyPI aligned to `rexecop==0.2.24a0`,
-  `govengine==0.16.11` and `sclite-core==1.0.9`.
-- **Profile delta:** none — dependency pin and public-truth markers only.
-  Supersedes `0.3.19a0` for coordinated `rexecop[tecrax]==0.2.24a0` installs.
-
-## [0.3.19a0] - 2026-07-05
-
-- Published `tecrax==0.3.19a0` on PyPI aligned to `rexecop==0.2.24a0`,
-  `govengine==0.16.10` and `sclite-core==1.0.8`.
-- **Profile delta:** none — dependency pin and public-truth markers only.
-  Supersedes `0.3.18a0` for coordinated `rexecop[tecrax]==0.2.24a0` installs.
-
-## [0.3.18a0] - 2026-07-05
-
-- Published `tecrax==0.3.18a0` on PyPI aligned to `rexecop==0.2.23a0`,
-  `govengine==0.16.9` and `sclite-core==1.0.8`.
-- **Profile delta:** none — dependency pin and public-truth markers only.
-  Supersedes `0.3.17a0` for coordinated `rexecop[tecrax]==0.2.23a0` installs.
-- Docs-only source commits since `0.3.17a0`: `ace171f`, `50e9a8a` (README/CHANGELOG).
-
-## [0.3.17a0] - 2026-07-05
-
-- Published `tecrax==0.3.17a0` on PyPI aligned to `rexecop==0.2.22a0`,
-  `govengine==0.16.9` and `sclite-core==1.0.8` (`341e231`); superseded by `0.3.18a0`.
-- **Profile delta:** none since `0.3.11a0`. `0.3.12a0`–`0.3.17a0` were coordinated stack
-  repair artifacts only (stale `rexecop[tecrax]` extra pins).
+- **Current supported line:** `tecrax==0.3.21a0`, aligned to
+  `rexecop==0.2.24a0`, `govengine==0.16.11` and `sclite-core==1.0.9`.
+- **Profile delta:** none since `0.3.11a0`. `0.3.12a0`-`0.3.21a0`
+  are coordinated stack repair artifacts only: dependency pins, public-truth
+  markers and the `0.3.21a0` wheel packaging repair for public `examples/`.
+- `0.3.19a0` was a source-only intermediate during release-train repair and was
+  not published to PyPI.
 
 ### Publish follow-up repair line (superseded, pin-only)
 
-| Tecrax | RExecOp extra pin | Commit |
-| --- | --- | --- |
-| `0.3.16a0` | `0.2.21a0` | `48d8e87` |
-| `0.3.15a0` | `0.2.20a0` | `26eab3e` |
-| `0.3.14a0` | `0.2.19a0` | `e7b8260` |
-| `0.3.13a0` | `0.2.18a0` | `e281e88` |
-| `0.3.12a0` | `0.2.17a0` | `b50f1b1` |
+| Tecrax | RExecOp extra pin | GovEngine | SCLite | Commit | Note |
+| --- | --- | --- | --- | --- | --- |
+| `0.3.21a0` | `0.2.24a0` | `0.16.11` | `1.0.9` | `07a55e2` | Current line; includes public `examples/` in the wheel. |
+| `0.3.20a0` | `0.2.24a0` | `0.16.11` | `1.0.9` | `c526a5c` | Superseded; dependency/public-truth repair, missing wheel examples. |
+| `0.3.18a0` | `0.2.23a0` | `0.16.9` | `1.0.8` | `08aeb41` | Superseded; coordinated public line before automation-chain release train. |
+| `0.3.17a0` | `0.2.22a0` | `0.16.9` | `1.0.8` | `341e231` | Superseded; pin repair. |
+| `0.3.16a0` | `0.2.21a0` | `0.16.9` | `1.0.8` | `48d8e87` | Superseded; pin repair. |
+| `0.3.15a0` | `0.2.20a0` | `0.16.9` | `1.0.8` | `26eab3e` | Superseded; pin repair. |
+| `0.3.14a0` | `0.2.19a0` | `0.16.9` | `1.0.8` | `e7b8260` | Superseded; pin repair. |
+| `0.3.13a0` | `0.2.18a0` | `0.16.9` | `1.0.8` | `e281e88` | Superseded; pin repair. |
+| `0.3.12a0` | `0.2.17a0` | `0.16.9` | `1.0.8` | `b50f1b1` | Superseded; pin repair. |
 
 ## [0.3.11a0] - 2026-07-04
 
