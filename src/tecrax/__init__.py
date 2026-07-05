@@ -11,7 +11,7 @@ from .escalation import (
 from .local_fixture import build_local_fixture_review
 from .reactions import build_monitoring_host_observation
 
-__version__ = "0.3.16a0"
+__version__ = "0.3.17a0"
 
 __all__ = [
     "__version__",

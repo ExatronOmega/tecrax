@@ -1,4 +1,8 @@
 
+## [0.3.17a0] - 2026-07-05
+
+- Published `tecrax==0.3.17a0` aligned to `rexecop==0.2.22a0`.
+
 ## [0.3.15a0] - 2026-07-05
 
 - Published `tecrax==0.3.15a0` aligned to `rexecop==0.2.20a0`.
