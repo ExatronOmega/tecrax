@@ -1,3 +1,8 @@
+
+## [0.3.15a0] - 2026-07-05
+
+- Published `tecrax==0.3.15a0` aligned to `rexecop==0.2.20a0`.
+
 # Changelog
 
 All notable Tecrax profile changes are documented here.
