@@ -4,6 +4,9 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Added the GLPI inventory scope runbook, defining a conservative Phase 1
+  infrastructure inventory baseline and deferring agents, endpoint discovery
+  and network sweeps.
 - Added the basic incident-handling runbook for GLPI incident intake, triage,
   classification, containment, evidence custody, closure and follow-up without
   claiming compliance readiness or automatic containment.

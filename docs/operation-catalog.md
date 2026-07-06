@@ -289,6 +289,14 @@ minimal helpdesk/inventory/incident categories, request-source values and the
 decision that GLPI is the future ticket channel for Zabbix and Wazuh alerts
 without enabling final alert automation or claiming compliance readiness.
 
+## GLPI Inventory Scope
+
+`docs/runbooks/glpi-inventory-scope-runbook.md` documents the first
+operator-owned GLPI inventory scope. It defines which infrastructure records may
+be entered first, which endpoint/device classes remain deferred, and how GLPI
+relates to Zabbix, Wazuh, AD, Proxmox and private operator context without
+becoming an uncontrolled discovery engine or second source of truth.
+
 ## Basic Incident Handling Baseline
 
 `docs/runbooks/basic-incident-handling-runbook.md` documents the first
