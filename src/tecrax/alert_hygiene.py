@@ -36,8 +36,10 @@ def load_wazuh_events(path: Path, *, limit: int | None = None) -> list[WazuhRule
 
 
 def wazuh_event_from_mapping(value: dict[str, Any]) -> WazuhRuleEvent:
-    rule = value.get("rule") if isinstance(value.get("rule"), dict) else {}
-    agent = value.get("agent") if isinstance(value.get("agent"), dict) else {}
+    raw_rule = value.get("rule")
+    raw_agent = value.get("agent")
+    rule: dict[str, Any] = raw_rule if isinstance(raw_rule, dict) else {}
+    agent: dict[str, Any] = raw_agent if isinstance(raw_agent, dict) else {}
     return WazuhRuleEvent(
         rule_id=_bounded_text(rule.get("id") or "unknown", 64),
         level=_int(rule.get("level")),
