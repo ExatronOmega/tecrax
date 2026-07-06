@@ -289,6 +289,14 @@ minimal helpdesk/inventory/incident categories, request-source values and the
 decision that GLPI is the future ticket channel for Zabbix and Wazuh alerts
 without enabling final alert automation or claiming compliance readiness.
 
+## Basic Incident Handling Baseline
+
+`docs/runbooks/basic-incident-handling-runbook.md` documents the first
+operator-owned incident-handling baseline. It defines intake, triage,
+classification, containment, evidence custody, closure and follow-up rules for
+GLPI incident records without claiming NIS2/KSC2 readiness, legal notification
+workflow, forensics or automatic containment.
+
 ## Restart Zabbix agent
 
 `restart_zabbix_agent` is a legacy fixture-only mutating workflow. Current

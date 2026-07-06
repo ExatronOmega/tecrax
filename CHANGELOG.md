@@ -4,6 +4,9 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Added the basic incident-handling runbook for GLPI incident intake, triage,
+  classification, containment, evidence custody, closure and follow-up without
+  claiming compliance readiness or automatic containment.
 - Extended the admin-tools substrate runbook with the dedicated runtime-node
   model: admin-tools is the target for operator wrappers, policy files, private
   state and controlled Tecrax/RExecOp runtime, while development stays on the
