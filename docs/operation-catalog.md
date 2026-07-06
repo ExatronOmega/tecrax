@@ -226,6 +226,11 @@ basic alerting baseline. It adds local Zabbix and Wazuh alert spools through
 systemd timers without claiming final external notification routing, GLPI ticket
 creation or incident escalation policy.
 
+`docs/runbooks/frigate-host-monitoring-runbook.md` documents the first
+operator-owned monitoring baseline for an existing Ubuntu Frigate host. It adds
+Zabbix, Wazuh, bounded Frigate listener checks and storage-pressure monitoring
+without reading camera streams, credentials, recordings or event payloads.
+
 `docs/runbooks/bookstack-ct-deployment-runbook.md` documents the operator-owned
 BookStack CT deployment gate. It introduces BookStack as the documentation and
 handoff layer while keeping application secrets, database credentials and future
