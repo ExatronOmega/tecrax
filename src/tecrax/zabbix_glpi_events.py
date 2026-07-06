@@ -195,6 +195,36 @@ def zabbix_live_routing_decision(
             route="shadow_only",
             reason="host unavailable outside infrastructure allowlist",
         )
+    if host not in infra_hosts:
+        return ZabbixRoutingDecision(
+            route="shadow_only",
+            reason="host outside infrastructure allowlist",
+        )
+    if _is_known_expected_storage_pressure(event):
+        return ZabbixRoutingDecision(
+            route="shadow_only",
+            reason="known expected storage pressure requires source tuning before ticketing",
+        )
+    if _is_critical_disk_pressure(event):
+        return ZabbixRoutingDecision(
+            route="live_candidate",
+            reason="infrastructure critical disk pressure",
+        )
+    if _is_backup_failure(event):
+        return ZabbixRoutingDecision(
+            route="live_candidate",
+            reason="backup failure on infrastructure host",
+        )
+    if _is_ad_dns_unavailable(event):
+        return ZabbixRoutingDecision(
+            route="live_candidate",
+            reason="AD/DNS service unavailable",
+        )
+    if _is_core_service_unavailable(event):
+        return ZabbixRoutingDecision(
+            route="live_candidate",
+            reason="core infrastructure service unavailable",
+        )
     return ZabbixRoutingDecision(
         route="shadow_only",
         reason="not in initial live Zabbix allowlist",
@@ -236,6 +266,79 @@ def _is_host_unavailable(event: AlertEvent) -> bool:
             "host is unavailable",
             "is unavailable",
             "not available",
+        )
+    )
+
+
+def _is_known_expected_storage_pressure(event: AlertEvent) -> bool:
+    text = f"{event.host} {event.summary} {event.raw_trigger}".lower()
+    return "frigate01" in text and "/mnt/monitoring" in text
+
+
+def _is_critical_disk_pressure(event: AlertEvent) -> bool:
+    text = f"{event.summary} {event.raw_trigger}".lower()
+    return any(
+        phrase in text
+        for phrase in (
+            "space is critically low",
+            "filesystem is full",
+            "disk is full",
+            "free disk space is less than",
+            "vfs.fs.size",
+        )
+    )
+
+
+def _is_backup_failure(event: AlertEvent) -> bool:
+    text = f"{event.summary} {event.raw_trigger}".lower()
+    return "backup" in text and any(
+        phrase in text
+        for phrase in (
+            "failed",
+            "failure",
+            "error",
+            "not completed",
+            "missed",
+        )
+    )
+
+
+def _is_ad_dns_unavailable(event: AlertEvent) -> bool:
+    text = f"{event.host} {event.summary} {event.raw_trigger}".lower()
+    return any(token in text for token in ("dc01", "adguard-01", "dns", "samba", "domain")) and any(
+        phrase in text
+        for phrase in (
+            "unavailable",
+            "not responding",
+            "service is down",
+            "failed",
+        )
+    )
+
+
+def _is_core_service_unavailable(event: AlertEvent) -> bool:
+    text = f"{event.host} {event.summary} {event.raw_trigger}".lower()
+    return any(
+        token in text
+        for token in (
+            "zabbix",
+            "grafana",
+            "wazuh",
+            "pbs",
+            "proxmox",
+            "pve",
+            "glpi",
+            "bookstack",
+        )
+    ) and any(
+        phrase in text
+        for phrase in (
+            "service is down",
+            "service unavailable",
+            "not running",
+            "failed",
+            "unavailable",
+            "not responding",
         )
     )
 

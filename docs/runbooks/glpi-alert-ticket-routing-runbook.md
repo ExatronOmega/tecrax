@@ -101,6 +101,20 @@ Do not route ordinary staff PCs/laptops as host-down tickets. Users can power
 them off, suspend them or leave the network, so endpoint availability belongs to
 endpoint rollout/reporting policy, not infrastructure outage ticketing.
 
+The first Zabbix live-candidate rules are intentionally narrow:
+
+- infrastructure host unavailable, only for explicitly allowlisted
+  infrastructure host aliases;
+- critical disk pressure on infrastructure hosts;
+- backup failures on infrastructure hosts;
+- AD/DNS unavailable;
+- core infrastructure service unavailable for Proxmox/PBS/Zabbix/Grafana/Wazuh/
+  GLPI/BookStack-class services.
+
+Known expected states remain shadow-only until source tuning is complete. The
+first explicit exception is Frigate video-retention storage pressure on
+`/mnt/monitoring`, which should not create live GLPI tickets by default.
+
 ## Procedure
 
 ### 1. Prepare Secret Custody

@@ -147,3 +147,83 @@ def test_live_candidate_filter_excludes_user_endpoints_and_non_allowlisted_event
     )
 
     assert [event.event_id for event in live_candidates] == ["1"]
+
+
+def test_critical_disk_is_live_candidate_for_infrastructure_except_known_frigate_retention() -> None:
+    zbx_disk = zabbix_problem_to_alert_event(
+        {
+            "eventid": "10",
+            "name": "Linux: FS [/]: Space is critically low (used > 95%)",
+            "severity": 4,
+            "clock": "1783339200",
+            "hosts": [{"host": "zbx01"}],
+        }
+    )
+    frigate_retention = zabbix_problem_to_alert_event(
+        {
+            "eventid": "11",
+            "name": "Linux: FS [/mnt/monitoring]: Space is critically low (used > 90%)",
+            "severity": 3,
+            "clock": "1783339200",
+            "hosts": [{"host": "frigate01"}],
+        }
+    )
+
+    assert (
+        zabbix_live_routing_decision(
+            zbx_disk,
+            infrastructure_hosts={"zbx01", "frigate01"},
+        ).route
+        == "live_candidate"
+    )
+    retention_decision = zabbix_live_routing_decision(
+        frigate_retention,
+        infrastructure_hosts={"zbx01", "frigate01"},
+    )
+    assert retention_decision.route == "shadow_only"
+    assert "known expected storage pressure" in retention_decision.reason
+
+
+def test_backup_failure_and_ad_dns_service_failures_are_live_candidates_for_infrastructure() -> None:
+    backup_failure = zabbix_problem_to_alert_event(
+        {
+            "eventid": "20",
+            "name": "PBS backup job failed",
+            "severity": 4,
+            "clock": "1783339200",
+            "hosts": [{"host": "pbs01"}],
+        }
+    )
+    dns_failure = zabbix_problem_to_alert_event(
+        {
+            "eventid": "21",
+            "name": "DNS service is down",
+            "severity": 4,
+            "clock": "1783339200",
+            "hosts": [{"host": "dc01"}],
+        }
+    )
+    core_failure = zabbix_problem_to_alert_event(
+        {
+            "eventid": "22",
+            "name": "Grafana service is down",
+            "severity": 4,
+            "clock": "1783339200",
+            "hosts": [{"host": "grafana-01"}],
+        }
+    )
+
+    infra_hosts = {"pbs01", "dc01", "grafana-01"}
+
+    assert (
+        zabbix_live_routing_decision(backup_failure, infrastructure_hosts=infra_hosts).reason
+        == "backup failure on infrastructure host"
+    )
+    assert (
+        zabbix_live_routing_decision(dns_failure, infrastructure_hosts=infra_hosts).reason
+        == "AD/DNS service unavailable"
+    )
+    assert (
+        zabbix_live_routing_decision(core_failure, infrastructure_hosts=infra_hosts).reason
+        == "core infrastructure service unavailable"
+    )

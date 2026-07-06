@@ -4,6 +4,9 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Extended the conservative Zabbix live-candidate allowlist with critical disk,
+  backup failure, AD/DNS unavailable and core service unavailable classes while
+  keeping known Frigate retention storage pressure shadow-only.
 - Added conservative Zabbix live-candidate filtering so host-down ticketing only
   applies to explicitly allowlisted infrastructure hosts, not ordinary endpoints.
 - Added a bounded Zabbix active-problem collector for GLPI shadow routing. It
