@@ -4,6 +4,8 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Added operator-context file support for Zabbix GLPI live-candidate
+  infrastructure host allowlists.
 - Extended the conservative Zabbix live-candidate allowlist with critical disk,
   backup failure, AD/DNS unavailable and core service unavailable classes while
   keeping known Frigate retention storage pressure shadow-only.

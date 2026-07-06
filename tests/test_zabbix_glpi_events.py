@@ -4,6 +4,7 @@ from tecrax.zabbix_glpi_events import (
     ZabbixProblemQuery,
     alert_event_to_mapping,
     filter_zabbix_live_candidate_events,
+    load_infrastructure_hosts_file,
     zabbix_problem_get_payload,
     zabbix_problem_to_alert_event,
     zabbix_trigger_host_payload,
@@ -227,3 +228,22 @@ def test_backup_failure_and_ad_dns_service_failures_are_live_candidates_for_infr
         zabbix_live_routing_decision(core_failure, infrastructure_hosts=infra_hosts).reason
         == "core infrastructure service unavailable"
     )
+
+
+def test_load_infra_hosts_from_operator_context_shape(tmp_path) -> None:  # noqa: ANN001
+    path = tmp_path / "alert-routing.yaml"
+    path.write_text(
+        "\n".join(
+            [
+                "version: 1",
+                "alert_routing:",
+                "  zabbix:",
+                "    infrastructure_hosts:",
+                "      - pve01",
+                "      - zbx01",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    assert load_infrastructure_hosts_file(path) == ["pve01", "zbx01"]

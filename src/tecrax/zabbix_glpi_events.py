@@ -5,6 +5,7 @@ import urllib.error
 import urllib.request
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Iterable
 
 from tecrax.alert_routing import AlertEvent
@@ -247,6 +248,22 @@ def filter_zabbix_live_candidate_events(
     ]
 
 
+def load_infrastructure_hosts_file(path: Path) -> list[str]:
+    text = path.read_text(encoding="utf-8")
+    if path.suffix.lower() == ".json":
+        value = json.loads(text)
+    else:
+        value = _parse_simple_yaml(text)
+    hosts = _lookup(value, ("alert_routing", "zabbix", "infrastructure_hosts"))
+    if hosts is None:
+        hosts = _lookup(value, ("zabbix", "infrastructure_hosts"))
+    if hosts is None:
+        hosts = value.get("infrastructure_hosts") if isinstance(value, dict) else None
+    if not isinstance(hosts, list) or not all(isinstance(host, str) for host in hosts):
+        raise ValueError("infra host file must contain a list of infrastructure host aliases")
+    return hosts
+
+
 def _problem_host(problem: dict[str, Any]) -> str:
     hosts = problem.get("hosts")
     if isinstance(hosts, list) and hosts:
@@ -380,3 +397,23 @@ def _int(value: object) -> int:
         return int(str(value))
     except (TypeError, ValueError):
         return 0
+
+
+def _lookup(value: object, path: tuple[str, ...]) -> object:
+    current = value
+    for key in path:
+        if not isinstance(current, dict):
+            return None
+        current = current.get(key)
+    return current
+
+
+def _parse_simple_yaml(text: str) -> dict[str, Any]:
+    try:
+        import yaml  # type: ignore[import-untyped]
+    except ModuleNotFoundError as exc:
+        raise ValueError("YAML infra host files require PyYAML; use JSON instead") from exc
+    value = yaml.safe_load(text) or {}
+    if not isinstance(value, dict):
+        raise ValueError("infra host file must contain a mapping")
+    return value

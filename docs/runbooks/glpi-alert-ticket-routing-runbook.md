@@ -91,10 +91,20 @@ ZABBIX_API_TOKEN=... \
   --source-url-base https://zabbix.example.invalid \
   --min-severity 2 \
   --limit 20 \
-  --infra-host pve01 \
-  --infra-host zbx01 \
+  --infra-host-file /path/outside/repo/alert-routing.yaml \
   --live-candidates-only \
   > /path/outside/repo/zabbix-live-candidates.ndjson
+```
+
+The operator context file may use this shape:
+
+```yaml
+alert_routing:
+  zabbix:
+    infrastructure_hosts:
+      - pve01
+      - zbx01
+      - dc01
 ```
 
 Do not route ordinary staff PCs/laptops as host-down tickets. Users can power
