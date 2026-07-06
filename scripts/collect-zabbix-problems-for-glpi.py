@@ -16,6 +16,8 @@ from tecrax.zabbix_glpi_events import (
     ZabbixProblemQuery,
     alert_event_to_mapping,
     fetch_zabbix_problems,
+    filter_zabbix_live_candidate_events,
+    zabbix_live_routing_decision,
     zabbix_problems_to_alert_events,
 )
 
@@ -44,6 +46,22 @@ def _parser() -> argparse.ArgumentParser:
         help="Include suppressed Zabbix problems. Default: false.",
     )
     parser.add_argument("--source-url-base", default="", help="Optional Zabbix web base URL.")
+    parser.add_argument(
+        "--infra-host",
+        action="append",
+        default=[],
+        help="Infrastructure host alias allowed for initial host-down live candidates.",
+    )
+    parser.add_argument(
+        "--live-candidates-only",
+        action="store_true",
+        help="Output only conservative live-candidate events. Default: output all shadow events.",
+    )
+    parser.add_argument(
+        "--include-routing-decision",
+        action="store_true",
+        help="Include route/reason metadata in output mappings.",
+    )
     parser.add_argument("--json", action="store_true", help="Print a JSON array instead of NDJSON.")
     return parser
 
@@ -59,14 +77,21 @@ def main(argv: list[str] | None = None) -> int:
         include_suppressed=args.include_suppressed,
     )
     problems = fetch_zabbix_problems(api_url=args.api_url, api_token=api_token, query=query)
-    events = [
-        alert_event_to_mapping(event)
-        for event in zabbix_problems_to_alert_events(problems, source_url_base=args.source_url_base)
-    ]
+    events = zabbix_problems_to_alert_events(problems, source_url_base=args.source_url_base)
+    if args.live_candidates_only:
+        events = filter_zabbix_live_candidate_events(events, infrastructure_hosts=args.infra_host)
+    output_events = []
+    for event in events:
+        mapping = alert_event_to_mapping(event)
+        if args.include_routing_decision:
+            decision = zabbix_live_routing_decision(event, infrastructure_hosts=args.infra_host)
+            mapping["route"] = decision.route
+            mapping["route_reason"] = decision.reason
+        output_events.append(mapping)
     if args.json:
-        print(json.dumps(events, indent=2, ensure_ascii=False, sort_keys=True))
+        print(json.dumps(output_events, indent=2, ensure_ascii=False, sort_keys=True))
     else:
-        for event in events:
+        for event in output_events:
             print(json.dumps(event, ensure_ascii=False, sort_keys=True))
     return 0
 

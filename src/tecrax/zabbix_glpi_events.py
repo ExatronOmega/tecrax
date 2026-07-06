@@ -27,6 +27,12 @@ class ZabbixProblemQuery:
     include_suppressed: bool = False
 
 
+@dataclass(frozen=True)
+class ZabbixRoutingDecision:
+    route: str
+    reason: str
+
+
 def zabbix_problem_get_payload(query: ZabbixProblemQuery) -> dict[str, Any]:
     severities = [level for level in sorted(ZABBIX_SEVERITY_NAMES) if level >= query.min_severity]
     return {
@@ -172,6 +178,45 @@ def alert_event_to_mapping(event: AlertEvent) -> dict[str, str]:
     }
 
 
+def zabbix_live_routing_decision(
+    event: AlertEvent,
+    *,
+    infrastructure_hosts: Iterable[str] = (),
+) -> ZabbixRoutingDecision:
+    infra_hosts = {host.strip().lower() for host in infrastructure_hosts if host.strip()}
+    host = event.host.strip().lower()
+    if _is_host_unavailable(event):
+        if host in infra_hosts:
+            return ZabbixRoutingDecision(
+                route="live_candidate",
+                reason="infrastructure host unavailable",
+            )
+        return ZabbixRoutingDecision(
+            route="shadow_only",
+            reason="host unavailable outside infrastructure allowlist",
+        )
+    return ZabbixRoutingDecision(
+        route="shadow_only",
+        reason="not in initial live Zabbix allowlist",
+    )
+
+
+def filter_zabbix_live_candidate_events(
+    events: Iterable[AlertEvent],
+    *,
+    infrastructure_hosts: Iterable[str] = (),
+) -> list[AlertEvent]:
+    return [
+        event
+        for event in events
+        if zabbix_live_routing_decision(
+            event,
+            infrastructure_hosts=infrastructure_hosts,
+        ).route
+        == "live_candidate"
+    ]
+
+
 def _problem_host(problem: dict[str, Any]) -> str:
     hosts = problem.get("hosts")
     if isinstance(hosts, list) and hosts:
@@ -179,6 +224,20 @@ def _problem_host(problem: dict[str, Any]) -> str:
         if isinstance(first, dict):
             return _bounded_text(first.get("host") or first.get("name") or "unknown", 128)
     return "unknown"
+
+
+def _is_host_unavailable(event: AlertEvent) -> bool:
+    text = f"{event.summary} {event.raw_trigger}".lower()
+    return any(
+        phrase in text
+        for phrase in (
+            "unavailable by icmp",
+            "host unavailable",
+            "host is unavailable",
+            "is unavailable",
+            "not available",
+        )
+    )
 
 
 def _hosts_by_trigger_id(triggers: Iterable[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:

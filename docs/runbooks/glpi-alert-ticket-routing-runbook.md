@@ -80,6 +80,27 @@ The collector reads active Zabbix problems and maps them to normalized alert
 events for this helper. It is read-only, bounded by severity and limit, and must
 be run with the Zabbix API token supplied from operator-owned secret custody.
 
+Initial live-candidate filtering must stay conservative. In particular, host
+unavailability is a live candidate only when the host is explicitly listed as
+infrastructure:
+
+```sh
+ZABBIX_API_TOKEN=... \
+.venv/bin/python scripts/collect-zabbix-problems-for-glpi.py \
+  --api-url https://zabbix.example.invalid/api_jsonrpc.php \
+  --source-url-base https://zabbix.example.invalid \
+  --min-severity 2 \
+  --limit 20 \
+  --infra-host pve01 \
+  --infra-host zbx01 \
+  --live-candidates-only \
+  > /path/outside/repo/zabbix-live-candidates.ndjson
+```
+
+Do not route ordinary staff PCs/laptops as host-down tickets. Users can power
+them off, suspend them or leave the network, so endpoint availability belongs to
+endpoint rollout/reporting policy, not infrastructure outage ticketing.
+
 ## Procedure
 
 ### 1. Prepare Secret Custody
@@ -129,6 +150,8 @@ Validate:
 - dry-run output is bounded and public-safe;
 - Zabbix shadow event snapshots and dry-run output are stored outside Git with
   private permissions;
+- ordinary user endpoints are excluded from host-down live routing unless a
+  separate endpoint policy explicitly changes that rule;
 - first live ticket appears in GLPI;
 - second run does not create a duplicate ticket for the same source event;
 - state file is owned by the service/operator account and is not world-readable;

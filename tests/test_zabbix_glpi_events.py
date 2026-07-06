@@ -3,9 +3,11 @@ from __future__ import annotations
 from tecrax.zabbix_glpi_events import (
     ZabbixProblemQuery,
     alert_event_to_mapping,
+    filter_zabbix_live_candidate_events,
     zabbix_problem_get_payload,
-    zabbix_trigger_host_payload,
     zabbix_problem_to_alert_event,
+    zabbix_trigger_host_payload,
+    zabbix_live_routing_decision,
 )
 
 
@@ -71,3 +73,77 @@ def test_alert_event_to_mapping_matches_glpi_router_input_shape() -> None:
         "source_url": "",
         "category": "",
     }
+
+
+def test_host_unavailable_is_live_candidate_only_for_infrastructure_hosts() -> None:
+    infra_event = zabbix_problem_to_alert_event(
+        {
+            "eventid": "1",
+            "name": "Host unavailable by ICMP",
+            "severity": 3,
+            "clock": "1783339200",
+            "hosts": [{"host": "pve01"}],
+        }
+    )
+    endpoint_event = zabbix_problem_to_alert_event(
+        {
+            "eventid": "2",
+            "name": "Host unavailable by ICMP",
+            "severity": 3,
+            "clock": "1783339200",
+            "hosts": [{"host": "mbp-lt-001"}],
+        }
+    )
+
+    assert (
+        zabbix_live_routing_decision(
+            infra_event,
+            infrastructure_hosts={"pve01", "zbx01"},
+        ).route
+        == "live_candidate"
+    )
+    endpoint_decision = zabbix_live_routing_decision(
+        endpoint_event,
+        infrastructure_hosts={"pve01", "zbx01"},
+    )
+    assert endpoint_decision.route == "shadow_only"
+    assert "outside infrastructure allowlist" in endpoint_decision.reason
+
+
+def test_live_candidate_filter_excludes_user_endpoints_and_non_allowlisted_events() -> None:
+    events = [
+        zabbix_problem_to_alert_event(
+            {
+                "eventid": "1",
+                "name": "Host unavailable by ICMP",
+                "severity": 3,
+                "clock": "1783339200",
+                "hosts": [{"host": "pve01"}],
+            }
+        ),
+        zabbix_problem_to_alert_event(
+            {
+                "eventid": "2",
+                "name": "Host unavailable by ICMP",
+                "severity": 3,
+                "clock": "1783339200",
+                "hosts": [{"host": "mbp-lt-001"}],
+            }
+        ),
+        zabbix_problem_to_alert_event(
+            {
+                "eventid": "3",
+                "name": "Number of installed packages has been changed",
+                "severity": 2,
+                "clock": "1783339200",
+                "hosts": [{"host": "zbx01"}],
+            }
+        ),
+    ]
+
+    live_candidates = filter_zabbix_live_candidate_events(
+        events,
+        infrastructure_hosts={"pve01", "zbx01"},
+    )
+
+    assert [event.event_id for event in live_candidates] == ["1"]

@@ -4,6 +4,8 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Added conservative Zabbix live-candidate filtering so host-down ticketing only
+  applies to explicitly allowlisted infrastructure hosts, not ordinary endpoints.
 - Added a bounded Zabbix active-problem collector for GLPI shadow routing. It
   exports normalized alert events without storing API tokens or creating tickets.
 - Updated GLPI alert-ticket drafts and helper output to use Polish diacritics in
