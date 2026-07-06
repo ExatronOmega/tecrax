@@ -132,6 +132,11 @@ GPO/WUfB ring baseline, active hours, restart boundaries and Wake-on-LAN future
 gate without adding WSUS, RMM, WoL automation or endpoint update orchestration
 to Tecrax.
 
+`docs/runbooks/windows-endpoint-agent-rollout-runbook.md` documents the
+operator-owned Windows endpoint Zabbix/Wazuh agent rollout pilot. It keeps
+Zabbix and Wazuh delivery separate, uses small AD/GPO rollout rings, and keeps
+installer secrets, enrollment material and endpoint inventories outside Tecrax.
+
 `docs/runbooks/samba-ad-app-backup-runbook.md` documents the operator-owned
 application-aware Samba AD backup gate that complements VM-level PBS backup
 without exposing domain backup contents or secrets.
