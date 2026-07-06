@@ -4,6 +4,10 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Extended the admin-tools substrate runbook with the dedicated runtime-node
+  model: admin-tools is the target for operator wrappers, policy files, private
+  state and controlled Tecrax/RExecOp runtime, while development stays on the
+  operator workstation.
 - Added operator-context file support for Zabbix GLPI live-candidate
   infrastructure host allowlists.
 - Extended the conservative Zabbix live-candidate allowlist with critical disk,

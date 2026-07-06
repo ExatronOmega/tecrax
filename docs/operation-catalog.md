@@ -88,7 +88,10 @@ Proxmox mutation to Tecrax.
 `docs/runbooks/admin-tools-substrate-runbook.md` documents the operator-owned private
 layout for live environments, wrappers, runtime evidence and sign-offs. It is
 not an active operation and does not turn Tecrax into an Ansible, CMDB, vault or
-generic shell-runner layer.
+generic shell-runner layer. It now also records the runtime-node model:
+admin-tools is the target place for operator wrappers, policy files, private
+state and controlled Tecrax/RExecOp runtime, while the operator workstation
+remains the development machine.
 
 `docs/runbooks/admin-tools-ct-deployment-runbook.md` documents the first lightweight
 admin-tools CT deployment gate and its role as the initial low-risk PBS backup
