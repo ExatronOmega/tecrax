@@ -4,6 +4,10 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Added a public-safe GLPI alert-ticket routing helper and runbook. The helper
+  accepts normalized Zabbix/Wazuh events, renders Polish operator-facing ticket
+  drafts, applies duplicate suppression and keeps GLPI credentials outside Git.
+
 ## [0.3.17a0-0.3.21a0] - 2026-07-05
 
 - **Current supported line:** `tecrax==0.3.21a0`, aligned to

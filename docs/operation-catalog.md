@@ -236,6 +236,12 @@ operator-facing language baseline before GLPI ticket automation. It defines
 Polish severity labels, alert categories, GLPI ticket templates and Grafana
 language rules while keeping upstream Zabbix/Wazuh technical identifiers intact.
 
+`docs/runbooks/glpi-alert-ticket-routing-runbook.md` documents the
+operator-owned GLPI alert-ticket routing gate. The supporting
+`scripts/route-glpi-alerts.py` helper accepts normalized Zabbix/Wazuh events,
+renders Polish ticket drafts, applies duplicate suppression and can create GLPI
+tickets only when credentials are supplied from outside Git.
+
 `docs/runbooks/frigate-host-monitoring-runbook.md` documents the first
 operator-owned monitoring baseline for an existing Ubuntu Frigate host. It adds
 Zabbix, Wazuh, bounded Frigate listener checks and storage-pressure monitoring

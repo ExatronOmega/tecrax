@@ -1,0 +1,114 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from tecrax.alert_routing import (
+    AlertEvent,
+    TicketState,
+    build_ticket_draft,
+    load_events,
+    route_events,
+    wazuh_severity_key,
+    zabbix_severity_key,
+)
+
+
+def test_zabbix_ticket_draft_uses_polish_operator_layer() -> None:
+    draft = build_ticket_draft(
+        AlertEvent(
+            source="Zabbix",
+            event_id="42",
+            host="frigate01",
+            summary="Malo miejsca na dysku",
+            raw_severity="4",
+            raw_trigger="High disk usage on /mnt/monitoring",
+            started_at="2026-07-06T10:00:00+02:00",
+        )
+    )
+
+    assert draft.title == "[Zabbix][Wysoki] Malo miejsca na dysku: frigate01"
+    assert draft.category == "Dysk / miejsce"
+    assert draft.urgency == 4
+    assert "System monitoringu wykryl problem wymagajacy uwagi." in draft.content
+    assert "Nie wykonywac dzialan destrukcyjnych" in draft.content
+    assert "High disk usage on /mnt/monitoring" in draft.content
+
+
+def test_wazuh_level_mapping_keeps_technical_level() -> None:
+    assert wazuh_severity_key(15) == "disaster"
+    assert wazuh_severity_key(12) == "high"
+    assert wazuh_severity_key(10) == "average"
+    assert wazuh_severity_key(7) == "warning"
+    assert zabbix_severity_key("Average") == "average"
+
+
+def test_route_events_dry_run_does_not_mark_state(tmp_path: Path) -> None:
+    state_path = tmp_path / "state.json"
+    state = TicketState(state_path)
+    event = AlertEvent(
+        source="Wazuh",
+        event_id="abc",
+        host="dc01",
+        summary="Podejrzane zdarzenie bezpieczenstwa",
+        raw_severity="12",
+        raw_trigger="authentication failure",
+    )
+
+    result = route_events([event], state, dry_run=True)
+
+    assert result == [
+        {
+            "category": "Bezpieczenstwo",
+            "dedupe_key": "Wazuh:abc",
+            "status": "dry_run",
+            "title": "[Wazuh][Wysoki] Podejrzane zdarzenie bezpieczenstwa: dc01",
+            "urgency": 4,
+        }
+    ]
+    assert not state_path.exists()
+
+
+class _FakeClient:
+    def create_ticket(self, draft):  # noqa: ANN001
+        assert draft.title.startswith("[Zabbix]")
+        return 1001
+
+
+def test_route_events_live_marks_duplicates(tmp_path: Path) -> None:
+    state_path = tmp_path / "state.json"
+    event = AlertEvent(
+        source="Zabbix",
+        event_id="event-1",
+        host="zbx01",
+        summary="Host niedostepny",
+        raw_severity="3",
+        raw_trigger="Unavailable by ICMP",
+    )
+
+    first = route_events([event], TicketState(state_path), client=_FakeClient(), dry_run=False)
+    second = route_events([event], TicketState(state_path), client=_FakeClient(), dry_run=False)
+
+    assert first == [
+        {
+            "dedupe_key": "Zabbix:event-1",
+            "glpi_ticket_id": 1001,
+            "status": "created",
+        }
+    ]
+    assert second == [{"dedupe_key": "Zabbix:event-1", "status": "duplicate"}]
+    data = json.loads(state_path.read_text(encoding="utf-8"))
+    assert data["routed"]["Zabbix:event-1"]["glpi_ticket_id"] == 1001
+
+
+def test_load_events_accepts_ndjson(tmp_path: Path) -> None:
+    events_path = tmp_path / "events.ndjson"
+    events_path.write_text(
+        '{"source":"Zabbix","event_id":"1","host":"pve01","summary":"x","raw_severity":"2","raw_trigger":"y"}\n',
+        encoding="utf-8",
+    )
+
+    events = load_events(events_path)
+
+    assert len(events) == 1
+    assert events[0].dedupe_key == "Zabbix:1"
