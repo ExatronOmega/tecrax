@@ -192,6 +192,11 @@ operator-owned network-device SNMP adoption gate. It adds read-only SNMP metrics
 and basic NTP configuration for selected devices while keeping SNMP credentials,
 device secrets and full topology outside Tecrax.
 
+`docs/runbooks/zabbix-naming-normalization-runbook.md` documents the controlled
+Zabbix host-name, visible-name, group and tag normalization gate before GLPI
+ticket automation. It keeps canonical aliases stable, preserves upstream
+templates and leaves Wazuh agent names unchanged.
+
 `docs/runbooks/grafana-ct-deployment-runbook.md` documents the operator-owned Grafana CT
 deployment gate. Grafana is introduced as the visualization layer with a direct
 Zabbix datasource, initial dashboards, Zabbix monitoring of the Grafana CT and
