@@ -4,6 +4,8 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Added the alert-source hygiene checkpoint before live GLPI routing, including
+  a Wazuh alert aggregation helper, routing classes and an operator runbook.
 - Added a public-safe GLPI alert-ticket routing helper and runbook. The helper
   accepts normalized Zabbix/Wazuh events, renders Polish operator-facing ticket
   drafts, applies duplicate suppression and keeps GLPI credentials outside Git.

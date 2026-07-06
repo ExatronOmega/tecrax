@@ -236,6 +236,11 @@ operator-facing language baseline before GLPI ticket automation. It defines
 Polish severity labels, alert categories, GLPI ticket templates and Grafana
 language rules while keeping upstream Zabbix/Wazuh technical identifiers intact.
 
+`docs/runbooks/alert-source-hygiene-checkpoint-runbook.md` documents the
+alert-source hygiene checkpoint before live GLPI routing. The supporting
+`scripts/summarize-wazuh-alerts.py` helper aggregates Wazuh alert volume, top
+rules and routing classes without reading credentials or emitting raw payloads.
+
 `docs/runbooks/glpi-alert-ticket-routing-runbook.md` documents the
 operator-owned GLPI alert-ticket routing gate. The supporting
 `scripts/route-glpi-alerts.py` helper accepts normalized Zabbix/Wazuh events,
