@@ -24,6 +24,11 @@ The selected high-level CA architecture is offline root plus on-demand
 intermediate. This document records that architecture as a public-safe design
 decision only.
 
+The selected CA engine is OpenSSL. Policy files, CSR templates, issuance rules,
+renewal windows, revocation procedure and future autorotation wrappers are
+intentionally deferred until the security audit / strong-and-wide hardening
+stage, after real service requirements are known.
+
 It does not create a root CA, intermediate CA, private keys, trust stores,
 keystores, certificate inventory, endpoint trust deployment, renewal automation,
 revocation workflow, or final HTTPS enforcement.
@@ -80,7 +85,7 @@ During substrate bootstrap:
 
 Required gates before trusted CA usage:
 
-- CA tool decision;
+- CA tool decision: OpenSSL selected;
 - offline root custody decision;
 - on-demand intermediate custody decision;
 - private custody and offline break-glass model;
@@ -89,6 +94,8 @@ Required gates before trusted CA usage:
 - isolated PKI restore proof;
 - Proxmox root-of-trust hardening checkpoint;
 - trust-root distribution plan.
+- OpenSSL policy, CSR, issuance, renewal, revocation and autorotation procedure
+  approved during hardening.
 
 ## Procedure
 
@@ -119,6 +126,21 @@ Use offline root plus on-demand intermediate:
 
 Do not generate root or intermediate material until the CA tool and custody
 procedure are approved.
+
+### 1b. CA Tool Decision
+
+Use OpenSSL as the CA engine for this small internal environment.
+
+Rationale:
+
+- works well with offline root plus intermediate CA;
+- does not require a permanently running CA service;
+- has a transparent file/index/serial model that is easy to audit and restore;
+- is sufficient for future deterministic certificate rotation wrappers.
+
+Do not create production OpenSSL policy files, CSR templates, issuance scripts,
+renewal automation or revocation procedure during this substrate bootstrap. Those
+belong to the final security audit / strong-and-wide hardening stage.
 
 ### 2. Create VM
 
@@ -201,6 +223,7 @@ Non-claims:
 - no CA private keys;
 - no root CA material;
 - no intermediate CA material;
+- no final OpenSSL policy or issuance procedure;
 - no trust-root distribution;
 - no service HTTPS migration;
 - no PKI restore proof;

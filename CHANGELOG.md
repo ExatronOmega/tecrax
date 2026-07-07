@@ -14,6 +14,9 @@ All notable Tecrax profile changes are documented here.
   scope until custody and restore gates are defined.
 - Recorded the PKI Center CA architecture decision as offline root plus
   on-demand intermediate without generating or documenting private CA material.
+- Recorded OpenSSL as the selected PKI Center CA engine while deferring final
+  CA policies, issuance, renewal, revocation and autorotation procedure to
+  hardening.
 - Added the GLPI inventory scope runbook, defining a conservative Phase 1
   infrastructure inventory baseline and deferring agents, endpoint discovery
   and network sweeps.
