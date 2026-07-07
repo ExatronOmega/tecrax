@@ -12,6 +12,8 @@ All notable Tecrax profile changes are documented here.
 - Added the PKI Center bootstrap runbook for an on-demand VM substrate, keeping
   production CA material, trust distribution and final HTTPS migration out of
   scope until custody and restore gates are defined.
+- Recorded the PKI Center CA architecture decision as offline root plus
+  on-demand intermediate without generating or documenting private CA material.
 - Added the GLPI inventory scope runbook, defining a conservative Phase 1
   infrastructure inventory baseline and deferring agents, endpoint discovery
   and network sweeps.

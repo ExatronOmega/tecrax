@@ -20,6 +20,10 @@ The bootstrap covers:
 - documenting the custody boundary for future CA work;
 - producing a public-safe sign-off.
 
+The selected high-level CA architecture is offline root plus on-demand
+intermediate. This document records that architecture as a public-safe design
+decision only.
+
 It does not create a root CA, intermediate CA, private keys, trust stores,
 keystores, certificate inventory, endpoint trust deployment, renewal automation,
 revocation workflow, or final HTTPS enforcement.
@@ -77,7 +81,8 @@ During substrate bootstrap:
 Required gates before trusted CA usage:
 
 - CA tool decision;
-- root/intermediate model decision;
+- offline root custody decision;
+- on-demand intermediate custody decision;
 - private custody and offline break-glass model;
 - encrypted CA material storage model;
 - VM-level and application/export backup model;
@@ -98,6 +103,22 @@ Validate before VM creation:
 - no CA material needs to be created during this bootstrap;
 - backup target is available for a substrate backup;
 - monitoring does not page on expected powered-off state.
+
+### 1a. CA Architecture Decision
+
+Use offline root plus on-demand intermediate:
+
+- root CA is the trust anchor and is used rarely;
+- root CA material must not live as normal always-on service data;
+- `pki01` may host intermediate CA work only when explicitly powered on for
+  certificate operations;
+- intermediate CA can issue internal service certificates after custody,
+  backup/export and restore-proof gates are complete;
+- root key storage, passphrase custody, offline media and recovery procedure
+  remain private operator decisions outside Tecrax public docs.
+
+Do not generate root or intermediate material until the CA tool and custody
+procedure are approved.
 
 ### 2. Create VM
 
@@ -178,6 +199,8 @@ Non-claims:
 
 - no production CA;
 - no CA private keys;
+- no root CA material;
+- no intermediate CA material;
 - no trust-root distribution;
 - no service HTTPS migration;
 - no PKI restore proof;
