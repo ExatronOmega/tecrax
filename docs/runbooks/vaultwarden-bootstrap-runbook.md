@@ -14,7 +14,8 @@ The bootstrap covers:
 - placing the VM on the critical-light storage class;
 - installing a minimal Debian OS;
 - installing Vaultwarden through an operator-reviewed service model;
-- keeping the bootstrap web endpoint restricted until PKI/HTTPS is ready;
+- keeping the bootstrap web endpoint restricted and HTTPS-only even before final
+  PKI material is ready;
 - adding monitoring and backup coverage;
 - producing a public-safe sign-off.
 
@@ -76,17 +77,21 @@ Required gates before `production trusted custody`:
 
 ## Initial Network Model
 
-Before PKI/HTTPS, avoid broad HTTP exposure.
+Do not expose the web vault broadly over plain HTTP.
 
 Preferred bootstrap pattern:
 
-- bind Vaultwarden only to the VM localhost interface;
-- access it through an operator SSH tunnel for first-account bootstrap;
+- bind the Vaultwarden backend only to the VM localhost interface;
+- terminate temporary bootstrap TLS on a local-only reverse proxy;
+- access the HTTPS endpoint through an operator SSH tunnel for first-account
+  bootstrap;
 - keep signups allowed only long enough to create the initial operator-owned
   account;
 - disable signups after the first account is created.
 
-Do not expose the web vault broadly over plain HTTP.
+The temporary bootstrap certificate may be self-signed or operator-issued, but
+it must be treated as a bootstrap-only control. Replace it with PKI Center
+material before final trusted custody.
 
 ## Procedure
 
@@ -121,7 +126,9 @@ deployment is acceptable when the service is pinned, documented and backed up.
 
 For bootstrap:
 
-- keep the service bound to localhost until final HTTPS is ready;
+- keep the service bound to localhost;
+- require HTTPS for operator browser access, even if the certificate is only a
+  temporary bootstrap certificate;
 - keep persistent Vaultwarden data in a dedicated application directory;
 - ensure data directory permissions are restrictive;
 - do not print tokens, generated secrets or database contents;
@@ -169,7 +176,8 @@ Validate:
 - QEMU guest agent responds;
 - OS time and DNS are correct;
 - Vaultwarden service is active;
-- listener is limited according to the bootstrap network model;
+- HTTPS listener is limited according to the bootstrap network model;
+- plain HTTP is not exposed to the LAN;
 - first account/MFA/signups state follows the operator-approved state;
 - backup job exists and a first backup completed;
 - no secret appears in public Tecrax docs or sign-offs.
@@ -179,6 +187,7 @@ Validate:
 Stop before sign-off if any of these are true:
 
 - service would be exposed broadly over HTTP;
+- operator browser access would require plain HTTP instead of HTTPS;
 - generated tokens, user passwords or recovery codes would be printed or
   committed;
 - storage or backup target is not available;
@@ -197,6 +206,7 @@ Use `../operator-signoff-template.md` and include:
 - service alias and deployment class;
 - OS family and broad sizing;
 - network exposure model;
+- HTTPS bootstrap model and certificate replacement requirement;
 - monitoring summary;
 - backup summary;
 - first-account bootstrap status without credentials;
