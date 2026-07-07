@@ -7,6 +7,9 @@ All notable Tecrax profile changes are documented here.
 - Added Vaultwarden bootstrap and backup/restore-proof runbooks, keeping the
   service in bootstrap custody status until restore, offline break-glass, PKI
   restore and Proxmox root-of-trust hardening gates are complete.
+- Added the Vaultwarden application-backup and break-glass baseline runbook for
+  root-owned SQLite/data archives, private checksum evidence and offline
+  recovery boundaries without exporting vault contents.
 - Tightened the Vaultwarden bootstrap runbook to require HTTPS-only operator
   browser access even before final PKI material is available.
 - Added the PKI Center bootstrap runbook for an on-demand VM substrate, keeping

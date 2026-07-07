@@ -65,6 +65,11 @@ Minimum bootstrap model:
 If application-level exports are added later, treat them as sensitive custody
 artifacts. Do not place them in Tecrax, public sign-offs or chat output.
 
+The first application-level backup and offline break-glass baseline is tracked
+separately in `vaultwarden-app-backup-break-glass-runbook.md`. It uses a
+root-owned Vaultwarden data archive with SQLite backup mechanics, not a user
+vault export.
+
 ## Restore-Proof Procedure
 
 ### 1. Select Backup

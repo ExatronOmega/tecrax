@@ -317,6 +317,12 @@ operator-owned Vaultwarden backup and isolated restore-proof gate. It validates
 VM-level restore mechanics and bounded service health without inspecting,
 exporting or publishing vault contents.
 
+`docs/runbooks/vaultwarden-app-backup-break-glass-runbook.md` documents the
+first application-level backup and offline break-glass baseline. It covers a
+root-owned Vaultwarden data archive with SQLite backup mechanics, private
+manifest/checksum evidence and offline recovery principles without exporting or
+inspecting vault secret values.
+
 ## PKI Center Bootstrap
 
 `docs/runbooks/pki-center-bootstrap-runbook.md` documents the operator-owned
