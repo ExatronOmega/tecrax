@@ -297,6 +297,20 @@ be entered first, which endpoint/device classes remain deferred, and how GLPI
 relates to Zabbix, Wazuh, AD, Proxmox and private operator context without
 becoming an uncontrolled discovery engine or second source of truth.
 
+## Vaultwarden Bootstrap And Restore Proof
+
+`docs/runbooks/vaultwarden-bootstrap-runbook.md` documents the operator-owned
+Vaultwarden bootstrap gate. It introduces Vaultwarden as a critical VM-based
+custody service in `bootstrap` status only, keeps the initial web endpoint
+restricted before PKI/HTTPS, and blocks final trusted custody until restore
+proof, offline break-glass, PKI restore proof and Proxmox root-of-trust
+hardening gates are complete.
+
+`docs/runbooks/vaultwarden-backup-restore-proof-runbook.md` documents the
+operator-owned Vaultwarden backup and isolated restore-proof gate. It validates
+VM-level restore mechanics and bounded service health without inspecting,
+exporting or publishing vault contents.
+
 ## Basic Incident Handling Baseline
 
 `docs/runbooks/basic-incident-handling-runbook.md` documents the first

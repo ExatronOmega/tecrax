@@ -4,6 +4,9 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Added Vaultwarden bootstrap and backup/restore-proof runbooks, keeping the
+  service in bootstrap custody status until restore, offline break-glass, PKI
+  restore and Proxmox root-of-trust hardening gates are complete.
 - Added the GLPI inventory scope runbook, defining a conservative Phase 1
   infrastructure inventory baseline and deferring agents, endpoint discovery
   and network sweeps.
