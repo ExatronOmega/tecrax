@@ -16,6 +16,7 @@ from tecrax.zabbix_glpi_events import (
     ZabbixProblemQuery,
     alert_event_to_mapping,
     fetch_zabbix_problems,
+    load_expected_off_hosts_file,
     filter_zabbix_live_candidate_events,
     load_infrastructure_hosts_file,
     zabbix_live_routing_decision,
@@ -59,6 +60,17 @@ def _parser() -> argparse.ArgumentParser:
         help="JSON or simple YAML file containing alert_routing.zabbix.infrastructure_hosts.",
     )
     parser.add_argument(
+        "--expected-off-host",
+        action="append",
+        default=[],
+        help="Host alias intentionally powered off/on-demand and excluded from live outage routing.",
+    )
+    parser.add_argument(
+        "--expected-off-host-file",
+        type=Path,
+        help="JSON or simple YAML file containing alert_routing.zabbix.expected_off_hosts.",
+    )
+    parser.add_argument(
         "--live-candidates-only",
         action="store_true",
         help="Output only conservative live-candidate events. Default: output all shadow events.",
@@ -83,12 +95,17 @@ def main(argv: list[str] | None = None) -> int:
         include_suppressed=args.include_suppressed,
     )
     infrastructure_hosts = [*args.infra_host, *_load_infra_hosts(args.infra_host_file)]
+    expected_off_hosts = [
+        *args.expected_off_host,
+        *_load_expected_off_hosts(args.expected_off_host_file or args.infra_host_file),
+    ]
     problems = fetch_zabbix_problems(api_url=args.api_url, api_token=api_token, query=query)
     events = zabbix_problems_to_alert_events(problems, source_url_base=args.source_url_base)
     if args.live_candidates_only:
         events = filter_zabbix_live_candidate_events(
             events,
             infrastructure_hosts=infrastructure_hosts,
+            expected_off_hosts=expected_off_hosts,
         )
     output_events = []
     for event in events:
@@ -97,6 +114,7 @@ def main(argv: list[str] | None = None) -> int:
             decision = zabbix_live_routing_decision(
                 event,
                 infrastructure_hosts=infrastructure_hosts,
+                expected_off_hosts=expected_off_hosts,
             )
             mapping["route"] = decision.route
             mapping["route_reason"] = decision.reason
@@ -116,6 +134,15 @@ def _load_infra_hosts(path: Path | None) -> list[str]:
         return load_infrastructure_hosts_file(path)
     except ValueError as exc:
         raise SystemExit("infra host file must contain a list of infrastructure host aliases") from exc
+
+
+def _load_expected_off_hosts(path: Path | None) -> list[str]:
+    if path is None:
+        return []
+    try:
+        return load_expected_off_hosts_file(path)
+    except ValueError:
+        return []
 
 
 if __name__ == "__main__":

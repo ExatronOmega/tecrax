@@ -183,9 +183,16 @@ def zabbix_live_routing_decision(
     event: AlertEvent,
     *,
     infrastructure_hosts: Iterable[str] = (),
+    expected_off_hosts: Iterable[str] = (),
 ) -> ZabbixRoutingDecision:
     infra_hosts = {host.strip().lower() for host in infrastructure_hosts if host.strip()}
+    expected_off = {host.strip().lower() for host in expected_off_hosts if host.strip()}
     host = event.host.strip().lower()
+    if host in expected_off:
+        return ZabbixRoutingDecision(
+            route="shadow_only",
+            reason="host is expected-off/on-demand and excluded from live outage routing",
+        )
     if _is_host_unavailable(event):
         if host in infra_hosts:
             return ZabbixRoutingDecision(
@@ -236,6 +243,7 @@ def filter_zabbix_live_candidate_events(
     events: Iterable[AlertEvent],
     *,
     infrastructure_hosts: Iterable[str] = (),
+    expected_off_hosts: Iterable[str] = (),
 ) -> list[AlertEvent]:
     return [
         event
@@ -243,6 +251,7 @@ def filter_zabbix_live_candidate_events(
         if zabbix_live_routing_decision(
             event,
             infrastructure_hosts=infrastructure_hosts,
+            expected_off_hosts=expected_off_hosts,
         ).route
         == "live_candidate"
     ]
@@ -261,6 +270,22 @@ def load_infrastructure_hosts_file(path: Path) -> list[str]:
         hosts = value.get("infrastructure_hosts") if isinstance(value, dict) else None
     if not isinstance(hosts, list) or not all(isinstance(host, str) for host in hosts):
         raise ValueError("infra host file must contain a list of infrastructure host aliases")
+    return hosts
+
+
+def load_expected_off_hosts_file(path: Path) -> list[str]:
+    text = path.read_text(encoding="utf-8")
+    if path.suffix.lower() == ".json":
+        value = json.loads(text)
+    else:
+        value = _parse_simple_yaml(text)
+    hosts = _lookup(value, ("alert_routing", "zabbix", "expected_off_hosts"))
+    if hosts is None:
+        hosts = _lookup(value, ("zabbix", "expected_off_hosts"))
+    if hosts is None:
+        hosts = value.get("expected_off_hosts") if isinstance(value, dict) else None
+    if not isinstance(hosts, list) or not all(isinstance(host, str) for host in hosts):
+        raise ValueError("expected-off host file must contain a list of host aliases")
     return hosts
 
 

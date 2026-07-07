@@ -4,6 +4,7 @@ from tecrax.zabbix_glpi_events import (
     ZabbixProblemQuery,
     alert_event_to_mapping,
     filter_zabbix_live_candidate_events,
+    load_expected_off_hosts_file,
     load_infrastructure_hosts_file,
     zabbix_problem_get_payload,
     zabbix_problem_to_alert_event,
@@ -111,6 +112,27 @@ def test_host_unavailable_is_live_candidate_only_for_infrastructure_hosts() -> N
     assert "outside infrastructure allowlist" in endpoint_decision.reason
 
 
+def test_expected_off_host_is_not_live_candidate_even_when_infrastructure() -> None:
+    event = zabbix_problem_to_alert_event(
+        {
+            "eventid": "3",
+            "name": "Host unavailable by ICMP",
+            "severity": 3,
+            "clock": "1783339200",
+            "hosts": [{"host": "pki01"}],
+        }
+    )
+
+    decision = zabbix_live_routing_decision(
+        event,
+        infrastructure_hosts={"pki01"},
+        expected_off_hosts={"pki01"},
+    )
+
+    assert decision.route == "shadow_only"
+    assert "expected-off" in decision.reason
+
+
 def test_live_candidate_filter_excludes_user_endpoints_and_non_allowlisted_events() -> None:
     events = [
         zabbix_problem_to_alert_event(
@@ -145,6 +167,37 @@ def test_live_candidate_filter_excludes_user_endpoints_and_non_allowlisted_event
     live_candidates = filter_zabbix_live_candidate_events(
         events,
         infrastructure_hosts={"pve01", "zbx01"},
+    )
+
+    assert [event.event_id for event in live_candidates] == ["1"]
+
+
+def test_live_candidate_filter_excludes_expected_off_hosts() -> None:
+    events = [
+        zabbix_problem_to_alert_event(
+            {
+                "eventid": "1",
+                "name": "Host unavailable by ICMP",
+                "severity": 3,
+                "clock": "1783339200",
+                "hosts": [{"host": "pve01"}],
+            }
+        ),
+        zabbix_problem_to_alert_event(
+            {
+                "eventid": "2",
+                "name": "Host unavailable by ICMP",
+                "severity": 3,
+                "clock": "1783339200",
+                "hosts": [{"host": "pki01"}],
+            }
+        ),
+    ]
+
+    live_candidates = filter_zabbix_live_candidate_events(
+        events,
+        infrastructure_hosts={"pve01", "pki01"},
+        expected_off_hosts={"pki01"},
     )
 
     assert [event.event_id for event in live_candidates] == ["1"]
@@ -247,3 +300,21 @@ def test_load_infra_hosts_from_operator_context_shape(tmp_path) -> None:  # noqa
     )
 
     assert load_infrastructure_hosts_file(path) == ["pve01", "zbx01"]
+
+
+def test_load_expected_off_hosts_from_operator_context_shape(tmp_path) -> None:  # noqa: ANN001
+    path = tmp_path / "alert-routing.yaml"
+    path.write_text(
+        "\n".join(
+            [
+                "version: 1",
+                "alert_routing:",
+                "  zabbix:",
+                "    expected_off_hosts:",
+                "      - pki01",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    assert load_expected_off_hosts_file(path) == ["pki01"]

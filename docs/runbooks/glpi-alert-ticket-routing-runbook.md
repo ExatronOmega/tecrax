@@ -105,6 +105,8 @@ alert_routing:
       - pve01
       - zbx01
       - dc01
+    expected_off_hosts:
+      - pki01
 ```
 
 Do not route ordinary staff PCs/laptops as host-down tickets. Users can power
@@ -124,6 +126,8 @@ The first Zabbix live-candidate rules are intentionally narrow:
 Known expected states remain shadow-only until source tuning is complete. The
 first explicit exception is Frigate video-retention storage pressure on
 `/mnt/monitoring`, which should not create live GLPI tickets by default.
+On-demand hosts listed in `expected_off_hosts` are also shadow-only for host-down
+routing, because their healthy baseline is stopped rather than reachable.
 
 ## Procedure
 
