@@ -28,6 +28,8 @@ All notable Tecrax profile changes are documented here.
 - Added the PKI HTTPS rollout planning runbook for future administrative
   service FQDN/SAN naming, migration order, TLS placement and trust-root
   dependencies without live TLS changes.
+- Added the Wazuh backup/restore decision runbook, keeping app-aware index
+  export deferred until retention, custody and isolated restore gates exist.
 - Added the GLPI inventory scope runbook, defining a conservative Phase 1
   infrastructure inventory baseline and deferring agents, endpoint discovery
   and network sweeps.

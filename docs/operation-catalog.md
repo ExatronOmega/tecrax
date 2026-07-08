@@ -224,6 +224,12 @@ single-node central components, host-level monitoring and VM-level backup
 coverage while keeping generated passwords, enrollment secrets and certificates
 outside Tecrax.
 
+`docs/runbooks/wazuh-backup-restore-decision-runbook.md` documents the first
+Wazuh backup/export/restore decision. It keeps current recovery confidence at
+VM-level local and external backup coverage, explicitly defers application-aware
+index export until retention/custody/restore gates exist, and defines a bounded
+future isolated restore-proof shape.
+
 `docs/runbooks/wazuh-agent-baseline-runbook.md` documents the operator-owned Wazuh agent
 baseline for Linux infrastructure hosts. It enrolls the current server stack
 into Wazuh while keeping enrollment secrets, generated keys and user endpoint
