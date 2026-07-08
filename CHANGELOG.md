@@ -4,6 +4,9 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Added the Wazuh Dashboard RBAC operator-access runbook and a read-only RBAC
+  audit helper for detecting missing administrator role-mapping rules without
+  printing password hashes.
 - Added the Wazuh source noise hygiene runbook for bounded source-side
   suppression of routine successful operational telemetry before ticket routing,
   including manager alert-level and shared agent scan-cadence baseline guidance.
