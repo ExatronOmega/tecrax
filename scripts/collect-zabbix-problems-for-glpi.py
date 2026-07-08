@@ -16,7 +16,7 @@ from tecrax.zabbix_glpi_events import (
     ZabbixProblemQuery,
     alert_event_to_mapping,
     fetch_zabbix_problems,
-    load_expected_off_hosts_file,
+    load_host_down_shadow_only_hosts_file,
     filter_zabbix_live_candidate_events,
     load_infrastructure_hosts_file,
     zabbix_live_routing_decision,
@@ -63,12 +63,26 @@ def _parser() -> argparse.ArgumentParser:
         "--expected-off-host",
         action="append",
         default=[],
-        help="Host alias intentionally powered off/on-demand and excluded from live outage routing.",
+        help="Deprecated alias for --host-down-shadow-only-host.",
     )
     parser.add_argument(
         "--expected-off-host-file",
         type=Path,
-        help="JSON or simple YAML file containing alert_routing.zabbix.expected_off_hosts.",
+        help="Deprecated alias for --host-down-policy-file.",
+    )
+    parser.add_argument(
+        "--host-down-shadow-only-host",
+        action="append",
+        default=[],
+        help="Host alias whose host-down/unavailable problems stay shadow-only.",
+    )
+    parser.add_argument(
+        "--host-down-policy-file",
+        type=Path,
+        help=(
+            "JSON or simple YAML file containing "
+            "alert_routing.zabbix.host_down_policy.shadow_only_hosts."
+        ),
     )
     parser.add_argument(
         "--live-candidates-only",
@@ -95,9 +109,12 @@ def main(argv: list[str] | None = None) -> int:
         include_suppressed=args.include_suppressed,
     )
     infrastructure_hosts = [*args.infra_host, *_load_infra_hosts(args.infra_host_file)]
-    expected_off_hosts = [
+    shadow_only_hosts = [
+        *args.host_down_shadow_only_host,
         *args.expected_off_host,
-        *_load_expected_off_hosts(args.expected_off_host_file or args.infra_host_file),
+        *_load_host_down_shadow_only_hosts(
+            args.host_down_policy_file or args.expected_off_host_file or args.infra_host_file
+        ),
     ]
     problems = fetch_zabbix_problems(api_url=args.api_url, api_token=api_token, query=query)
     events = zabbix_problems_to_alert_events(problems, source_url_base=args.source_url_base)
@@ -105,7 +122,7 @@ def main(argv: list[str] | None = None) -> int:
         events = filter_zabbix_live_candidate_events(
             events,
             infrastructure_hosts=infrastructure_hosts,
-            expected_off_hosts=expected_off_hosts,
+            shadow_only_hosts=shadow_only_hosts,
         )
     output_events = []
     for event in events:
@@ -114,7 +131,7 @@ def main(argv: list[str] | None = None) -> int:
             decision = zabbix_live_routing_decision(
                 event,
                 infrastructure_hosts=infrastructure_hosts,
-                expected_off_hosts=expected_off_hosts,
+                shadow_only_hosts=shadow_only_hosts,
             )
             mapping["route"] = decision.route
             mapping["route_reason"] = decision.reason
@@ -122,8 +139,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.json:
         print(json.dumps(output_events, indent=2, ensure_ascii=False, sort_keys=True))
     else:
-        for event in output_events:
-            print(json.dumps(event, ensure_ascii=False, sort_keys=True))
+        for output_event in output_events:
+            print(json.dumps(output_event, ensure_ascii=False, sort_keys=True))
     return 0
 
 
@@ -136,11 +153,11 @@ def _load_infra_hosts(path: Path | None) -> list[str]:
         raise SystemExit("infra host file must contain a list of infrastructure host aliases") from exc
 
 
-def _load_expected_off_hosts(path: Path | None) -> list[str]:
+def _load_host_down_shadow_only_hosts(path: Path | None) -> list[str]:
     if path is None:
         return []
     try:
-        return load_expected_off_hosts_file(path)
+        return load_host_down_shadow_only_hosts_file(path)
     except ValueError:
         return []
 

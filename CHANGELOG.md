@@ -15,8 +15,8 @@ All notable Tecrax profile changes are documented here.
 - Added the PKI Center bootstrap runbook for an on-demand VM substrate, keeping
   production CA material, trust distribution and final HTTPS migration out of
   scope until custody and restore gates are defined.
-- Added the expected-off monitoring policy runbook and Zabbix GLPI collector
-  support for excluding on-demand hosts from live host-down routing.
+- Added the host-down routing policy runbook and Zabbix GLPI collector support
+  for keeping selected on-demand host-down alerts shadow-only.
 - Recorded the PKI Center CA architecture decision as offline root plus
   on-demand intermediate without generating or documenting private CA material.
 - Recorded OpenSSL as the selected PKI Center CA engine while deferring final

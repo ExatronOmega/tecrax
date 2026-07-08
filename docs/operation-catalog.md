@@ -259,11 +259,10 @@ tickets only when credentials are supplied from outside Git.
 shadow collector for this gate: it exports active Zabbix problems as normalized
 alert events for dry-run routing before any broad live ticket creation.
 
-`docs/runbooks/expected-off-monitoring-policy-runbook.md` documents the
-operator-owned policy for on-demand hosts whose healthy baseline is stopped,
-not reachable. The Zabbix GLPI shadow collector can read `expected_off_hosts`
-from private operator context and exclude those hosts from live host-down
-routing.
+`docs/runbooks/host-down-routing-policy-runbook.md` documents the
+operator-owned host-down routing policy for on-demand hosts. The Zabbix GLPI
+shadow collector can read `host_down_policy.shadow_only_hosts` from private
+operator context and keep those host-down events out of live ticket routing.
 
 `docs/runbooks/frigate-host-monitoring-runbook.md` documents the first
 operator-owned monitoring baseline for an existing Ubuntu Frigate host. It adds

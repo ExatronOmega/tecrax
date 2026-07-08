@@ -176,7 +176,7 @@ After validation:
 - start it only for CA work, maintenance, backup/restore proof or controlled
   hardening;
 - do not enroll it in normal always-on service alerting unless the monitoring
-  policy explicitly supports expected-off hosts.
+  policy explicitly routes on-demand host-down alerts to shadow-only.
 
 ## Validation
 

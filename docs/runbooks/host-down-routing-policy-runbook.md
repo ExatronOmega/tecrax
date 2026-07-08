@@ -1,11 +1,12 @@
-# Expected-off monitoring policy runbook
+# Host-down routing policy runbook
 
-This runbook covers operator-owned monitoring policy for hosts that are
-intentionally powered off by default.
+This runbook covers operator-owned Zabbix-to-GLPI routing policy for host-down
+and host-unavailable alerts.
 
-It introduces an explicit `expected-off` class for on-demand infrastructure
-hosts. It does not enable always-on monitoring, create GLPI tickets, change
-Zabbix triggers, power on hosts, generate secrets or document private topology.
+It introduces an explicit shadow-only routing class for host-down alerts that
+must not become live GLPI outage tickets. It does not enable always-on
+monitoring, create GLPI tickets, change Zabbix triggers, power on hosts,
+generate secrets or document private topology.
 
 ## Scope
 
@@ -13,7 +14,7 @@ The policy covers:
 
 - on-demand infrastructure hosts that should normally be stopped;
 - private operator context fields such as `expected_power_state: stopped`;
-- Zabbix-to-GLPI live-candidate filtering for expected-off hosts;
+- Zabbix-to-GLPI live-candidate filtering through host-down routing policy;
 - backup and restore-proof checks that remain valid even when a host is stopped;
 - future alert classes for unexpected power state or missing backup evidence.
 
@@ -30,10 +31,10 @@ The policy does not cover:
 
 Safe in public docs and sign-offs:
 
-- the expected-off concept;
+- the host-down shadow-only routing concept;
 - the normalized context field names;
 - routing behavior and non-claims;
-- validation evidence that a helper excludes expected-off outage events.
+- validation evidence that a helper excludes selected host-down outage events.
 
 Must remain outside Git and public sign-offs:
 
@@ -44,14 +45,15 @@ Must remain outside Git and public sign-offs:
 
 ## Policy
 
-An expected-off host is an infrastructure host whose healthy baseline is
-`stopped`, not `reachable`.
+Host-down routing is a Tecrax profile/operator policy. It describes whether a
+host-down problem should become a live GLPI ticket candidate or stay shadow-only.
+It does not describe how RExecOp schedules work or manages host power state.
 
 Rules:
 
-- do not treat host-down/unavailable events for expected-off hosts as live GLPI
+- do not treat host-down/unavailable events for shadow-only hosts as live GLPI
   ticket candidates;
-- do not add expected-off hosts to ordinary always-on availability paging until
+- do not add on-demand hosts to ordinary always-on availability paging until
   a separate expected-state monitor exists;
 - keep VM-level backup and isolated restore-proof evidence for the substrate;
 - if the host is powered on for maintenance, validate it with explicit
@@ -69,11 +71,13 @@ alert_routing:
     infrastructure_hosts:
       - pve01
       - pki01
-    expected_off_hosts:
-      - pki01
+    host_down_policy:
+      shadow_only_hosts:
+        - pki01
 ```
 
-Host inventory may additionally record:
+Host inventory may additionally record operational expectation for local access
+checks:
 
 ```yaml
 hosts:
@@ -81,9 +85,10 @@ hosts:
     expected_power_state: stopped
 ```
 
-The two lists have different meanings. `infrastructure_hosts` means the host is
-part of the infrastructure estate. `expected_off_hosts` means host-down is not
-an outage by itself.
+The fields have different meanings. `infrastructure_hosts` means the host is
+part of the infrastructure estate. `host_down_policy.shadow_only_hosts` means a
+host-down problem stays shadow-only. `expected_power_state` is private operator
+inventory, not RExecOp functionality and not a Tecrax execution primitive.
 
 ## Procedure
 
@@ -92,13 +97,14 @@ an outage by itself.
 Confirm the host is intentionally on-demand. Record the expected state in
 operator-owned inventory outside Tecrax.
 
-Do not classify ordinary user endpoints as expected-off infrastructure hosts.
-Staff laptops and PCs use endpoint rollout/reporting policy instead.
+Do not solve endpoint noise by pretending ordinary user endpoints are
+infrastructure. Staff laptops and PCs use endpoint rollout/reporting policy
+instead.
 
 ### 2. Configure Alert Routing Context
 
-Add the host alias to `expected_off_hosts` in the private operator alert-routing
-context.
+Add the host alias to `host_down_policy.shadow_only_hosts` in the private
+operator alert-routing context.
 
 Keep any credentials, API URLs and live alert snapshots outside Git.
 
@@ -115,24 +121,24 @@ ZABBIX_API_TOKEN=... \
   --include-routing-decision
 ```
 
-Validate that expected-off host-down events do not appear in live-candidate
+Validate that shadow-only host-down events do not appear in live-candidate
 output. If running without `--live-candidates-only`, validate their routing
-reason is `expected-off/on-demand`.
+reason says host-down policy routes the host to shadow-only.
 
 ### 4. Validate Host Access Checks
 
-Operator helpers may skip direct SSH access checks for stopped on-demand hosts.
-The skip result is valid only when the private inventory explicitly says the
-host is expected to be stopped.
+Operator helpers may skip direct SSH access checks for stopped on-demand hosts,
+but that is private operator-helper behavior. It is separate from Tecrax
+host-down routing semantics.
 
 ### 5. Future Expected-State Alerts
 
 When the stack is ready for the next monitoring iteration, add explicit checks
 for:
 
-- expected-off host powered on outside an approved maintenance window;
-- expected-off host with missing or stale VM-level backup evidence;
-- expected-off host exposing unexpected services;
+- on-demand host powered on outside an approved maintenance window;
+- on-demand host with missing or stale VM-level backup evidence;
+- on-demand host exposing unexpected services;
 - PKI/Vaultwarden-class hosts with custody material but no restore proof.
 
 These checks should be deterministic and bounded. AI may summarize evidence or
@@ -142,7 +148,7 @@ propose operator actions, but it must not execute infrastructure commands.
 
 Stop before live routing if:
 
-- a host is expected-off only because SSH or monitoring is broken;
+- a host is shadow-only only because SSH or monitoring is broken;
 - there is no operator-owned inventory entry proving expected state;
 - the host is production-critical and should be always reachable;
 - backup or restore-proof evidence is missing for a critical substrate;
@@ -153,8 +159,8 @@ Stop before live routing if:
 Use `docs/operator-signoff-template.md` and include:
 
 - date;
-- run class: `expected-off-monitoring-policy`;
-- host class and expected state, using aliases only;
+- run class: `host-down-routing-policy`;
+- host class and routing policy, using aliases only;
 - filtering validation summary;
 - backup/restore-proof status if applicable;
 - future alert classes deferred;

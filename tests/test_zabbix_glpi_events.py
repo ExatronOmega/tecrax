@@ -5,6 +5,7 @@ from tecrax.zabbix_glpi_events import (
     alert_event_to_mapping,
     filter_zabbix_live_candidate_events,
     load_expected_off_hosts_file,
+    load_host_down_shadow_only_hosts_file,
     load_infrastructure_hosts_file,
     zabbix_problem_get_payload,
     zabbix_problem_to_alert_event,
@@ -112,7 +113,7 @@ def test_host_unavailable_is_live_candidate_only_for_infrastructure_hosts() -> N
     assert "outside infrastructure allowlist" in endpoint_decision.reason
 
 
-def test_expected_off_host_is_not_live_candidate_even_when_infrastructure() -> None:
+def test_host_down_shadow_only_host_is_not_live_candidate_even_when_infrastructure() -> None:
     event = zabbix_problem_to_alert_event(
         {
             "eventid": "3",
@@ -126,11 +127,11 @@ def test_expected_off_host_is_not_live_candidate_even_when_infrastructure() -> N
     decision = zabbix_live_routing_decision(
         event,
         infrastructure_hosts={"pki01"},
-        expected_off_hosts={"pki01"},
+        shadow_only_hosts={"pki01"},
     )
 
     assert decision.route == "shadow_only"
-    assert "expected-off" in decision.reason
+    assert "host-down policy" in decision.reason
 
 
 def test_live_candidate_filter_excludes_user_endpoints_and_non_allowlisted_events() -> None:
@@ -172,7 +173,7 @@ def test_live_candidate_filter_excludes_user_endpoints_and_non_allowlisted_event
     assert [event.event_id for event in live_candidates] == ["1"]
 
 
-def test_live_candidate_filter_excludes_expected_off_hosts() -> None:
+def test_live_candidate_filter_excludes_host_down_shadow_only_hosts() -> None:
     events = [
         zabbix_problem_to_alert_event(
             {
@@ -197,7 +198,7 @@ def test_live_candidate_filter_excludes_expected_off_hosts() -> None:
     live_candidates = filter_zabbix_live_candidate_events(
         events,
         infrastructure_hosts={"pve01", "pki01"},
-        expected_off_hosts={"pki01"},
+        shadow_only_hosts={"pki01"},
     )
 
     assert [event.event_id for event in live_candidates] == ["1"]
@@ -302,7 +303,26 @@ def test_load_infra_hosts_from_operator_context_shape(tmp_path) -> None:  # noqa
     assert load_infrastructure_hosts_file(path) == ["pve01", "zbx01"]
 
 
-def test_load_expected_off_hosts_from_operator_context_shape(tmp_path) -> None:  # noqa: ANN001
+def test_load_host_down_shadow_only_hosts_from_operator_context_shape(tmp_path) -> None:  # noqa: ANN001
+    path = tmp_path / "alert-routing.yaml"
+    path.write_text(
+        "\n".join(
+            [
+                "version: 1",
+                "alert_routing:",
+                "  zabbix:",
+                "    host_down_policy:",
+                "      shadow_only_hosts:",
+                "        - pki01",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    assert load_host_down_shadow_only_hosts_file(path) == ["pki01"]
+
+
+def test_load_expected_off_hosts_from_legacy_operator_context_shape(tmp_path) -> None:  # noqa: ANN001
     path = tmp_path / "alert-routing.yaml"
     path.write_text(
         "\n".join(

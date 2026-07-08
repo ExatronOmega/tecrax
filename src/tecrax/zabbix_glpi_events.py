@@ -183,15 +183,15 @@ def zabbix_live_routing_decision(
     event: AlertEvent,
     *,
     infrastructure_hosts: Iterable[str] = (),
-    expected_off_hosts: Iterable[str] = (),
+    shadow_only_hosts: Iterable[str] = (),
 ) -> ZabbixRoutingDecision:
     infra_hosts = {host.strip().lower() for host in infrastructure_hosts if host.strip()}
-    expected_off = {host.strip().lower() for host in expected_off_hosts if host.strip()}
+    shadow_only = {host.strip().lower() for host in shadow_only_hosts if host.strip()}
     host = event.host.strip().lower()
-    if host in expected_off:
+    if host in shadow_only:
         return ZabbixRoutingDecision(
             route="shadow_only",
-            reason="host is expected-off/on-demand and excluded from live outage routing",
+            reason="host-down policy routes this host to shadow-only",
         )
     if _is_host_unavailable(event):
         if host in infra_hosts:
@@ -243,7 +243,7 @@ def filter_zabbix_live_candidate_events(
     events: Iterable[AlertEvent],
     *,
     infrastructure_hosts: Iterable[str] = (),
-    expected_off_hosts: Iterable[str] = (),
+    shadow_only_hosts: Iterable[str] = (),
 ) -> list[AlertEvent]:
     return [
         event
@@ -251,7 +251,7 @@ def filter_zabbix_live_candidate_events(
         if zabbix_live_routing_decision(
             event,
             infrastructure_hosts=infrastructure_hosts,
-            expected_off_hosts=expected_off_hosts,
+            shadow_only_hosts=shadow_only_hosts,
         ).route
         == "live_candidate"
     ]
@@ -273,20 +273,32 @@ def load_infrastructure_hosts_file(path: Path) -> list[str]:
     return hosts
 
 
-def load_expected_off_hosts_file(path: Path) -> list[str]:
+def load_host_down_shadow_only_hosts_file(path: Path) -> list[str]:
     text = path.read_text(encoding="utf-8")
     if path.suffix.lower() == ".json":
         value = json.loads(text)
     else:
         value = _parse_simple_yaml(text)
-    hosts = _lookup(value, ("alert_routing", "zabbix", "expected_off_hosts"))
+    hosts = _lookup(value, ("alert_routing", "zabbix", "host_down_policy", "shadow_only_hosts"))
+    if hosts is None:
+        hosts = _lookup(value, ("zabbix", "host_down_policy", "shadow_only_hosts"))
+    if hosts is None:
+        hosts = _lookup(value, ("host_down_policy", "shadow_only_hosts"))
+    if hosts is None:
+        # Backward-compatible read path for operator contexts created before the
+        # host-down routing policy was split from power-state terminology.
+        hosts = _lookup(value, ("alert_routing", "zabbix", "expected_off_hosts"))
     if hosts is None:
         hosts = _lookup(value, ("zabbix", "expected_off_hosts"))
     if hosts is None:
         hosts = value.get("expected_off_hosts") if isinstance(value, dict) else None
     if not isinstance(hosts, list) or not all(isinstance(host, str) for host in hosts):
-        raise ValueError("expected-off host file must contain a list of host aliases")
+        raise ValueError("host-down shadow-only policy file must contain a list of host aliases")
     return hosts
+
+
+def load_expected_off_hosts_file(path: Path) -> list[str]:
+    return load_host_down_shadow_only_hosts_file(path)
 
 
 def _problem_host(problem: dict[str, Any]) -> str:
