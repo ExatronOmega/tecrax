@@ -250,6 +250,12 @@ alert-source hygiene checkpoint before live GLPI routing. The supporting
 `scripts/summarize-wazuh-alerts.py` helper aggregates Wazuh alert volume, top
 rules and routing classes without reading credentials or emitting raw payloads.
 
+`docs/runbooks/wazuh-source-noise-hygiene-runbook.md` documents bounded
+source-side Wazuh noise reduction for routine successful operational telemetry.
+It requires aggregate review, local rule backup, narrow level-0 child rules,
+manager restart validation and smoke proof before any Wazuh-to-ticket live
+routing.
+
 `docs/runbooks/glpi-alert-ticket-routing-runbook.md` documents the
 operator-owned GLPI alert-ticket routing gate. The supporting
 `scripts/route-glpi-alerts.py` helper accepts normalized Zabbix/Wazuh events,
