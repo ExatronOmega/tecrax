@@ -336,6 +336,12 @@ renewal, revocation, trust-root distribution and private certificate inventory.
 It does not generate CA material, CSRs, issued certificates or trust-store
 changes.
 
+`docs/runbooks/pki-https-rollout-planning-runbook.md` documents the future HTTPS
+rollout plan for internal administrative services. It defines target services,
+FQDN/SAN naming, rollout order, reverse-proxy versus service-native TLS
+decision points and trust-root dependencies without generating certificates or
+changing live TLS configuration.
+
 ## Basic Incident Handling Baseline
 
 `docs/runbooks/basic-incident-handling-runbook.md` documents the first

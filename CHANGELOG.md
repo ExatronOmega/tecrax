@@ -25,6 +25,9 @@ All notable Tecrax profile changes are documented here.
 - Added the PKI certificate lifecycle planning runbook for future CSR/SAN/FQDN,
   issuance, renewal, revocation, trust distribution and private inventory work
   without generating CA material.
+- Added the PKI HTTPS rollout planning runbook for future administrative
+  service FQDN/SAN naming, migration order, TLS placement and trust-root
+  dependencies without live TLS changes.
 - Added the GLPI inventory scope runbook, defining a conservative Phase 1
   infrastructure inventory baseline and deferring agents, endpoint discovery
   and network sweeps.
