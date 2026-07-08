@@ -4,6 +4,9 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Added the Samba AD delegated domain-join runbook for narrowing routine
+  workstation joins from broad transitional rights toward OU-specific ACLs,
+  with fallback removal kept behind a live join test.
 - Added Vaultwarden bootstrap and backup/restore-proof runbooks, keeping the
   service in bootstrap custody status until restore, offline break-glass, PKI
   restore and Proxmox root-of-trust hardening gates are complete.
