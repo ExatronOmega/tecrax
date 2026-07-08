@@ -5,7 +5,8 @@ All notable Tecrax profile changes are documented here.
 ## Unreleased
 
 - Added the Wazuh source noise hygiene runbook for bounded source-side
-  suppression of routine successful operational telemetry before ticket routing.
+  suppression of routine successful operational telemetry before ticket routing,
+  including manager alert-level and shared agent scan-cadence baseline guidance.
 - Added automatic public Tecrax runbook links to GLPI alert-ticket drafts when a
   matching alert category is available.
 - Added the Synology NAS AD-auth pre-change runbook for the planned service

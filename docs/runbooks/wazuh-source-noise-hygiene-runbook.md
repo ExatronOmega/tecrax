@@ -14,6 +14,8 @@ This procedure covers:
 - bounded alert summary from `alerts.json`;
 - classification into `observe_only`, `backlog`, `ticket_grouped` and
   `ticket_now`;
+- manager alert-level baseline;
+- shared agent scan cadence baseline;
 - local Wazuh rule backup;
 - narrowly scoped child rules for selected success-telemetry rules;
 - Wazuh manager restart;
@@ -64,6 +66,80 @@ Do not suppress by default:
 - disk pressure;
 - unknown high-level events;
 - repeated successful logins that are themselves suspicious.
+
+## Operational Baseline Tuning
+
+Before adding many suppression rules, set a small operational baseline so Wazuh
+does not behave like a raw default install.
+
+Recommended first baseline for small Linux infrastructure environments:
+
+- raise manager `log_alert_level` from `3` to `5` if low-level successful
+  telemetry is flooding the dashboard;
+- keep `jsonout_output` and `alerts_log` enabled;
+- keep authentication failures, vulnerabilities, rootcheck, syscheck and disk
+  pressure visible;
+- use shared agent config to disable scan-on-start for routine scans;
+- set syscheck/rootcheck cadence to a predictable daily baseline;
+- set SCA cadence to a slower baseline, such as weekly, until final hardening
+  policy exists;
+- reduce syscollector noise by collecting core inventory while avoiding process
+  and browser-extension collection unless explicitly needed;
+- use `auto_ignore` for repeated FIM changes instead of suppressing all
+  integrity monitoring.
+
+Example shared agent baseline:
+
+```xml
+<agent_config>
+  <syscheck>
+    <disabled>no</disabled>
+    <frequency>86400</frequency>
+    <scan_on_start>no</scan_on_start>
+    <alert_new_files>no</alert_new_files>
+    <auto_ignore frequency="10" timeframe="3600">yes</auto_ignore>
+    <skip_nfs>yes</skip_nfs>
+    <skip_dev>yes</skip_dev>
+    <skip_proc>yes</skip_proc>
+    <skip_sys>yes</skip_sys>
+  </syscheck>
+
+  <rootcheck>
+    <disabled>no</disabled>
+    <frequency>86400</frequency>
+    <skip_nfs>yes</skip_nfs>
+  </rootcheck>
+
+  <sca>
+    <enabled>yes</enabled>
+    <scan_on_start>no</scan_on_start>
+    <interval>7d</interval>
+    <skip_nfs>yes</skip_nfs>
+  </sca>
+
+  <wodle name="syscollector">
+    <disabled>no</disabled>
+    <interval>24h</interval>
+    <scan_on_start>no</scan_on_start>
+    <hardware>yes</hardware>
+    <os>yes</os>
+    <network>yes</network>
+    <packages>yes</packages>
+    <ports all="no">yes</ports>
+    <processes>no</processes>
+    <users>yes</users>
+    <groups>yes</groups>
+    <services>yes</services>
+    <browser_extensions>no</browser_extensions>
+  </wodle>
+</agent_config>
+```
+
+Validate shared config before installation:
+
+```sh
+/var/ossec/bin/verify-agent-conf -f /path/to/agent.conf
+```
 
 ## Procedure
 
