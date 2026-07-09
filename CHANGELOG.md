@@ -4,6 +4,9 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Added the Synology NAS domain-home and GPO drive-mapping runbook for moving
+  from a one-user AD-auth pilot to a neutral staff `home` mapping model without
+  storing credentials, deleting NAS data or hand-building GPO objects.
 - Added the Wazuh Dashboard RBAC operator-access runbook and a read-only RBAC
   audit helper for detecting missing administrator role-mapping rules without
   printing password hashes.

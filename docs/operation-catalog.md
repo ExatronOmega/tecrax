@@ -154,6 +154,19 @@ Windows endpoint pilot baseline before AD join. It covers public-safe naming,
 SSH/PowerShell access, endpoint DNS/NTP baseline and validation gates without
 adding a domain-join intent or storing private endpoint inventory in Tecrax.
 
+## NAS and user data
+
+`docs/runbooks/synology-nas-ad-auth-prechange-runbook.md` documents the
+operator-owned pre-change gate for joining a Synology NAS to AD as a member file
+server. It defines the authority split between AD, DSM ACLs and GPO while
+keeping credentials, real topology and NAS exports outside Tecrax.
+
+`docs/runbooks/synology-nas-domain-home-gpo-runbook.md` documents the next
+operator-owned gate for validating native Synology domain homes and replacing
+user-specific pilot mapping artifacts with a neutral staff GPO/GPP drive-mapping
+model. It remains runbook-only and does not add a generic NAS ACL editor, GPO
+editor or file-migration operation to Tecrax.
+
 `docs/runbooks/adguard-home-deployment-runbook.md` documents the operator-owned AdGuard
 Home deployment gate. It keeps filtering DNS, AD DNS authority and Hillstone
 DHCP ownership separate, and does not add an active AdGuard connector to Tecrax.
