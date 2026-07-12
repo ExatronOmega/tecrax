@@ -9,7 +9,7 @@ exports those orchestration-specific builders.
 [![Python: 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](pyproject.toml)
 [![Dependency: GovEngine ==0.17.0rc1](https://img.shields.io/badge/dependency-GovEngine%20%3D%3D0.17.0rc1-informational.svg)](https://github.com/rozmiarD/GovEngine)
 [![Dependency: RExecOp ==0.3.0rc1](https://img.shields.io/badge/dependency-RExecOp%20%3D%3D0.3.0rc1-informational.svg)](https://github.com/rozmiarD/RExecOP)
-[![Dependency: SCLite ==2.0.0rc1](https://img.shields.io/badge/dependency-SCLite%20%3D%3D2.0.0rc1-informational.svg)](https://github.com/rozmiarD/SCLite)
+[![Dependency: SCLite ==2.0.0](https://img.shields.io/badge/dependency-SCLite%20%3D%3D2.0.0-informational.svg)](https://github.com/rozmiarD/SCLite)
 [![Status: alpha](https://img.shields.io/badge/status-alpha-green.svg)](#status)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE)
 
@@ -28,7 +28,7 @@ credentials, embed target topology, or accept arbitrary infrastructure commands.
 | Current source candidate | `0.4.0rc1` (`0.3.22-alpha`, not published) |
 | Maturity | **alpha** — operator evaluation with documented limits |
 | Latest PyPI | [`tecrax==0.3.21a0`](https://pypi.org/project/tecrax/0.3.21a0/) |
-| Source dependencies | `govengine==0.17.0rc1`, `sclite-core==2.0.0rc1`, `rexecop==0.3.0rc1` |
+| Source dependencies | `govengine==0.17.0rc1`, `sclite-core==2.0.0`, `rexecop==0.3.0rc1` |
 | Profile entry point | `rexecop.profiles:tecrax` |
 | Active mutating intent | `configure_chrony_ntp_server` only |
 | Public status | [`PUBLIC_STATUS.md`](PUBLIC_STATUS.md) |
@@ -201,7 +201,7 @@ inventory, credential path, or infrastructure adapter.
 
 The source `0.3.22-alpha` candidate combines the profile-owned read-only reaction pack,
 B2 policy vector, and the first governed chrony/NTP apply slice over RExecOp
-`0.3.0rc1`, GovEngine `0.17.0rc1`, and SCLite `2.0.0rc1`. It does not add a second
+`0.3.0rc1`, GovEngine `0.17.0rc1`, and final SCLite `2.0.0`. It does not add a second
 policy engine, lifecycle runner, or truth layer.
 
 The Ubuntu environment example uses profile-owned policy semantics, but GovEngine

@@ -19,7 +19,7 @@ EXPECTED_VERSION = '0.4.0rc1'
 EXPECTED_RELEASE_LABEL = '0.3.22-alpha'
 PUBLISHED_VERSION = '0.3.21a0'
 EXPECTED_GOVENGINE = 'govengine==0.17.0rc1'
-EXPECTED_SCLITE = 'sclite-core==2.0.0rc1'
+EXPECTED_SCLITE = 'sclite-core==2.0.0'
 EXPECTED_REXECOP = 'rexecop==0.3.0rc1'
 PUBLIC_DOCS = (
     'README.md',
