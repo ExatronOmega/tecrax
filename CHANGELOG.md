@@ -13,6 +13,8 @@ All notable Tecrax profile changes are documented here.
 
 - Enforces Tecrax's production SCLite imports against the versioned
   wheel-shipped consumer contract through the existing public-truth CI gate.
+- Pins `govengine==0.17.0rc2` and `rexecop==0.3.0rc2` for the bounded HTTP
+  destination admission and receipt-binding candidate.
 
 ## [0.4.0rc1] - 2026-07-10
 
