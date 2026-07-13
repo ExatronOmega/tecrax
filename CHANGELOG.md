@@ -11,6 +11,10 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Hardened public deployment helpers so Windows endpoint apply requires an
+  exact live-hostname assertion, while Samba AD bulk provisioning validates the
+  complete CSV, duplicate/unsafe logins and every target group before the first
+  mutation.
 - Enforces Tecrax's production SCLite imports against the versioned
   wheel-shipped consumer contract through the existing public-truth CI gate.
 - Pins `govengine==0.17.0rc2` and `rexecop==0.3.0rc2` for the bounded HTTP

@@ -6,6 +6,7 @@ usage() {
 Usage:
   prepare-windows-ad-pilot-endpoint.sh [--apply]
     --host HOST --user USER --identity-file PATH --known-hosts PATH
+    [--expected-current-name NAME]
     [--target-name NAME] [--interface-alias NAME]
     [--dns-server SERVER[,SERVER...]]
     [--ntp-server SERVER]
@@ -15,6 +16,8 @@ Usage:
 Public-safe operator helper for a Windows AD pilot endpoint baseline.
 
 Defaults to dry-run. The --apply flag is required before any endpoint mutation.
+Apply mode also requires --expected-current-name and aborts before mutation if
+the live hostname differs.
 Secrets, private keys, host fingerprints, real inventory and domain credentials
 must stay outside the repository.
 EOF
@@ -26,6 +29,7 @@ user=""
 identity_file=""
 known_hosts=""
 target_name=""
+expected_current_name=""
 interface_alias="Ethernet"
 dns_servers=""
 ntp_server=""
@@ -56,6 +60,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --target-name)
       target_name="${2:-}"
+      shift 2
+      ;;
+    --expected-current-name)
+      expected_current_name="${2:-}"
       shift 2
       ;;
     --interface-alias)
@@ -104,6 +112,10 @@ require_value "--host" "$host"
 require_value "--user" "$user"
 require_value "--identity-file" "$identity_file"
 require_value "--known-hosts" "$known_hosts"
+
+if [[ "$apply" == true ]]; then
+  require_value "--expected-current-name" "$expected_current_name"
+fi
 
 if [[ "$domain_time" == true && -n "$ntp_server" ]]; then
   echo "--domain-time and --ntp-server are mutually exclusive" >&2
@@ -170,6 +182,7 @@ read -r -d '' ps_script <<EOF || true
 \$Apply = $apply_ps
 \$DomainTime = $domain_time_ps
 \$TargetName = $(ps_quote "$target_name")
+\$ExpectedCurrentName = $(ps_quote "$expected_current_name")
 \$InterfaceAlias = $(ps_quote "$interface_alias")
 \$DnsServers = $dns_array
 \$NtpServer = $(ps_quote "$ntp_server")
@@ -199,6 +212,10 @@ Get-CimInstance Win32_OperatingSystem |
 Section "computer_system"
 \$ComputerSystem = Get-CimInstance Win32_ComputerSystem
 \$ComputerSystem | Select-Object Name, Domain, PartOfDomain, Workgroup | Format-List
+
+if (\$Apply -and \$ComputerSystem.Name -ne \$ExpectedCurrentName) {
+  throw "hostname_mismatch:expected=\$ExpectedCurrentName:actual=\$(\$ComputerSystem.Name)"
+}
 
 Section "network"
 Get-NetIPConfiguration -InterfaceAlias \$InterfaceAlias |

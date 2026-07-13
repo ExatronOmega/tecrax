@@ -31,6 +31,10 @@ Not allowed:
 - The operator has an approved privileged path on the DC.
 - The temporary password satisfies the current domain password policy.
 
+Before creating the first user, the helper validates the entire CSV, rejects
+duplicate or unsafe logins and proves that every referenced group exists. A
+later malformed row must therefore not cause an earlier row to be applied.
+
 ## Operator-Owned CSV
 
 Keep the CSV outside the repository, for example in a private operator working
@@ -73,6 +77,10 @@ Expected dry-run output:
 would_create_user:user01
 would_add_member:GG_ORG_Staff:user01
 ```
+
+Dry-run still queries Samba AD for existing users, memberships and groups. It
+must run on the DC or through an approved operator path with `samba-tool`
+available, but it does not create users or change memberships.
 
 ## Apply
 

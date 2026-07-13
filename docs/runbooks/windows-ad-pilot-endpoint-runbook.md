@@ -126,6 +126,7 @@ scripts/prepare-windows-ad-pilot-endpoint.sh \
   --user local-admin \
   --identity-file /path/outside/repo/windows-pilot-key \
   --known-hosts /path/outside/repo/known_hosts \
+  --expected-current-name CURRENT-LT-NAME \
   --target-name ORG-LT-001 \
   --interface-alias Ethernet \
   --dns-server ad-dns.example.invalid \
@@ -135,6 +136,8 @@ scripts/prepare-windows-ad-pilot-endpoint.sh \
 
 Expected effects:
 
+- the helper aborts before mutation unless the live hostname exactly matches
+  `--expected-current-name`;
 - endpoint rename is scheduled if the current name differs from `--target-name`;
 - DNS server list is set on the selected interface if `--dns-server` is passed;
 - Windows Time is configured to use `--ntp-server` if provided;
@@ -176,6 +179,7 @@ scripts/prepare-windows-ad-pilot-endpoint.sh \
   --user local-admin \
   --identity-file /path/outside/repo/windows-pilot-key \
   --known-hosts /path/outside/repo/known_hosts \
+  --expected-current-name ORG-LT-001 \
   --target-name ORG-LT-001 \
   --interface-alias Ethernet \
   --dns-server ad-dns.example.invalid \
