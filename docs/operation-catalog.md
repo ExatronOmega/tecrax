@@ -147,6 +147,13 @@ GPO/WUfB ring baseline, active hours, restart boundaries and Wake-on-LAN future
 gate without adding WSUS, RMM, WoL automation or endpoint update orchestration
 to Tecrax.
 
+`docs/runbooks/linux-update-visibility-canary-runbook.md` documents a bounded
+Linux update visibility canary. Its public-safe collector simulates an APT
+upgrade against the existing local cache and exposes only counts, cache age,
+pending reboot and completeness through one Zabbix master item. It does not
+refresh metadata, install packages, define trigger thresholds or route a GLPI
+ticket during the first canary.
+
 `docs/runbooks/windows-endpoint-agent-rollout-runbook.md` documents the
 operator-owned Windows endpoint Zabbix/Wazuh agent rollout pilot. It keeps
 Zabbix and Wazuh delivery separate, uses small AD/GPO rollout rings, and keeps
