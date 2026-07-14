@@ -188,12 +188,12 @@ def zabbix_live_routing_decision(
     infra_hosts = {host.strip().lower() for host in infrastructure_hosts if host.strip()}
     shadow_only = {host.strip().lower() for host in shadow_only_hosts if host.strip()}
     host = event.host.strip().lower()
-    if host in shadow_only:
-        return ZabbixRoutingDecision(
-            route="shadow_only",
-            reason="host-down policy routes this host to shadow-only",
-        )
     if _is_host_unavailable(event):
+        if host in shadow_only:
+            return ZabbixRoutingDecision(
+                route="shadow_only",
+                reason="host-down policy routes this host to shadow-only",
+            )
         if host in infra_hosts:
             return ZabbixRoutingDecision(
                 route="live_candidate",

@@ -134,6 +134,33 @@ def test_host_down_shadow_only_host_is_not_live_candidate_even_when_infrastructu
     assert "host-down policy" in decision.reason
 
 
+def test_shadow_only_host_keeps_non_host_down_infrastructure_alerts_actionable() -> None:
+    cases = [
+        ("Linux: FS [/]: Space is critically low (used > 95%)", "critical disk pressure"),
+        ("Backup job failed", "backup failure"),
+    ]
+
+    for event_id, (name, expected_reason) in enumerate(cases, start=1):
+        event = zabbix_problem_to_alert_event(
+            {
+                "eventid": str(event_id),
+                "name": name,
+                "severity": 4,
+                "clock": "1783339200",
+                "hosts": [{"host": "pki01"}],
+            }
+        )
+
+        decision = zabbix_live_routing_decision(
+            event,
+            infrastructure_hosts={"pki01"},
+            shadow_only_hosts={"pki01"},
+        )
+
+        assert decision.route == "live_candidate"
+        assert expected_reason in decision.reason
+
+
 def test_live_candidate_filter_excludes_user_endpoints_and_non_allowlisted_events() -> None:
     events = [
         zabbix_problem_to_alert_event(
