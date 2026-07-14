@@ -220,6 +220,24 @@ Validate:
 - GLPI web/API remains healthy;
 - Zabbix and Wazuh source collectors continue to run.
 
+### 6. Bound runtime snapshot retention
+
+The live routing runtime may preserve timestamped candidate and result
+snapshots for troubleshooting. Bound that history independently from the
+duplicate-suppression state:
+
+- retain no more than 72 hours of timestamped snapshots;
+- enforce a hard cap of 1500 matched files;
+- match only timestamped `zabbix-live-candidates` NDJSON and
+  `zabbix-glpi-live-result` JSON files;
+- preserve `latest`, route-state, canary, integration-test and other evidence;
+- default the retention helper to dry-run and require an explicit apply mode;
+- run cleanup only after a successful live routing invocation.
+
+Expired timestamped snapshots are regenerable operational evidence, not the
+canonical ticket or deduplication state. A retention failure must fail closed
+without widening alert routing or deleting non-matching files.
+
 ## Stop Conditions
 
 Stop before live ticket creation if:
