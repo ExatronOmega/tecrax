@@ -26,6 +26,9 @@ PUBLIC_DOCS = (
     'PUBLIC_STATUS.md',
     'VALIDATION.md',
 )
+CONTROL_PLANE_RECOVERY_RUNBOOK = (
+    'docs/runbooks/infrastructure-control-plane-recovery-runbook.md'
+)
 FORBIDDEN_CLAIMS = (
     'production-ready',
     'connects to live infrastructure',
@@ -97,6 +100,13 @@ def collect_errors() -> list[str]:
     _require(errors, 'README.md', 'rexecop.profiles:tecrax')
     _require(errors, 'pyproject.toml', 'rexecop.profiles')
     _require(errors, 'pyproject.toml', 'tecrax:profile_root')
+    if not (ROOT / CONTROL_PLANE_RECOVERY_RUNBOOK).is_file():
+        errors.append(f'missing_public_runbook:{CONTROL_PLANE_RECOVERY_RUNBOOK}')
+    else:
+        _require(errors, 'README.md', 'infrastructure-control-plane-recovery-runbook.md')
+        _require(errors, 'docs/operation-catalog.md', CONTROL_PLANE_RECOVERY_RUNBOOK)
+        _require(errors, CONTROL_PLANE_RECOVERY_RUNBOOK, 'Current activation level: `L1')
+        _require(errors, CONTROL_PLANE_RECOVERY_RUNBOOK, 'environment-bound operator helper')
     profile_root = Path(tecrax.profile_root())
     if not (profile_root / 'profile.yaml').is_file():
         errors.append('profile_bundle_missing:profile.yaml')

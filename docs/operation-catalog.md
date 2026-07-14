@@ -83,6 +83,12 @@ operator-owned restore proof from external CIFS storage. It restores a low-risk
 workload to a temporary ID, validates it offline, and removes the temporary
 restore target without claiming full disaster recovery.
 
+`docs/runbooks/infrastructure-control-plane-recovery-runbook.md` documents the
+operator-owned encrypted recovery bundle for PVE, PBS and managed network-device
+configuration. The concrete helper, target mappings, paths, recipient identity
+and secret custody remain outside the package. This is an `L1` procedure, not an
+active backup connector or a replacement for RExecOp execution lifecycle.
+
 ## Proxmox host readiness
 
 `docs/runbooks/proxmox-host-readiness-runbook.md` documents the manual readiness pass for
