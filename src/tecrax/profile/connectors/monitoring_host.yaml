@@ -61,7 +61,7 @@ connector:
       command: systemctl
       args: ["is-enabled", "unattended-upgrades"]
     read_available_updates_summary:
-      command: /usr/lib/update-notifier/apt-check
+      command: /usr/local/libexec/tecrax-update-status
       args: []
     read_aslr_state:
       command: sysctl

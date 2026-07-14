@@ -3,6 +3,8 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 
+import yaml
+
 
 SCRIPT = Path(__file__).parents[1] / "scripts/collect-linux-update-status.py"
 SPEC = importlib.util.spec_from_file_location("collect_linux_update_status", SCRIPT)
@@ -42,3 +44,34 @@ def test_cache_age_uses_newest_regular_file(tmp_path: Path) -> None:
 
 def test_missing_cache_is_explicit_unknown(tmp_path: Path) -> None:
     assert MODULE.apt_cache_age_seconds(tmp_path / "missing", now=2_000.0) == -1
+
+
+def test_monitoring_profile_uses_bounded_update_collector() -> None:
+    root = Path(__file__).parents[1]
+    connector = yaml.safe_load(
+        (root / "src/tecrax/profile/connectors/monitoring_host.yaml").read_text(
+            encoding="utf-8"
+        )
+    )
+    example = yaml.safe_load(
+        (root / "examples/environments/ubuntu-host.readonly.example.yaml").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    command_shape = connector["connector"]["command_shapes"][
+        "read_available_updates_summary"
+    ]
+    example_action = next(
+        action
+        for action in example["environment"]["connectors"]["monitoring_host"][
+            "allowlist"
+        ]
+        if action["action"] == "read_available_updates_summary"
+    )
+
+    assert command_shape == {
+        "command": "/usr/local/libexec/tecrax-update-status",
+        "args": [],
+    }
+    assert example_action["command"] == command_shape["command"]

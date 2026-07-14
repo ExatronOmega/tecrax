@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from typing import Any
 
 from rexecop.execution.backend import StepExecutionContext
@@ -142,14 +143,24 @@ def _connector_text(results: dict[str, Any], step_id: str) -> str:
 
 
 def _parse_update_summary(value: str) -> dict[str, int | None]:
+    snapshot = _parse_update_snapshot(value)
+    if snapshot is not None:
+        snapshot_total, snapshot_security = snapshot
+        return {
+            "regular": snapshot_total - snapshot_security,
+            "security": snapshot_security,
+            "held_back_or_blocked": None,
+            "unknown": 0,
+        }
+
     text = single_line(value, limit=256)
-    total: int | None = None
-    security: int | None = None
+    legacy_total: int | None = None
+    legacy_security: int | None = None
     if ";" in text:
         parts = [part.strip() for part in text.split(";")]
         if len(parts) >= 2:
-            total = integer(parts[0])
-            security = integer(parts[1])
+            legacy_total = integer(parts[0])
+            legacy_security = integer(parts[1])
     else:
         tokens = text.lower().replace(".", "").split()
         for index, token in enumerate(tokens):
@@ -158,10 +169,10 @@ def _parse_update_summary(value: str) -> dict[str, int | None]:
                 continue
             suffix = " ".join(tokens[index + 1 : index + 5])
             if "packages can be updated" in suffix:
-                total = number
+                legacy_total = number
             if "updates are security updates" in suffix:
-                security = number
-    if total is None or security is None:
+                legacy_security = number
+    if legacy_total is None or legacy_security is None:
         return {
             "regular": None,
             "security": None,
@@ -169,11 +180,39 @@ def _parse_update_summary(value: str) -> dict[str, int | None]:
             "unknown": 1,
         }
     return {
-        "regular": max(int(total) - int(security), 0),
-        "security": max(int(security), 0),
+        "regular": max(legacy_total - legacy_security, 0),
+        "security": max(legacy_security, 0),
         "held_back_or_blocked": None,
         "unknown": 0,
     }
+
+
+def _parse_update_snapshot(value: str) -> tuple[int, int] | None:
+    try:
+        payload = json.loads(value.strip())
+    except (json.JSONDecodeError, TypeError):
+        return None
+    if not isinstance(payload, dict):
+        return None
+    if (
+        payload.get("schema_version") != 1
+        or payload.get("source") != "apt-get-simulated-upgrade-local-cache"
+        or payload.get("collector_complete") != 1
+    ):
+        return None
+    total = payload.get("pending_total")
+    security = payload.get("pending_security")
+    if (
+        isinstance(total, bool)
+        or isinstance(security, bool)
+        or not isinstance(total, int)
+        or not isinstance(security, int)
+        or total < 0
+        or security < 0
+        or security > total
+    ):
+        return None
+    return total, security
 
 
 def _parse_df(value: str) -> dict[str, Any]:

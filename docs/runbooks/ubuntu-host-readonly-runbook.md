@@ -78,10 +78,13 @@ must fail closed before connector execution.
 
 `collect_host_security_posture_readonly` observes only a small hostlike security posture:
 unattended-upgrades service state, a bounded available-update count summary from
-`/usr/lib/update-notifier/apt-check`, ASLR mode, `dmesg_restrict` and the pending reboot
-marker. The update summary must not persist package names, repository names, changelogs,
-held package identities or local paths. If the update summary cannot be parsed, Tecrax marks
-that part as unknown instead of inventing package state.
+the Debian/Ubuntu-compatible `/usr/local/libexec/tecrax-update-status` collector, ASLR
+mode, `dmesg_restrict` and the pending reboot marker. Install the collector from
+`scripts/collect-linux-update-status.py` according to the Linux update visibility
+runbook before executing this intent. It uses only the existing local APT cache and
+must not persist package names, repository names, changelogs, held package identities
+or local paths. If the collector reports an incomplete or inconsistent snapshot,
+Tecrax marks that part as unknown instead of inventing package state.
 
 For `collect_basic_host_inventory`, the sanitized example also requires a receipt,
 per-step output digests, at most nine workflow steps, a ten-second per-connector-call
