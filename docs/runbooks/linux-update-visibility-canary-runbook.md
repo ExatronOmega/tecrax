@@ -89,3 +89,15 @@ Promotion beyond one host requires representative values, explicit cache-age
 thresholds, approved `pilot` and `staff` membership, conservative trigger
 severity, GLPI dry-run and deduplication proof. Installation and reboot remain
 manual and outside this visibility gate.
+
+The first trigger canary may use only data-quality conditions:
+
+- collector completeness remains zero for two samples within two hours;
+- local APT metadata cache age exceeds seven days while the collector reports
+  a complete result.
+
+Keep both warning-class and shadow-only for GLPI until a natural event is
+observed. Do not create security-update or reboot triggers while cache
+freshness, persistence windows and operator action semantics remain unresolved.
+Do not force an active-agent sample by changing item type, injecting a value or
+temporarily changing cadence merely to make a new trigger evaluate.
