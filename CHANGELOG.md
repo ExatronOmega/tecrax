@@ -11,6 +11,8 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Expanded the generic librarian role runbook with mandatory GIMP, Inkscape,
+  NAPS2 and PDF Arranger packaging and non-administrator smoke gates.
 - Documented the promotion gate for a future governed Windows role-application
   convergence intent without claiming package custody or an active mutation.
 - Hardened public deployment helpers so Windows endpoint apply requires an

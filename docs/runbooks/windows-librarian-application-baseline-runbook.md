@@ -47,7 +47,8 @@ The initial librarian role stack is:
 - Firefox ESR and Chrome Enterprise Stable;
 - managed Thunderbird ESR;
 - LibreOffice;
-- 7-Zip, VLC, IrfanView, Notepad++ and SumatraPDF;
+- 7-Zip, VLC, IrfanView, Notepad++, SumatraPDF, GIMP, Inkscape, NAPS2 and
+  PDF Arranger;
 - an assigned library-management application and its approved modules, when the
   endpoint's functional role requires one.
 
@@ -70,7 +71,9 @@ Use this order on one operator-supervised pilot:
    separately from application detection.
 4. Install LibreOffice and Thunderbird ESR. Treat IMAP configuration and local
    mail archives as a separate per-user migration contract.
-5. Install 7-Zip, Notepad++, IrfanView, SumatraPDF and VLC.
+5. Install 7-Zip, Notepad++, IrfanView, SumatraPDF, VLC, GIMP, Inkscape, NAPS2
+   and PDF Arranger. Smoke image opening and export, vector-document opening,
+   PDF page rearrangement and NAPS2 startup even when no scanner is attached.
 6. Deploy an assigned library-management application only after its proprietary
    package gate is complete. Do not infer entitlement from a librarian job title
    alone.
@@ -95,6 +98,10 @@ Use only the primary vendor documentation when building exact manifests:
 - [IrfanView FAQ and licensing](https://www.irfanview.com/faq.htm);
 - [SumatraPDF installer arguments](https://www.sumatrapdfreader.org/docs/Installer-cmd-line-arguments);
 - [VLC Windows packages](https://www.videolan.org/vlc/download-windows.html);
+- [GIMP downloads](https://www.gimp.org/downloads/);
+- [Inkscape releases](https://inkscape.org/release/);
+- [NAPS2 documentation](https://www.naps2.com/doc/);
+- [PDF Arranger releases](https://github.com/pdfarranger/pdfarranger/releases);
 - [Wazuh Windows deployment variables](https://documentation.wazuh.com/current/user-manual/agent/agent-enrollment/deployment-variables/deployment-variables-windows.html);
 - [Zabbix Windows MSI installation](https://www.zabbix.com/documentation/current/en/manual/installation/install_from_packages/win_msi).
 
@@ -145,6 +152,8 @@ Stop packaging or rollout when:
 - a secret, license or private configuration would enter Git, GPO, logs or chat;
 - an agent creates a duplicate identity or is not healthy centrally;
 - default-app changes or user-data preservation are not understood;
+- a graphics, scanning or PDF package lacks a supported machine-wide installer,
+  exact silent lifecycle or non-administrator smoke;
 - assigned library-application dependencies, configuration, licensing or vendor
   method remain unknown;
 - the smoke would write to production business data without separate approval.
@@ -157,6 +166,9 @@ passes lab validation. The endpoint is `operational-ready` only when:
 - all required machine-wide packages are detected under a standard user;
 - browsers and managed policies, office/PDF/media utilities and Thunderbird
   launch without UAC or unmanaged update prompts;
+- GIMP, Inkscape, NAPS2 and PDF Arranger launch for a non-administrator, while
+  their basic open/export/rearrange smoke does not require production data or a
+  physically attached scanner;
 - endpoint protection, Wazuh and Zabbix are healthy with unique central
   identities;
 - every assigned library application, required module and shortcut passes its
