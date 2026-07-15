@@ -14,7 +14,7 @@ extension.
 
 ## Required semantics
 
-- Use only the supported path `\\nas01\home` and its three child paths.
+- Use only the approved `<supported-user-home-UNC>` and its three child paths.
 - Use exactly three `Create` actions (`action="C"`).
 - Run each item in the logged-on user context (`userContext="1"`).
 - Leave created directories in place when policy stops applying

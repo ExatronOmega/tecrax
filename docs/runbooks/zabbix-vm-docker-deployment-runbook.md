@@ -57,7 +57,7 @@ Recommended public-safe shape:
 - storage class: data-service HDD mirror pool;
 - disk size: 120 GB at initial deployment;
 - CPU and memory: small monitoring VM, expandable after retention is known;
-- hostname alias: `zbx01`;
+- hostname alias: `<zabbix-host>`;
 - operator account follows the environment hard rule: `rexecop`.
 
 Prefer a VM over a CT for this service. Docker inside LXC adds nesting,
@@ -218,7 +218,7 @@ Use `../operator-signoff-template.md` and include:
 
 - date;
 - run class: `zabbix-vm-docker-deployment`;
-- target alias: `zbx01`;
+- target alias: `<zabbix-host>`;
 - deployment form;
 - broad VM sizing;
 - OS family;

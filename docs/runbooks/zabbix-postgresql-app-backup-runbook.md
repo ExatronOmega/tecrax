@@ -113,7 +113,7 @@ Use `../operator-signoff-template.md` and include:
 
 - date;
 - run class: `zabbix-postgresql-app-backup`;
-- target alias: `zbx01`;
+- target alias: `<zabbix-host>`;
 - dump format;
 - retention class;
 - timer/service status;

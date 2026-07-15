@@ -85,8 +85,8 @@ must not be treated as the final delegated-join model.
 On the DC, inspect only the bounded facts needed for the change:
 
 ```bash
-sudo samba-tool user show joinadmin
-sudo samba-tool group listmembers GG_MBP_Join_Operators
+sudo samba-tool user show "<join-operator-user>"
+sudo samba-tool group listmembers "<join-operator-group>"
 sudo samba-tool group listmembers "Account Operators"
 sudo samba-tool ou list
 ```
@@ -108,7 +108,7 @@ Before changing the target OU ACL, capture the current descriptor on the DC:
 sudo mkdir -p /root/tecrax-ad-delegation
 sudo samba-tool dsacl get \
   --URL=/var/lib/samba/private/sam.ldb \
-  --objectdn="OU=Workstations,OU=Computers,OU=MBP,DC=mbp,DC=infra,DC=lan" \
+  --objectdn="<workstation-ou-dn>" \
   > /root/tecrax-ad-delegation/workstations-acl-before-YYYYMMDDTHHMMSSZ.sddl.txt
 ```
 
@@ -136,7 +136,7 @@ Validate with bounded output:
 ```bash
 sudo samba-tool dsacl get \
   --URL=/var/lib/samba/private/sam.ldb \
-  --objectdn="OU=Workstations,OU=Computers,OU=MBP,DC=mbp,DC=infra,DC=lan" \
+  --objectdn="<workstation-ou-dn>" \
   | grep "<join-operator-group-sid>"
 ```
 
@@ -172,7 +172,7 @@ Then validate:
 
 ```bash
 sudo samba-tool group listmembers "Account Operators"
-sudo samba-tool group listmembers GG_MBP_Join_Operators
+sudo samba-tool group listmembers "<join-operator-group>"
 ```
 
 Run another join test after fallback removal if possible.

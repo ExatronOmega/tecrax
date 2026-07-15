@@ -7,13 +7,13 @@ secret material in Tecrax.
 
 ## Scope
 
-- Host: `pve01`
+- Host: `<sensor-host>`
 - Sensor: AHT10-compatible temperature and humidity sensor
 - USB bridge: FT232H with Blinka
-- Collection path: local script on `pve01` exposed through Zabbix Agent 2
+- Collection path: local script on `<sensor-host>` exposed through Zabbix Agent 2
 - Visualization path: Zabbix datasource in Grafana
 
-The physical USB device remains attached directly to `pve01`. If the sensor or
+The physical USB device remains attached directly to `<sensor-host>`. If the sensor or
 bridge is moved, the Zabbix items will stop receiving current values until the
 local host path is restored or deliberately migrated.
 
@@ -40,7 +40,7 @@ the sensor bridge.
 
 ## Zabbix baseline
 
-The Zabbix host is `pve01`.
+The Zabbix host is `<sensor-host>`.
 
 Items:
 

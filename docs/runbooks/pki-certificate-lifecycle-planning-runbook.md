@@ -96,7 +96,7 @@ Future entries may use these fields:
   fqdn: example.internal.invalid
   san_refs:
     - dns:example.internal.invalid
-  issuer_ref: pki01-intermediate
+  issuer_ref: <intermediate-issuer-ref>
   validity_days: 397
   status: planned
   private_key_custody: service-local-or-approved-secret-store

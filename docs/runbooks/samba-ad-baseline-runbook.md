@@ -28,7 +28,7 @@ hardening, or store any credentials in Tecrax.
 Approved OU shape:
 
 ```text
-MBP
+<ORG>
 |-- Users
 |   |-- Admins
 |   |-- Staff
@@ -59,20 +59,20 @@ or delegation needs. Prefer AD Sites and subnets for physical location behavior.
 Approved minimal groups:
 
 ```text
-GG_MBP_Admins
-GG_MBP_IT_Operators
-GG_MBP_Staff
-GG_MBP_Servers
+GG_<ORG>_Admins
+GG_<ORG>_IT_Operators
+GG_<ORG>_Staff
+GG_<ORG>_Servers
 ```
 
 Group semantics:
 
-- `GG_MBP_Admins`: narrow group for domain-level administrators. Membership is
+- `GG_<ORG>_Admins`: narrow group for domain-level administrators. Membership is
   manual and must stay small.
-- `GG_MBP_IT_Operators`: operators/helpdesk/technical users that should not be
+- `GG_<ORG>_IT_Operators`: operators/helpdesk/technical users that should not be
   treated as Domain Admins by default.
-- `GG_MBP_Staff`: normal staff membership and future policy targeting.
-- `GG_MBP_Servers`: server objects or server-role targeting when needed.
+- `GG_<ORG>_Staff`: normal staff membership and future policy targeting.
+- `GG_<ORG>_Servers`: server objects or server-role targeting when needed.
 
 Do not add broad membership in this baseline pass unless the operator explicitly
 approves the target object list.
@@ -101,14 +101,14 @@ or special cases need different controls.
 Create the following GPO placeholders:
 
 ```text
-GPO_MBP_Baseline_Computer
-GPO_MBP_Baseline_User
+GPO_<ORG>_Baseline_Computer
+GPO_<ORG>_Baseline_User
 ```
 
 Initial state:
 
-- link `GPO_MBP_Baseline_Computer` to the `Computers` OU;
-- link `GPO_MBP_Baseline_User` to the `Users` OU;
+- link `GPO_<ORG>_Baseline_Computer` to the `Computers` OU;
+- link `GPO_<ORG>_Baseline_User` to the `Users` OU;
 - do not enforce either GPO;
 - do not add aggressive settings until a test Windows client exists.
 

@@ -16,8 +16,8 @@ Allowed:
 - align Zabbix visible names with canonical aliases;
 - normalize host groups for infrastructure and network devices;
 - add small, stable tags for routing and ticket presentation;
-- remove profile/internal staging groups from operator-facing inventory where a
-  normal MBP group exists;
+- remove profile/internal staging groups from operator-facing inventory where an
+  approved operator-facing group exists;
 - add ICMP availability templates to SNMP-managed infrastructure devices when
   the target already has an ICMP interface and monitoring policy expects
   availability plus SNMP.
@@ -36,20 +36,12 @@ Not allowed:
 Use short canonical aliases as the stable operator names:
 
 ```text
-pve01
-pbs01
-dc01
-adguard-01
-admin-tools-01
-zbx01
-grafana-01
-wazuh01
-bookstack-01
-glpi01
-nas01
-frigate01
-tplink-switch-01
-hp1910-switch-01
+hypervisor01
+backup01
+directory01
+monitoring01
+ticketing01
+network-switch-01
 security-gateway-01
 security-gateway-vlan05
 ```
@@ -63,8 +55,9 @@ visible-name conventions.
 
 Recommended first groups:
 
-- `MBP Infrastructure` for servers, VM/CT services, NAS and Frigate host;
-- `MBP Network` for gateways and managed switches;
+- `<ORG> Infrastructure` for servers, VM/CT services, storage and monitoring
+  hosts;
+- `<ORG> Network` for gateways and managed switches;
 - optional upstream/default groups may remain if useful, but routing should not
   depend on inconsistent staging groups.
 

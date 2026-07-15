@@ -101,7 +101,7 @@ Ticket title:
 Examples:
 
 ```text
-[Zabbix][Wysoki] Mało miejsca na dysku: frigate01
+[Zabbix][Wysoki] Mało miejsca na dysku: video-monitoring-01
 [Wazuh][Średni] Podejrzane zdarzenie bezpieczeństwa: workstation
 ```
 

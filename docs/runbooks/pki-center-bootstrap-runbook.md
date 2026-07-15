@@ -1,6 +1,6 @@
 # PKI Center bootstrap runbook
 
-This runbook covers the first PKI Center bootstrap for the Tecrax/MBP
+This runbook covers the first PKI Center bootstrap for a Tecrax-managed
 infrastructure stack.
 
 PKI Center is a security-sensitive, on-demand VM for internal certificate
@@ -60,7 +60,7 @@ Must remain outside Git and public sign-offs:
 Recommended public-safe shape:
 
 - deployment class: Proxmox VM;
-- service alias: `pki01`;
+- service alias: `<pki-host>`;
 - OS family: Debian stable minimal;
 - storage class: `rpool` / critical-light SSD mirror;
 - initial disk: small critical-service class;
@@ -117,7 +117,7 @@ Use offline root plus on-demand intermediate:
 
 - root CA is the trust anchor and is used rarely;
 - root CA material must not live as normal always-on service data;
-- `pki01` may host intermediate CA work only when explicitly powered on for
+- `<pki-host>` may host intermediate CA work only when explicitly powered on for
   certificate operations;
 - intermediate CA can issue internal service certificates after custody,
   backup/export and restore-proof gates are complete;

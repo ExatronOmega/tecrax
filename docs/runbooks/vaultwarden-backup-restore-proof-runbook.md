@@ -1,7 +1,7 @@
 # Vaultwarden backup and restore-proof runbook
 
 This runbook covers the first public-safe backup and isolated restore proof for
-the Tecrax/MBP Vaultwarden bootstrap VM.
+the Tecrax-managed Vaultwarden bootstrap VM.
 
 Vaultwarden remains in `bootstrap` status until restore proof, offline
 break-glass, PKI restore proof and Proxmox root-of-trust hardening gates are

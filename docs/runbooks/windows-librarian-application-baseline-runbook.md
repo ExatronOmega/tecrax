@@ -16,7 +16,7 @@ Keep outside Git:
 - private endpoint and user inventories;
 - proprietary installers and redistribution-restricted binaries;
 - license files, individualized application configuration and credentials;
-- AV package tokens, Wazuh enrollment material and Zabbix PSKs;
+- endpoint-protection package tokens, Wazuh enrollment material and Zabbix PSKs;
 - exact internal hostnames, groups, shares, printers and server addresses.
 
 ## Package manifest gate
@@ -42,13 +42,14 @@ placeholders to fill from memory.
 
 The initial librarian role stack is:
 
-- Bitdefender Endpoint Security Tools;
+- an operator-approved endpoint protection platform;
 - Wazuh agent and Zabbix agent;
 - Firefox ESR and Chrome Enterprise Stable;
 - managed Thunderbird ESR;
 - LibreOffice;
 - 7-Zip, VLC, IrfanView, Notepad++ and SumatraPDF;
-- the separately controlled SOWA client and its approved modules.
+- an assigned library-management application and its approved modules, when the
+  endpoint's functional role requires one.
 
 Microsoft Edge, WebView2, Windows PowerShell 5.1, supported Windows components,
 Visual C++ runtimes and device drivers are dependencies, not debloat targets.
@@ -62,14 +63,17 @@ Use this order on one operator-supervised pilot:
 1. Prove supported Windows lifecycle, domain readiness, free space, pending
    reboot state, local and per-user installs, running processes and preserved
    user/application data.
-2. Validate existing Bitdefender health. Add Wazuh and Zabbix separately, with
-   compatibility and central-console health proof after each agent.
+2. Validate existing endpoint-protection health. Add Wazuh and Zabbix
+   separately, with compatibility and central-console health proof after each
+   agent.
 3. Install Firefox ESR and Chrome Enterprise, then validate ADMX/policy readback
    separately from application detection.
 4. Install LibreOffice and Thunderbird ESR. Treat IMAP configuration and local
    mail archives as a separate per-user migration contract.
 5. Install 7-Zip, Notepad++, IrfanView, SumatraPDF and VLC.
-6. Deploy SOWA only after its proprietary package gate is complete.
+6. Deploy an assigned library-management application only after its proprietary
+   package gate is complete. Do not infer entitlement from a librarian job title
+   alone.
 7. Reboot only when an exact installer or policy requires it, then run the full
    login and application smoke.
 
@@ -91,17 +95,22 @@ Use only the primary vendor documentation when building exact manifests:
 - [IrfanView FAQ and licensing](https://www.irfanview.com/faq.htm);
 - [SumatraPDF installer arguments](https://www.sumatrapdfreader.org/docs/Installer-cmd-line-arguments);
 - [VLC Windows packages](https://www.videolan.org/vlc/download-windows.html);
-- [Bitdefender BEST installation](https://www.bitdefender.com/business/support/en/77212-157497-install-security-agents---standard-procedure.html);
 - [Wazuh Windows deployment variables](https://documentation.wazuh.com/current/user-manual/agent/agent-enrollment/deployment-variables/deployment-variables-windows.html);
 - [Zabbix Windows MSI installation](https://www.zabbix.com/documentation/current/en/manual/installation/install_from_packages/win_msi).
+
+The selected endpoint-protection platform must use its own primary vendor
+deployment, compatibility, update, tamper-protection and rollback documentation.
+Its concrete product and tenant mapping belongs in private operator policy, not
+in this public role contract.
 
 Browser and Thunderbird profiles are not application detection. Never delete a
 profile as part of install, update, uninstall or rollback. Default applications,
 file associations and browser extensions need separate policy and smoke gates.
 
-## SOWA proprietary package gate
+## Library-management application package gate
 
-SOWA remains a separate business-critical contract. Before packaging, record:
+Any assigned library-management application remains a separate business-critical
+contract. Before packaging, record:
 
 - the approved vendor artifact and deployment entitlement;
 - exact client edition/version, modules and updater;
@@ -112,13 +121,14 @@ SOWA remains a separate business-critical contract. Before packaging, record:
 
 The public package manifest may reference a private artifact identifier but must
 not embed the artifact, license or configuration. Preserve the approved public
-desktop shortcut set and smoke every shortcut target. Vendor-delivered remote
-support must remain an on-demand QuickSupport tool without an unattended-access
-service.
+desktop shortcut set and smoke every shortcut target. Any vendor-delivered
+remote-support component must remain an explicitly approved, on-demand tool
+without an unattended-access service.
 
-SOWA smoke must launch all required modules as a non-administrator and prove the
-correct environment. Any transaction against production data requires a separate
-test procedure and operator approval; read-only navigation is the default smoke.
+The application smoke must launch all assigned modules as a non-administrator
+and prove the correct environment. Any transaction against production data
+requires a separate test procedure and operator approval; read-only navigation
+is the default smoke.
 
 ## Stop conditions
 
@@ -135,7 +145,8 @@ Stop packaging or rollout when:
 - a secret, license or private configuration would enter Git, GPO, logs or chat;
 - an agent creates a duplicate identity or is not healthy centrally;
 - default-app changes or user-data preservation are not understood;
-- SOWA dependencies, configuration, licensing or vendor method remain unknown;
+- assigned library-application dependencies, configuration, licensing or vendor
+  method remain unknown;
 - the smoke would write to production business data without separate approval.
 
 ## Pilot success
@@ -146,8 +157,10 @@ passes lab validation. The endpoint is `operational-ready` only when:
 - all required machine-wide packages are detected under a standard user;
 - browsers and managed policies, office/PDF/media utilities and Thunderbird
   launch without UAC or unmanaged update prompts;
-- Bitdefender, Wazuh and Zabbix are healthy with unique central identities;
-- SOWA and every required module/shortcut pass their functional smoke;
+- endpoint protection, Wazuh and Zabbix are healthy with unique central
+  identities;
+- every assigned library application, required module and shortcut passes its
+  functional smoke;
 - existing user data, application settings and printer functionality remain
   available;
 - rollback artifacts exist and rollback does not delete user or business data.

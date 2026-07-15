@@ -28,7 +28,7 @@ modified.
 
 Safe in public docs and sign-offs:
 
-- target alias: `zbx01`;
+- target alias: `<zabbix-host>`;
 - restore class: isolated disposable PostgreSQL target;
 - dump format: PostgreSQL custom format;
 - bounded validation counters;
@@ -109,7 +109,7 @@ Use `../operator-signoff-template.md` and include:
 
 - date;
 - run class: `zabbix-postgresql-restore-proof`;
-- target alias: `zbx01`;
+- target alias: `<zabbix-host>`;
 - dump timestamp or public-safe dump identifier;
 - restore target class: disposable PostgreSQL container;
 - bounded validation summary;

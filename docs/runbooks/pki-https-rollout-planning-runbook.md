@@ -72,22 +72,16 @@ bounded validation check.
 Preferred internal service naming pattern:
 
 ```text
-<service>.mbp.infra.lan
+<service>.<internal-domain>
 ```
 
 Examples:
 
 ```text
-proxmox.mbp.infra.lan
-pbs.mbp.infra.lan
-vault.mbp.infra.lan
-pki.mbp.infra.lan
-zabbix.mbp.infra.lan
-grafana.mbp.infra.lan
-wazuh.mbp.infra.lan
-glpi.mbp.infra.lan
-bookstack.mbp.infra.lan
-adguard.mbp.infra.lan
+virtualization.example.invalid
+monitoring.example.invalid
+ticketing.example.invalid
+documentation.example.invalid
 ```
 
 Rules:

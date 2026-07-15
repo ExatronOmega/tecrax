@@ -69,11 +69,11 @@ Private operator context may use this public-safe shape:
 alert_routing:
   zabbix:
     infrastructure_hosts:
-      - pve01
-      - pki01
+      - <always-on-host>
+      - <expected-off-host>
     host_down_policy:
       shadow_only_hosts:
-        - pki01
+        - <expected-off-host>
 ```
 
 Host inventory may additionally record operational expectation for local access
@@ -81,7 +81,7 @@ checks:
 
 ```yaml
 hosts:
-  pki01:
+  <expected-off-host>:
     expected_power_state: stopped
 ```
 

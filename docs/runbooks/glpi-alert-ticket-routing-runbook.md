@@ -104,12 +104,12 @@ The operator context file may use this shape:
 alert_routing:
   zabbix:
     infrastructure_hosts:
-      - pve01
-      - zbx01
-      - dc01
+      - <virtualization-host>
+      - <monitoring-host>
+      - <directory-host>
     host_down_policy:
       shadow_only_hosts:
-        - pki01
+        - <expected-off-host>
 ```
 
 Do not route ordinary staff PCs/laptops as host-down tickets. Users can power

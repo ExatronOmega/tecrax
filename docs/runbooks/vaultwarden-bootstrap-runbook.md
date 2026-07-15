@@ -1,6 +1,6 @@
 # Vaultwarden bootstrap runbook
 
-This runbook covers the first Vaultwarden bootstrap for the Tecrax/MBP
+This runbook covers the first Vaultwarden bootstrap for a Tecrax-managed
 infrastructure stack.
 
 Vaultwarden is introduced as a critical custody system for selected operational

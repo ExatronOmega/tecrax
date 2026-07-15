@@ -20,7 +20,7 @@ The deployment pass covers:
 - validating DNS forwarding behavior;
 - PBS backup and public-safe sign-off.
 
-It does not migrate DHCP scopes, change Hillstone configuration, migrate
+It does not migrate DHCP scopes, change the DHCP authority configuration, migrate
 clients, configure production filtering policy in detail, create user accounts,
 or store AdGuard web credentials in Tecrax.
 
@@ -39,7 +39,7 @@ and must not replace Samba AD DNS service records.
 
 ## DHCP Boundary
 
-DHCP is owned by the Hillstone security gateway. Tecrax and this runbook do not
+DHCP is owned by an external security gateway. Tecrax and this runbook do not
 modify DHCP scopes, reservations, leases or DNS options.
 
 Later, after AdGuard is validated:
@@ -116,7 +116,7 @@ Stop if any of these are true:
 - Samba AD DNS is not healthy;
 - AdGuard would become authoritative for the AD domain;
 - DNS forwarding creates a loop;
-- Hillstone DHCP changes are required before AdGuard validates;
+- DHCP-authority changes are required before AdGuard validates;
 - AdGuard web admin credentials would need to be exposed to LLM/tooling;
 - PBS is unavailable and no alternate backup path is approved.
 
@@ -139,7 +139,7 @@ Non-claims:
 
 - no DHCP migration;
 - no production client migration;
-- no Hillstone configuration change;
+- no DHCP-authority configuration change;
 - no complete filtering-policy tuning;
 - no AdGuard API connector;
 - no secret custody in Tecrax;
@@ -148,5 +148,5 @@ Non-claims:
 ## Next Gate
 
 After AdGuard is deployed and validated, update Samba AD DNS forwarding to point
-to AdGuard and then plan Hillstone DHCP changes as a separate operator-owned
+to AdGuard and then plan DHCP-authority changes as a separate operator-owned
 network-gateway step.

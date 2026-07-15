@@ -123,8 +123,8 @@ and agent rollout into one GPO.
 Recommended split:
 
 ```text
-GPO_MBP_Workstations_ZabbixAgent_Pilot
-GPO_MBP_Workstations_WazuhAgent_Pilot
+GPO_<ORG>_Workstations_ZabbixAgent_Pilot
+GPO_<ORG>_Workstations_WazuhAgent_Pilot
 ```
 
 Link only to the approved workstation OU or target only the pilot security group.

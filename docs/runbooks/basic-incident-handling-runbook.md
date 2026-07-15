@@ -1,7 +1,7 @@
 # Basic incident handling runbook
 
 This runbook defines the first operator-owned incident-handling baseline for the
-Tecrax/MBP infrastructure stack.
+Tecrax-managed infrastructure stack.
 
 It gives the operator a small, repeatable process for turning a monitoring or
 security signal into a GLPI incident record and a contained follow-up. It is not

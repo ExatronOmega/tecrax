@@ -61,7 +61,7 @@ Use the existing Ubuntu host as a monitored infrastructure endpoint.
 Recommended public alias:
 
 ```text
-frigate01
+<frigate-host>
 ```
 
 Recommended first checks:
