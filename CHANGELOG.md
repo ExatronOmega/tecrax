@@ -21,6 +21,8 @@ All notable Tecrax profile changes are documented here.
 - Advances the source profile candidate to `0.4.0rc3` with exact pins
   `govengine==1.0.0rc1`, `rexecop==0.3.0rc3` and frozen
   `sclite-core==2.0.0`; profile semantics and activation posture are unchanged.
+- Pins every Tecrax GitHub Action to a reviewed full commit SHA and makes the
+  existing public-truth gate reject future moving action refs.
 - Added the controlled BookStack documentation publication runbook covering
   exact-target resolution, least-privilege publishing, Polish service-card
   quality gates, writable cache/upload ownership checks, revision-history

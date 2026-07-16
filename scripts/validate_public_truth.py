@@ -4,6 +4,7 @@ from __future__ import annotations
 import sys
 import tomllib
 from pathlib import Path
+import re
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / 'src'
@@ -41,6 +42,11 @@ FORBIDDEN_CLAIMS = (
     'owns queue persistence',
     'owns host inventory',
 )
+ACTION_REF = re.compile(
+    r'^\s*(?:-\s+)?uses:\s+([^@\s]+)@([^\s#]+)',
+    re.MULTILINE,
+)
+FULL_SHA = re.compile(r'^[0-9a-f]{40}$')
 
 
 def _read(path: str) -> str:
@@ -111,9 +117,17 @@ def collect_errors() -> list[str]:
     if not (profile_root / 'profile.yaml').is_file():
         errors.append('profile_bundle_missing:profile.yaml')
     _require(errors, 'VALIDATION.md', 'python scripts/validate_public_truth.py')
-    _require(errors, '.github/workflows/ci.yml', 'actions/checkout@v6')
+    _require(
+        errors,
+        '.github/workflows/ci.yml',
+        'actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10',
+    )
     _require(errors, '.github/workflows/ci.yml', 'branches: [main]')
-    _require(errors, '.github/workflows/ci.yml', 'actions/setup-python@v6')
+    _require(
+        errors,
+        '.github/workflows/ci.yml',
+        'actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1',
+    )
     _require(errors, '.github/workflows/ci.yml', "python-version: ['3.11', '3.12']")
     _require(errors, '.github/workflows/ci.yml', 'python scripts/validate_public_truth.py')
     _require(errors, '.github/workflows/ci.yml', 'python scripts/validate_active_profile.py')
@@ -138,6 +152,15 @@ def collect_errors() -> list[str]:
         'govengine @ git+https://github.com/rozmiarD/GovEngine.git@main',
     )
     _require(errors, '.github/workflows/ci.yml', 'pip install -e ./ci-deps/rexecop')
+    for workflow in sorted((ROOT / '.github' / 'workflows').glob('*.yml')):
+        for action, reference in ACTION_REF.findall(
+            workflow.read_text(encoding='utf-8')
+        ):
+            if not FULL_SHA.fullmatch(reference):
+                errors.append(
+                    f'{workflow.relative_to(ROOT)}:action_not_pinned:'
+                    f'{action}@{reference}'
+                )
 
     review = build_local_fixture_review('truth-fixture')
     if review.get('artifact_type') != 'tecrax_local_fixture_review':
