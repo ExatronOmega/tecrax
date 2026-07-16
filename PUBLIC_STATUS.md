@@ -34,9 +34,9 @@
   mutation is currently active in the Tecrax profile
 - **Public docs baseline:** the repo now documents the Proxmox/PBS readiness,
   backup/restore-proof, admin-tools CT, Samba AD DC, AdGuard, chrony/NTP,
-  Zabbix, Grafana, Wazuh, basic alerting, BookStack and GLPI isolated
-  restore-proof runbooks while keeping private addresses, credentials and
-  target mappings out of Git
+  Zabbix, Grafana, Wazuh, basic alerting, BookStack application backup and
+  BookStack/GLPI isolated restore-proof runbooks while keeping private
+  addresses, credentials and target mappings out of Git
 - **GLPI baseline:** GLPI is documented as the future ticket channel for Zabbix
   and Wazuh alerts, with final ticket-routing automation still outside the
   active profile until an operator-owned credential and suppression policy exist

@@ -319,6 +319,12 @@ backup to a temporary isolated CT, validates local web/database/application
 state and removes the temporary target without exposing documentation contents
 or secrets.
 
+`docs/runbooks/bookstack-application-backup-runbook.md` documents the recurring
+application-aware BookStack backup boundary. It requires the supported
+BookStack backup CLI, transient source-host plaintext, runtime-memory
+encryption, append-only encrypted off-host artifacts, checksum validation and
+plaintext cleanup without adding NAS pruning or private target data to Tecrax.
+
 `docs/runbooks/glpi-vm-deployment-runbook.md` documents the operator-owned GLPI VM
 deployment gate. It introduces GLPI as the helpdesk, inventory and incident
 register layer while keeping credentials, mail/LDAP integration and compliance

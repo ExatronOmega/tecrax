@@ -18,6 +18,9 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Added the BookStack application-aware backup runbook for supported CLI
+  capture, runtime-memory encryption, append-only off-host custody, checksum
+  validation and fail-closed plaintext cleanup without automatic NAS pruning.
 - Expanded the generic librarian role runbook with mandatory GIMP, Inkscape,
   NAPS2 and PDF Arranger packaging and non-administrator smoke gates.
 - Documented the promotion gate for a future governed Windows role-application
