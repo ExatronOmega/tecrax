@@ -18,6 +18,10 @@ All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Added the controlled BookStack documentation publication runbook covering
+  exact-target resolution, least-privilege publishing, Polish service-card
+  quality gates, writable cache/upload ownership checks, revision-history
+  rollback, secret scanning and idempotent post-publication validation.
 - Added the BookStack application-aware backup runbook for supported CLI
   capture, runtime-memory encryption, append-only off-host custody, checksum
   validation and fail-closed plaintext cleanup without automatic NAS pruning.
