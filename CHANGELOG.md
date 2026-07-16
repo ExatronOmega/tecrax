@@ -11,13 +11,16 @@
   alone is not execution approval.
 - Uses RExecOp's orchestration contract surface for observation and escalation
   artifacts instead of the removed SCLite stack-specific aliases.
-- Pins the coordinated SCLite 2.0, GovEngine 0.17 and RExecOp 0.3 candidate
+- Pins the coordinated SCLite 2.0, GovEngine 1.0 and RExecOp 0.3 candidate
   train.
 
 All notable Tecrax profile changes are documented here.
 
 ## Unreleased
 
+- Advances the source profile candidate to `0.4.0rc3` with exact pins
+  `govengine==1.0.0rc1`, `rexecop==0.3.0rc3` and frozen
+  `sclite-core==2.0.0`; profile semantics and activation posture are unchanged.
 - Added the controlled BookStack documentation publication runbook covering
   exact-target resolution, least-privilege publishing, Polish service-card
   quality gates, writable cache/upload ownership checks, revision-history
@@ -35,8 +38,9 @@ All notable Tecrax profile changes are documented here.
   mutation.
 - Enforces Tecrax's production SCLite imports against the versioned
   wheel-shipped consumer contract through the existing public-truth CI gate.
-- Pins `govengine==0.17.0rc2` and `rexecop==0.3.0rc2` for the bounded HTTP
-  destination admission and receipt-binding candidate.
+- The prior `0.4.0rc2` source candidate pinned `govengine==0.17.0rc2` and
+  `rexecop==0.3.0rc2` for bounded HTTP destination admission and receipt
+  binding.
 
 ## [0.4.0rc1] - 2026-07-10
 
