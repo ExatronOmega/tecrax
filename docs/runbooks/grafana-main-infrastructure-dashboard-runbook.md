@@ -74,6 +74,57 @@ Validate:
 - Zabbix has enabled hosts and returns problem state through the existing API
   path.
 
+## Problems Panel Memory Failure
+
+Recent Grafana-Zabbix plugin versions may enrich current problems with item
+history from the timestamp of the oldest returned problem to the newest one.
+Long-lived active problems can therefore make a visually small problems panel
+issue a very large `history.get` request. A Zabbix frontend PHP memory-limit
+failure then appears in Grafana as a downstream HTTP 500 even though Grafana,
+Zabbix Server and the Zabbix web container remain available.
+
+Diagnose this condition before changing memory limits:
+
+- correlate the Grafana datasource 500 with the Zabbix web/PHP log;
+- count active problems and measure the oldest-to-newest event span;
+- estimate the history rows for only the item IDs referenced by those active
+  problems;
+- confirm that bounded `problem.get` and `trigger.get` calls still succeed;
+- do not resolve real problems merely to make the dashboard query smaller.
+
+Do not replace the operational problem list with a source-system link as a
+permanent fix. That removes the dashboard function instead of correcting it.
+For the regression present in Grafana-Zabbix `6.3.1` through `6.4.0`, upgrade
+to an official signed release containing the bounded historical-value fix
+(`6.4.1` or a later independently validated release).
+
+Before the upgrade:
+
+- take an exact backup of the provisioned dashboard, plugin directory and
+  Grafana configuration;
+- record the plugin version, dashboard hash, UID, version and exact problem
+  panel ID/type;
+- define a rollback to the previous plugin plus dashboard;
+- inspect Grafana's preinstall and background-plugin policy so a Grafana
+  restart cannot silently widen the upgrade scope.
+
+After the upgrade, keep `Item value at problem time`
+(`fetchHistoricalItemValue`) explicitly disabled unless historical macro
+accuracy is a documented requirement. Restore the functional Problems panel,
+then prove that the dashboard differs only by the intended panel safety option
+and version metadata. Validate signed-plugin registration, Grafana health,
+successful Zabbix datasource queries, the rendered problem list and absence of
+new Zabbix frontend memory failures.
+
+Raising the PHP memory limit alone is not closure: it may hide the error while
+leaving a large history transfer on every dashboard refresh. A text link to
+Zabbix may be used only as a short emergency degradation with a named owner,
+expiry and open corrective gate.
+
+This failure is also an observability gap when monitoring checks only process
+and container availability. Add a low-noise synthetic dashboard or datasource
+check in a separate approved gate before routing it to a ticketing system.
+
 ## Stop Conditions
 
 Stop before sign-off if any of these are true:
